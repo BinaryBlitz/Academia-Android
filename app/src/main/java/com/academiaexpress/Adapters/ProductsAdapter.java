@@ -36,7 +36,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.collection = collection;
         collection2 = new ArrayList<>();
         for(int i = 0; i < collection.size(); i++) {
-            collection2.add(new DeliveryOrder.OrderPart(collection.get(i).getPrice(), collection.get(i).getMealName(),
+            collection2.add(new DeliveryOrder.OrderPart(collection.get(i).getPrice(), collection.get(i).getName(),
                     collection.get(i).getId()));
         }
 
@@ -59,7 +59,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final FriendViewHolder holder = (FriendViewHolder) viewHolder;
-        holder.name.setText(collection.get(position).getMealName());
+        holder.name.setText(collection.get(position).getName());
         holder.sub_name.setText(collection.get(position).getIngridients());
         holder.price.setText(collection.get(position).getPrice() + Html.fromHtml("<html>&#x20bd</html>").toString());
 

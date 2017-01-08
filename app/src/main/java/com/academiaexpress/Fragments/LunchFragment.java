@@ -157,15 +157,15 @@ public class LunchFragment extends BaseProductFragment {
         adapter2.notifyDataSetChanged();
 
         ((LinearLayout) getView().findViewById(R.id.ingr)).removeAllViews();
-        if(meal.getIngridients_list().size() == 0) {
+        if(meal.getIngridientsList().size() == 0) {
             getView().findViewById(R.id.ingr).setVisibility(View.GONE);
         } else {
             getView().findViewById(R.id.ingr).setVisibility(View.VISIBLE);
-            for (int i = 0; i < meal.getIngridients_list().size(); i++) {
+            for (int i = 0; i < meal.getIngridientsList().size(); i++) {
                 View v = LayoutInflater.from(getContext()).inflate(R.layout.lunch_part_card, null);
 
-                ((TextView) v.findViewById(R.id.textView43)).setText(meal.getIngridients_list().get(i).first);
-                ((TextView) v.findViewById(R.id.textView44)).setText(meal.getIngridients_list().get(i).second + "г");
+                ((TextView) v.findViewById(R.id.textView43)).setText(meal.getIngridientsList().get(i).first);
+                ((TextView) v.findViewById(R.id.textView44)).setText(meal.getIngridientsList().get(i).second + "г");
 
                 ((LinearLayout) getView().findViewById(R.id.ingr)).addView(v);
             }
