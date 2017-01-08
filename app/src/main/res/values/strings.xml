@@ -27,4 +27,8 @@
     <string name="e_mail">E-mail</string>
     <string name="save_profile">Сохранить профиль</string>
     <string name="quit_profile">ВЫЙТИ ИЗ ПРОФИЛЯ</string>
+    <string name="wrong_phone_format">Неверный формат номера</string>
+    <string name="type_phone">Для заказа введите свой телефон</string>
+    <string name="next_upcase">ДАЛЕЕ</string>
+    <string name="phone_upcase">ТЕЛЕФОН</string>
 </resources>
