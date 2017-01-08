@@ -57,4 +57,6 @@
     <string name="congratulations">"Поздравляем, "</string>
     <string name="you_logged_in">\nВы зарегистрировались!</string>
     <string name="make_order">Сделать заказ</string>
+    <string name="send">Отправить...</string>
+    <string name="need_help">Нужна помощь?</string>
 </resources>
