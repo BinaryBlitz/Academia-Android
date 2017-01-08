@@ -59,4 +59,7 @@
     <string name="make_order">Сделать заказ</string>
     <string name="send">Отправить...</string>
     <string name="need_help">Нужна помощь?</string>
+    <string name="current_price">"Текущая цена: "</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="delete">УДАЛИТЬ</string>
 </resources>

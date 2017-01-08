@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.academiaexpress.Activities.IncDecActivity;
+import com.academiaexpress.Activities.EditOrderActivity;
 import com.academiaexpress.Activities.ProductsActivity;
 import com.academiaexpress.R;
 
@@ -76,7 +76,7 @@ public class DeliveryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, IncDecActivity.class);
+                    Intent intent = new Intent(context, EditOrderActivity.class);
                     intent.putExtra("price", ProductsActivity.collection.get(position).getPrice());
                     intent.putExtra("count", ProductsActivity.collection.get(position).getCount());
                     intent.putExtra("name", ProductsActivity.collection.get(position).getName());

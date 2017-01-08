@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.academiaexpress.Activities.IncDecActivity;
+import com.academiaexpress.Activities.EditOrderActivity;
 import com.academiaexpress.Data.DeliveryOrder;
 import com.academiaexpress.R;
 
@@ -67,7 +67,7 @@ public class DeliveryPastAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, IncDecActivity.class);
+                    Intent intent = new Intent(context, EditOrderActivity.class);
                     intent.putExtra("price", collection.get(position).getPrice());
                     intent.putExtra("count", collection.get(position).getCount());
                     intent.putExtra("name",  collection.get(position).getName());
