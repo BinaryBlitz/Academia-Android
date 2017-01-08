@@ -40,6 +40,20 @@ public class ClosedActivity extends BaseActivity {
     private static final String EXTRA_FIRST = "first";
     private static final int EARLY_HOUR = 6;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_service_closed);
+
+        initScreen();
+        setupUIForMoneyValues();
+        initElements();
+        loadBackground();
+        setOnClickListeners();
+        getUser();
+        setTexts();
+    }
+
     private void parseUser(JsonObject object) {
         saveMoneyValues(object);
         setupUIForMoneyValues();
@@ -100,20 +114,6 @@ public class ClosedActivity extends BaseActivity {
         Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));
 
         if (getIntent().getBooleanExtra(EXTRA_CLOSED, false)) findViewById(R.id.textView).setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_closed);
-
-        initScreen();
-        setupUIForMoneyValues();
-        initElements();
-        loadBackground();
-        setOnClickListeners();
-        getUser();
-        setTexts();
     }
 
     private void setTexts() {
