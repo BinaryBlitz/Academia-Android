@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:background="@color/colorPrimary"
+            android:minHeight="?attr/actionBarSize">
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/action_bar">
+
+                <ImageView
+                    android:id="@+id/drawer_indicator"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/delete"
+                    android:layout_gravity="start"
+                    android:padding="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name_edit"
+                    android:layout_gravity="center_vertical"
+                    android:hint="Реквизиты"
+                    android:textSize="20sp"
+                    android:inputType="textPersonName"
+                    android:layout_marginRight="56dp"
+                    android:layout_marginLeft="56dp"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#ffffff"
+                    android:background="@null" />
+
+            </FrameLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="ООО &quot;Здоровое питание&quot; ИНН/КПП 7713406126/771301001 ОГРН 1157746941692 Р/С 40702810902620001236 В АО «АЛЬФА БАНК» г. Москва БИК 044525593 К/С 30101810200000000593 Юр. Адрес: г. Москва, Дубнинская ул., д.4, корп. 1 "
+        android:id="@+id/textView58"
+        android:textColor="#212121"
+        android:gravity="center"
+        android:layout_marginTop="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
+</LinearLayout>

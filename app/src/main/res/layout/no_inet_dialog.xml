@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView17"
+        android:layout_gravity="center"
+        android:src="@drawable/load_pic"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="48dp"
+        android:id="@+id/imageView8"
+        android:layout_gravity="center_horizontal|top"
+        android:background="@drawable/mini_logo"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="ПОТЕРЯНА СВЯЗЬ С ИНТЕРНЕТОМ"
+        android:id="@+id/textView36"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="86dp"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="ПОИСК СЕТИ"
+        android:id="@+id/textView36hj"
+        android:layout_gravity="center_horizontal|bottom"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="86dp"
+        android:gravity="center" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/imageView18"
+        android:layout_gravity="center"
+        android:src="@drawable/big_logo" />
+
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:id="@+id/imageView19"
+        android:layout_gravity="center"
+        android:src="@drawable/progress"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginRight="56dp"
+        android:layout_marginLeft="56dp" />
+
+</FrameLayout>

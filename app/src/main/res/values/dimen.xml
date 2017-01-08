@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="btn_border_size">2dp</dimen>
+    <dimen name="standart_border_size">2dp</dimen>
+</resources>

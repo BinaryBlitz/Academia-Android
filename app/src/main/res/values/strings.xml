@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Академия Экспресс</string>
+    <string name="login_string">Уже есть аккаунт? <u>Войти</u></string>
+    <string name="other_string"><u>Выбрать другой адрес</u></string>
+    <string name="polz_str"><u>Пользовательское соглашение</u></string>
+    <string name="rek_str"><u>Реквизиты</u></string>
+    <string name="facebook_app_id">1589858481338379</string>
+    <string name="january_string">января</string>
+    <string name="febuary_string">февраля</string>
+    <string name="march_string">марта</string>
+    <string name="april_string">апреля</string>
+    <string name="may_string">мая</string>
+    <string name="june_string">июня</string>
+    <string name="july_string">июля</string>
+    <string name="august_string">августа</string>
+    <string name="september_string">сентября</string>
+    <string name="octoboer_string">октября</string>
+    <string name="november_string">ноября</string>
+    <string name="december_string">декабря</string>
+    <string name="lost_connection_str">Потеряно соединение с интернетом</string>
+    <string name="loca_error">Невозможно получить доступ к Вашему местоположению</string>
+</resources>

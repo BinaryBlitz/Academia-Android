@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView21"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:layout_height="36dp"
+        android:layout_width="36dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/guillotine_hamburger"
+        android:src="@drawable/quit_sign"
+        android:padding="10dp"
+        android:background="@drawable/white_circle_back"
+        android:layout_gravity="right"
+        android:layout_marginRight="12dp" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="48dp"
+        android:id="@+id/imageView8"
+        android:layout_gravity="center_horizontal|top"
+        android:background="@drawable/mini_logo"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="УДАЛИТЬ"
+        android:id="@+id/textView28"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:background="#D32F2F"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="СОХРАНИТЬ"
+        android:id="@+id/textView28fd"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="86dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:background="#212121"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Product"
+        android:id="@+id/textView29"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="76dp"
+        android:textSize="26sp"
+        android:textColor="#212121" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="5"
+        android:id="@+id/textView30"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="150dp"
+        android:textSize="24sp"
+        android:textColor="#212121" />
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="+"
+        android:id="@+id/textView32fdfd"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="146dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/black_circle"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_marginLeft="76dp" />
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="-"
+        android:id="@+id/textView32"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="146dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/black_circle"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:layout_marginRight="76dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Текущая цена: 230Р"
+        android:id="@+id/textView31"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="120dp"
+        android:textSize="20sp"
+        android:textColor="#212121" />
+</FrameLayout>

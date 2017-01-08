@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView9"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:layout_marginLeft="12dp"
+        android:id="@+id/content_hamburger"
+        android:src="@drawable/menu_icon"
+        android:padding="10dp"
+        android:background="@drawable/white_circle_back"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="42dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="НАЧАТЬ"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal|bottom"
+        android:textColor="#ffffff"
+        android:background="@drawable/main_btn_border_background"
+        android:layout_marginBottom="56dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="2"
+        android:id="@+id/textView19fd"
+        android:layout_gravity="top"
+        android:textColor="#ffffff"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:layout_marginLeft="36dp" />
+
+    <com.academiaexpress.CircularReveal.widget.RevealFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/main_menu_layout" />
+    </com.academiaexpress.CircularReveal.widget.RevealFrameLayout>
+</FrameLayout>

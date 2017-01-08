@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="vertical">
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/main">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageView3"
+                android:scaleType="centerCrop"
+                android:background="#212121" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageView11"
+                android:src="@drawable/gradient"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView10"
+                android:textAllCaps="true"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:textSize="12sp"
+                android:layout_marginTop="166dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAllCaps="true"
+                android:id="@+id/textView11"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:textSize="28sp"
+                android:layout_marginTop="206dp" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView9"
+                    android:textAllCaps="true"
+                    android:layout_gravity="center_horizontal|top"
+                    android:textSize="20sp"
+                    android:layout_marginTop="126dp"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+            <View
+                    android:layout_width="310dp"
+                    android:layout_marginTop="158dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#ffffff"/>
+
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="42dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="ЗАКАЗАТЬ"
+                android:id="@+id/textView"
+                android:layout_gravity="center_horizontal|bottom"
+                android:textColor="#ffffff"
+                android:background="@drawable/main_btn_border_background"
+                android:layout_marginBottom="56dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="42dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="БЛЮДО ЗАКОНЧИЛОСЬ"
+                android:id="@+id/textViewfdfdfsfs"
+                android:layout_gravity="center_horizontal|bottom"
+                android:textColor="#ffffff"
+                android:background="#727272"
+                android:layout_marginBottom="56dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Состав"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/textView9fdfdf"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center_horizontal|top"
+                    android:textSize="20sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
+
+            <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="#212121"
+                    android:layout_marginLeft="48dp"
+                    android:layout_marginRight="48dp"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ingr"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/main2"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="О блюде"
+                    android:id="@+id/textView15"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal|top"
+                    android:textSize="20sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
+
+            <FrameLayout
+                    android:layout_width="310dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#212121" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/textView16"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="#212121" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/en_name"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Энергетическая ценность"
+                android:id="@+id/textView9fdfdfs"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal|top"
+                android:textSize="20sp"
+                android:textColor="#212121"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp" />
+
+            <View
+                android:layout_width="310dp"
+                android:layout_height="2dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="#212121"
+                android:layout_marginTop="14dp"/>
+        </FrameLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:id="@+id/en_content"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="32dp">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Белки"
+                    android:id="@+id/textView52"
+                    android:layout_weight="1.0"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Жиры"
+                    android:id="@+id/textView53"
+                    android:background="@drawable/cell_shape"
+                    android:layout_weight="1.0"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Углеводы"
+                    android:id="@+id/textView54"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/cell_shape"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Ккал."
+                    android:id="@+id/textView55"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/cell_shape"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#212121"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="32dp">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView52a"
+                    android:layout_weight="1.0"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView53a"
+                    android:background="@drawable/cell_shape"
+                    android:layout_weight="1.0"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView54a"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/cell_shape"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView55a"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/cell_shape"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                    android:layout_width="310dp"
+                    android:layout_height="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#212121"
+                    android:layout_marginTop="22dp"/>
+
+        <com.academiaexpress.Custom.ExpandableHeightGridView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gridView2"
+            android:layout_gravity="center_horizontal|top"
+            android:numColumns="3"
+            android:layout_marginTop="36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:verticalSpacing="2dp" />
+</FrameLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,113 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Белки"
+            android:background="@drawable/cell_shape"
+            android:id="@+id/textView52"
+            android:layout_weight="1.0"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Жиры"
+            android:id="@+id/textView53"
+            android:background="@drawable/cell_shape"
+            android:layout_weight="1.0"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Углеводы"
+            android:id="@+id/textView54"
+            android:layout_weight="1.0"
+            android:background="@drawable/cell_shape"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Ккал."
+            android:id="@+id/textView55"
+            android:layout_weight="1.0"
+            android:background="@drawable/cell_shape"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:background="#ffffff">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView52a"
+            android:layout_weight="1.0"
+            android:background="@drawable/cell_shape"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView53a"
+            android:background="@drawable/cell_shape"
+            android:layout_weight="1.0"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView54a"
+            android:layout_weight="1.0"
+            android:background="@drawable/cell_shape"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView55a"
+            android:layout_weight="1.0"
+            android:background="@drawable/cell_shape"
+            android:textColor="#212121"
+            android:textSize="14sp"
+            android:gravity="center" />
+    </LinearLayout>
+</LinearLayout>

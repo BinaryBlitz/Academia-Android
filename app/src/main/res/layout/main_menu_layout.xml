@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/menu_layout"
+    android:layout_height="match_parent"
+    android:background="@drawable/menu_background">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:contentInsetStart="0dp">
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="48dp"
+            android:id="@+id/imageView8"
+            android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/mini_logo"
+            android:scaleType="fitCenter" />
+        <ImageView
+            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_marginLeft="12dp"
+            android:id="@+id/guillotine_hamburger"
+            android:src="@drawable/quit_sign"
+            android:padding="10dp"
+            android:background="@drawable/white_circle_back" />
+
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="112dp"
+        android:layout_marginBottom="188dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="ПРОФИЛЬ"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal|top"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_weight="1.0"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ПРОМО-КОД"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal|top"
+            android:textColor="#ffffff"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ЗАКАЗЫ"
+            android:id="@+id/textView6"
+            android:layout_gravity="center_horizontal|top"
+            android:textColor="#ffffff"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ПОМОЩЬ"
+            android:id="@+id/textView5"
+            android:layout_gravity="center_horizontal|top"
+            android:textColor="#ffffff"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:id="@+id/textView47"-->
+        <!--android:layout_gravity="center_horizontal|bottom"-->
+        <!--android:layout_marginBottom="32dp"-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:textSize="16sp"-->
+        <!--android:gravity="center"-->
+        <!--android:textStyle="bold" />-->
+
+    <!--<TextView-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+        <!--android:text="2"-->
+        <!--android:id="@+id/textView19fdfq"-->
+        <!--android:layout_gravity="top"-->
+        <!--android:textColor="#ffffff"-->
+        <!--android:layout_marginTop="2dp"-->
+        <!--android:background="@drawable/red_circle"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_marginLeft="36dp"-->
+        <!--android:visibility="gone" />-->
+
+</FrameLayout>
