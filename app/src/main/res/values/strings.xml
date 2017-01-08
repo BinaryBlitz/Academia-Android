@@ -62,4 +62,6 @@
     <string name="current_price">"Текущая цена: "</string>
     <string name="save">СОХРАНИТЬ</string>
     <string name="delete">УДАЛИТЬ</string>
+    <string name="lost_connection">ПОТЕРЯНА СВЯЗЬ С ИНТЕРНЕТОМ</string>
+    <string name="search_network">ПОИСК СЕТИ</string>
 </resources>

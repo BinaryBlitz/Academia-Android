@@ -23,12 +23,12 @@ public class ConnectionReceiver extends BroadcastReceiver {
             boolean isConnected = activeNetwork != null &&
                     activeNetwork.isConnectedOrConnecting();
             if (!isConnected) {
-                if (!LostInternetConnectionActivity.opened) {
+                if (!LostInternetConnectionActivity.Companion.getOpened()) {
                     if (BaseActivity.Companion.getForeground()) {
                         Intent intent1 = new Intent(context, LostInternetConnectionActivity.class);
                         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent1);
-                        LostInternetConnectionActivity.opened = true;
+                        LostInternetConnectionActivity.Companion.setOpened(true);
                     }
                 }
             }

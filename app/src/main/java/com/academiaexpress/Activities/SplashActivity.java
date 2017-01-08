@@ -90,11 +90,11 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void showNoInternetDialog() {
-        if (!LostInternetConnectionActivity.opened) {
+        if (!LostInternetConnectionActivity.Companion.getOpened()) {
             Intent intent = new Intent(SplashActivity.this, LostInternetConnectionActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            LostInternetConnectionActivity.opened = true;
+            LostInternetConnectionActivity.Companion.setOpened(true);
         }
     }
 
