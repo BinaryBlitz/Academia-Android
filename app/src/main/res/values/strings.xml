@@ -48,4 +48,10 @@
     <string name="hello_early">Доброе утро</string>
     <string name="send_code_again">Выслать код повторно</string>
     <string name="send_code_again_after">Выслать код повторно через</string>
+    <string name="event_order_paid">Заказ оплачен</string>
+    <string name="ruble_sign">" ₽"</string>
+    <string name="order_by_sum">"Заказ на сумму: "</string>
+    <string name="your_order_is_going">ВАШ ЗАКАЗ ПРИНЯТ!</string>
+    <string name="look_order">ПРОСМОТРЕТЬ ЗАКАЗ</string>
+    <string name="ccall_courier">СВЯЗАТЬСЯ С КУРЬЕРОМ</string>
 </resources>
