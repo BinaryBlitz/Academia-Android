@@ -2,6 +2,7 @@ package com.academiaexpress.Activities;
 
 import com.google.gson.JsonObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Custom.ProgressDialog;
 import com.academiaexpress.Data.DeliveryUser;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -30,30 +30,28 @@ public class AfterProfileActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);
 
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        initElements();
+        setOnClickListeners();
+        loadInfo();
+    }
 
+    private void initElements() {
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+    }
+
+    private void setOnClickListeners() {
         findViewById(R.id.textView7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!AndroidUtilities.INSTANCE.isConnected(AfterProfileActivity.this)) return;
-                if (check()) {
-                    ProgressDialog dialog = new ProgressDialog();
-                    dialog.show(getFragmentManager(), "delivery");
-                    updateUser(getUserFromFields(), false);
-                }
+                if (check()) updateUser(getUserFromFields(), false);
             }
         });
 
         findViewById(R.id.textViewdsb7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeviceInfoStore.resetUser(AfterProfileActivity.this);
-                DeviceInfoStore.resetToken(AfterProfileActivity.this);
-
-                ProgressDialog dialog = new ProgressDialog();
-                dialog.show(getFragmentManager(), "deliveryapp");
-
-                updateUser(generateQuitJson(), true);
+                quit();
             }
         });
 
@@ -63,30 +61,31 @@ public class AfterProfileActivity extends BaseActivity {
                 finish();
             }
         });
+    }
 
-        loadInfo();
+    private void quit() {
+        DeviceInfoStore.resetUser(AfterProfileActivity.this);
+        DeviceInfoStore.resetToken(AfterProfileActivity.this);
+
+        updateUser(generateQuitJson(), true);
     }
 
     private JsonObject generateQuitJson() {
         JsonObject object = new JsonObject();
         JsonObject user = new JsonObject();
 
-        try {
-            user.addProperty("device_token", "");
-            user.addProperty("platform", "");
-            object.add("user", user);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        user.addProperty("device_token", "");
+        user.addProperty("platform", "");
+        object.add("user", user);
 
         return user;
     }
 
     private void parse(boolean flag) {
         if (flag) {
-            Intent intent2 = new Intent(AfterProfileActivity.this, StartActivity.class);
-            intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent2);
+            Intent intent = new Intent(AfterProfileActivity.this, StartActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         } else {
             Intent intent = new Intent(AfterProfileActivity.this, ProductsActivity.class);
@@ -96,27 +95,33 @@ public class AfterProfileActivity extends BaseActivity {
     }
 
     private void updateUser(JsonObject object, final boolean flag) {
+        final ProgressDialog dialog = new ProgressDialog(AfterProfileActivity.this);
+        dialog.show();
+
         ServerApi.get(this).api().updateUser(object, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                dialog.dismiss();
                 parse(flag);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                dialog.dismiss();
+                onInternetConnectionError();
             }
         });
     }
 
     public boolean check() {
         if(((EditText) findViewById(R.id.editText2)).getText().toString().isEmpty()) {
-            Snackbar.make(findViewById(R.id.main), "Поле имени не заполнено.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.main), R.string.name_error, Snackbar.LENGTH_SHORT).show();
             return false;
         } else if(((EditText) findViewById(R.id.editText)).getText().toString().isEmpty()) {
-            Snackbar.make(findViewById(R.id.main), "Поле  фамилии не заполнено.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.main), R.string.lastname_error, Snackbar.LENGTH_SHORT).show();
             return false;
         } else if(!isValidEmail(((EditText) findViewById(R.id.editText3)).getText().toString())) {
-            Snackbar.make(findViewById(R.id.main), "Неверный email.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.main), R.string.email_error, Snackbar.LENGTH_SHORT).show();
             return false;
         }
 
@@ -132,15 +137,10 @@ public class AfterProfileActivity extends BaseActivity {
         user.addProperty("email", ((EditText) findViewById(R.id.editText3)).getText().toString());
         object.add("user", user);
 
-
-        DeliveryUser deliveryUser = new DeliveryUser(
+        DeviceInfoStore.saveUser(this, new DeliveryUser(
                 ((EditText) findViewById(R.id.editText2)).getText().toString(),
                 ((EditText) findViewById(R.id.editText)).getText().toString(),
-                ((EditText) findViewById(R.id.editText3)).getText().toString(),
-                ""
-        );
-
-        DeviceInfoStore.saveUser(this, deliveryUser);
+                ((EditText) findViewById(R.id.editText3)).getText().toString(), ""));
 
         return object;
     }
@@ -153,7 +153,7 @@ public class AfterProfileActivity extends BaseActivity {
         DeliveryUser myProfile = DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this));
 
         ((EditText) findViewById(R.id.editText2)).setText(myProfile.getFirstName());
-        ((EditText) findViewById(R.id.editText)).setText(myProfile.getSecondName());
+        ((EditText) findViewById(R.id.editText)).setText(myProfile.getLastName());
         ((EditText) findViewById(R.id.editText3)).setText(myProfile.getEmail());
 
     }

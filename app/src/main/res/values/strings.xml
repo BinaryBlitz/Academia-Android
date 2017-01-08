@@ -19,4 +19,7 @@
     <string name="december_string">декабря</string>
     <string name="lost_connection_str">Потеряно соединение с интернетом</string>
     <string name="loca_error">Невозможно получить доступ к Вашему местоположению</string>
+    <string name="name_error">Поле имени не заполнено.</string>
+    <string name="lastname_error">Поле фамилии не заполнено.</string>
+    <string name="email_error">Неверный email.</string>
 </resources>
