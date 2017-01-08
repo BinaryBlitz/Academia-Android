@@ -2,6 +2,7 @@ package com.academiaexpress.Activities;
 
 import com.google.gson.JsonObject;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 
 import com.academiaexpress.Adapters.DeliveryPastAdapter;
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Custom.ProgressDialog;
 import com.academiaexpress.Data.DeliveryOrder;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -234,7 +234,7 @@ public class OrderDetailsActivity extends BaseActivity {
             findViewById(R.id.editText7).setHovered(true);
         }
 
-        Snackbar.make(findViewById(R.id.main), "Ваш отзыв отправлен.", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.main), R.string.note_sent, Snackbar.LENGTH_SHORT).show();
         finish();
     }
 
@@ -242,7 +242,7 @@ public class OrderDetailsActivity extends BaseActivity {
         if (rate == 0) return;
 
         final ProgressDialog dialog = new ProgressDialog();
-        dialog.show(getFragmentManager(), "delivery");
+        dialog.show();
 
         ServerApi.get(this).api().note(generateReview(), order.getId(), DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override

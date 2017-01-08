@@ -37,7 +37,7 @@ public interface ApiEndpoints {
     Call<JsonObject> updateUser(@Body JsonObject user, @Query("api_token") String token);
 
     @PATCH("orders/{id}")
-    Call<JsonObject> note(@Body JsonObject user, @Path("id") String id, @Query("api_token") String token);
+    Call<JsonObject> note(@Body JsonObject user, @Path("id") int id, @Query("api_token") String token);
 
     @POST("user")
     Call<JsonObject> createUser(@Body JsonObject user);
