@@ -54,4 +54,7 @@
     <string name="your_order_is_going">ВАШ ЗАКАЗ ПРИНЯТ!</string>
     <string name="look_order">ПРОСМОТРЕТЬ ЗАКАЗ</string>
     <string name="ccall_courier">СВЯЗАТЬСЯ С КУРЬЕРОМ</string>
+    <string name="congratulations">"Поздравляем, "</string>
+    <string name="you_logged_in">\nВы зарегистрировались!</string>
+    <string name="make_order">Сделать заказ</string>
 </resources>
