@@ -93,7 +93,7 @@ public class ProductsActivity extends BaseActivity {
         findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductsActivity.this, AfterProfileActivity.class);
+                Intent intent = new Intent(ProductsActivity.this, EditProfileActivity.class);
                 intent.putExtra("first", false);
                 startActivity(intent);
             }

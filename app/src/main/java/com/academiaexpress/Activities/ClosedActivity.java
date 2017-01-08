@@ -164,7 +164,7 @@ public class ClosedActivity extends BaseActivity {
         findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClosedActivity.this, AfterProfileActivity.class);
+                Intent intent = new Intent(ClosedActivity.this, EditProfileActivity.class);
                 intent.putExtra("first", false);
                 startActivity(intent);
             }

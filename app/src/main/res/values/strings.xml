@@ -22,4 +22,9 @@
     <string name="name_error">Поле имени не заполнено.</string>
     <string name="lastname_error">Поле фамилии не заполнено.</string>
     <string name="email_error">Неверный email.</string>
+    <string name="name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="e_mail">E-mail</string>
+    <string name="save_profile">Сохранить профиль</string>
+    <string name="quit_profile">ВЫЙТИ ИЗ ПРОФИЛЯ</string>
 </resources>
