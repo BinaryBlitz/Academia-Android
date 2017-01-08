@@ -17,17 +17,15 @@ import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
 import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.Animations;
+import com.academiaexpress.Utils.DateUtils;
 import com.academiaexpress.Utils.Image;
 import com.academiaexpress.Utils.LogUtil;
 import com.academiaexpress.Utils.MoneyValues;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,29 +34,46 @@ import retrofit2.Response;
 public class ClosedActivity extends BaseActivity {
 
     public static boolean closed = false;
-
     public static String imageUrl = "";
 
-    private void parseUser(JsonObject object) {
-        MoneyValues.balance = object.get("balance").getAsInt();
-        MoneyValues.promocode = object.get("promo_code").getAsString();
-        MoneyValues.discount = object.get("discount").getAsInt();
-        MoneyValues.promoUsed = object.get("promo_used").getAsBoolean();
-        if (MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText(
-                    "ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
-        }
+    private static final String EXTRA_CLOSED = "closed";
+    private static final String EXTRA_FIRST = "first";
+    private static final int EARLY_HOUR = 6;
 
+    private void parseUser(JsonObject object) {
+        saveMoneyValues(object);
+        setupUIForMoneyValues();
+        saveUser(object);
+    }
+
+    private void setupUIForMoneyValues() {
+        if (MoneyValues.countOfOrders == 0) setupIfEmptyOrder();
+        else setupIfNotEmptyOrders();
+    }
+
+    private void setupIfEmptyOrder() {
+        findViewById(R.id.textView19fd).setVisibility(View.GONE);
+    }
+
+    private void setupIfNotEmptyOrders() {
+        findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
+        ((TextView) findViewById(R.id.textView6)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
+    }
+
+    private void saveMoneyValues(JsonObject object) {
+        MoneyValues.balance = AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("balance"));
+        MoneyValues.promocode = AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("promo_code"));
+        MoneyValues.discount = AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("discount"));
+        MoneyValues.promoUsed = AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("promo_used"));
+    }
+
+    private void saveUser(JsonObject object) {
         DeliveryUser deliveryUser = new DeliveryUser(
-                object.get("first_name").getAsString(),
-                object.get("last_name").getAsString(),
-                object.get("email").getAsString(),
-                object.get("phone_number").getAsString()
-        );
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("first_name")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("last_name")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("email")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("phone_number")));
 
         DeviceInfoStore.saveUser(this, deliveryUser);
     }
@@ -68,11 +83,23 @@ public class ClosedActivity extends BaseActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) parseUser(response.body());
+                else onInternetConnectionError();
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) { }
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                onInternetConnectionError();
+            }
         });
+    }
+
+    private void initScreen() {
+        try { FinalPageFragment.collection.clear(); } catch (Exception e) { LogUtil.logException(e); }
+
+        closed = true;
+        Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));
+
+        if (getIntent().getBooleanExtra(EXTRA_CLOSED, false)) findViewById(R.id.textView).setVisibility(View.GONE);
     }
 
     @Override
@@ -80,109 +107,133 @@ public class ClosedActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_closed);
 
-        try { FinalPageFragment.collection.clear(); } catch (Exception ignored) { }
-
-        closed = true;
-        Answers.getInstance().logCustom(new CustomEvent("Вход в приложение"));
-
-        if (getIntent().getBooleanExtra("closed", false)) {
-            findViewById(R.id.textView).setVisibility(View.GONE);
-        }
-
-        if (MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
-        } else {
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText("ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
-        }
-
-        if (imageUrl.isEmpty()) {
-            Image.loadPhoto(R.drawable.back2, (ImageView) findViewById(R.id.imageView17));
-        }
-        else {
-            findViewById(R.id.textView36).setVisibility(View.GONE);
-            findViewById(R.id.textView36hj).setVisibility(View.GONE);
-            Image.loadPhoto(imageUrl, (ImageView) findViewById(R.id.imageView17));
-        }
-
+        initScreen();
+        setupUIForMoneyValues();
+        initElements();
+        loadBackground();
+        setOnClickListeners();
         getUser();
+        setTexts();
+    }
 
+    private void setTexts() {
+        setUpperText();
+        setBottomText();
+    }
+
+    private void setUpperText() {
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
 
-        if (hour < 6) {
-            try {
-                LogUtil.logError("1");
-                ((TextView) findViewById(R.id.textView36)).setText("Доброй ночи, " +
-                        DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
-            } catch (Exception e) {
-                LogUtil.logError("2");
-                ((TextView) findViewById(R.id.textView36)).setText("Доброй ночи");
-            }
-        } else {
-            try {
-                LogUtil.logError("3");
-                ((TextView) findViewById(R.id.textView36)).setText("Доброе утро, " +
-                        DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
-            } catch (Exception e) {
-                LogUtil.logError("4");
-                ((TextView) findViewById(R.id.textView36)).setText("Доброе утро");
-            }
-        }
+        if (hour < EARLY_HOUR) setTextToUpperText(getString(R.string.hello_late));
+        else setTextToUpperText(getString(R.string.hello_early));
+    }
 
+    private void setTextToUpperText(String text) {
         try {
-            if (getTimeDate().isEmpty()) {
-                LogUtil.logError("5");
-                ((TextView) findViewById(R.id.textView36hj)).setText("Сейчас мы закрыты.");
-            } else {
-                LogUtil.logError("6");
-                ((TextView) findViewById(R.id.textView36hj)).setText(
-                        "Сейчас мы закрыты. Мы открываемся " + getCalendarDate() + " в " + getTimeDate());
-            }
-
+            ((TextView) findViewById(R.id.textView36)).setText(text + ", " +
+                    DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
         } catch (Exception e) {
-            LogUtil.logError("7");
-            ((TextView) findViewById(R.id.textView36hj)).setText("Сейчас мы закрыты.");
+            ((TextView) findViewById(R.id.textView36)).setText(text);
         }
+    }
 
-        if (getIntent().getBooleanExtra("preorder", false)) {
-            findViewById(R.id.textView).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.textView).setVisibility(View.GONE);
-        }
+    private void setBottomText() {
+        try {
+            if (isValidDate()) setClosedTextToBottomTextView();
+            else setValidDateToBottomTextView();
+        } catch (Exception e) { setClosedTextToBottomTextView(); }
+    }
 
+    private void setValidDateToBottomTextView() {
+        ((TextView) findViewById(R.id.textView36hj)).setText(
+                getString(R.string.now_closed_valid) +
+                        DateUtils.INSTANCE.getCalendarDate(this, getIntent().getStringExtra("open_time"))
+                        + getString(R.string.in_code) +
+                        DateUtils.INSTANCE.getTimeStringRepresentation(getDateFromIntent()));
+    }
+
+    private void setClosedTextToBottomTextView() {
+        ((TextView) findViewById(R.id.textView36hj)).setText(getString(R.string.now_closed_str));
+    }
+
+    private Date getDateFromIntent() {
+        Calendar calendar = DateUtils.INSTANCE.getCalendarFromString(getIntent().getStringExtra("open_time"));
+        if (calendar == null) return null;
+        else return calendar.getTime();
+    }
+
+    private boolean isValidDate() {
+        Calendar calendar = DateUtils.INSTANCE.getCalendarFromString(getIntent().getStringExtra("open_time"));
+        return calendar != null && DateUtils.INSTANCE.getTimeStringRepresentation(calendar.getTime()).isEmpty();
+    }
+
+    private void initElements() {
+        if (getIntent().getBooleanExtra("preorder", false)) findViewById(R.id.textView).setVisibility(View.VISIBLE);
+        else findViewById(R.id.textView).setVisibility(View.GONE);
+
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+    }
+
+    private void loadBackground() {
+        if (imageUrl.isEmpty()) setDefaultBackground();
+        else setServerBackground();
+    }
+
+    private void setDefaultBackground() {
+        Image.loadPhoto(R.drawable.back2, (ImageView) findViewById(R.id.imageView17));
+    }
+
+    private void setServerBackground() {
+        findViewById(R.id.textView36).setVisibility(View.GONE);
+        findViewById(R.id.textView36hj).setVisibility(View.GONE);
+        Image.loadPhoto(imageUrl, (ImageView) findViewById(R.id.imageView17));
+    }
+
+    private void openProductsActivity() {
+        Intent intent = new Intent(ClosedActivity.this, ProductsActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void openEditProfileActivity() {
+        Intent intent = new Intent(ClosedActivity.this, EditProfileActivity.class);
+        intent.putExtra(EXTRA_FIRST, false);
+        startActivity(intent);
+    }
+
+    private void openActivity(Class c) {
+        Intent intent = new Intent(ClosedActivity.this, c);
+        startActivity(intent);
+    }
+
+    private void setOnClickListeners() {
         findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!AndroidUtilities.INSTANCE.isConnected(ClosedActivity.this)) return;
-                Intent intent = new Intent(ClosedActivity.this, ProductsActivity.class);
-                startActivity(intent);
-                finish();
+                openProductsActivity();
             }
         });
 
         findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClosedActivity.this, EditProfileActivity.class);
-                intent.putExtra("first", false);
-                startActivity(intent);
+                openEditProfileActivity();
             }
         });
 
         findViewById(R.id.textView5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClosedActivity.this, HelpActivity.class);
-                startActivity(intent);
+                openActivity(HelpActivity.class);
             }
         });
 
         findViewById(R.id.textView6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClosedActivity.this, OrdersActivity.class);
-                startActivity(intent);
+                openActivity(OrdersActivity.class);
             }
         });
 
@@ -205,83 +256,5 @@ public class ClosedActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.menu_layout).setVisibility(View.GONE);
-
-        if (MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText(
-                    "ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
-        }
-    }
-
-    public static String getWeekString(int number) {
-        String month = "";
-
-        switch (number) {
-            case Calendar.MONDAY:
-                month = "в понедельник";
-                break;
-            case Calendar.TUESDAY:
-                month = "во вторник";
-                break;
-            case Calendar.WEDNESDAY:
-                month = "в среду";
-                break;
-            case Calendar.THURSDAY:
-                month = "в четверг";
-                break;
-            case Calendar.FRIDAY:
-                month = "в пятницу";
-                break;
-            case Calendar.SATURDAY:
-                month = "в субботу";
-                break;
-            case Calendar.SUNDAY:
-                month = "в воскресенье";
-                break;
-            default:
-                return month;
-        }
-
-        return month;
-    }
-
-    public String getCalendarDate() {
-        try {
-            Calendar calendar = Calendar.getInstance();
-            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(getIntent().getStringExtra("open_time").split("\\.")[0]);
-            calendar.setTime(date);
-
-            Calendar calendar2 = Calendar.getInstance();
-            if (calendar.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
-                    && calendar.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)) {
-                return "сегодня";
-            } else {
-                return getWeekString(calendar.get(Calendar.DAY_OF_WEEK));
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public String getTimeDate() {
-        try {
-            Calendar calendar = Calendar.getInstance();
-            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(getIntent().getStringExtra("open_time").split("\\.")[0]);
-            calendar.setTime(date);
-            return (calendar.get(Calendar.HOUR_OF_DAY) > 9 ?
-                    Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)) :
-                    "0" + Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)))
-                    + ":" + (calendar.get(Calendar.MINUTE) > 9 ?
-                    Integer.toString(calendar.get(Calendar.MINUTE)) :
-                    "0" + Integer.toString(calendar.get(Calendar.MINUTE)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }
