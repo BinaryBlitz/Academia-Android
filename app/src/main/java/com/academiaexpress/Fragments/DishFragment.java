@@ -105,7 +105,7 @@ public class DishFragment extends BaseProductFragment {
         BaseAdapter adapter = new BaseAdapter() {
             @Override
             public int getCount() {
-                return meal.getIngridients_list().size();
+                return meal.getIngridientsList().size();
             }
 
             @Override
@@ -122,10 +122,10 @@ public class DishFragment extends BaseProductFragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 convertView = mInflater.inflate(R.layout.ingr_card, null);
                 TextView textview = (TextView) convertView.findViewById(R.id.textView17);
-                textview.setText(meal.getIngridients_list().get(position).second);
+                textview.setText(meal.getIngridientsList().get(position).second);
 
                 ImageView textview2 = (ImageView) convertView.findViewById(R.id.imageView6);
-                Image.loadPhoto(meal.getIngridients_list().get(position).first, textview2);
+                Image.loadPhoto(meal.getIngridientsList().get(position).first, textview2);
 
                 return convertView;
 

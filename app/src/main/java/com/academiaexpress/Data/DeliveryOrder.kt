@@ -1,13 +1,13 @@
 package com.academiaexpress.Data
 
-import java.util.ArrayList
+import java.util.*
 
-class DeliveryOrder(var date: String?, var price: Int, var parts: ArrayList<DeliveryOrder.OrderPart>?, var id: String?) {
+class DeliveryOrder(var date: Date?, var price: Int, var parts: ArrayList<DeliveryOrder.OrderPart>?, var id: Int?) {
 
     class OrderPart {
         var name: String? = null
         var price: Int = 0
-        var id: String? = null
+        var id: Int? = null
         var count: Int = 0
 
         constructor(name: String, price: Int, count: Int) {
@@ -16,7 +16,7 @@ class DeliveryOrder(var date: String?, var price: Int, var parts: ArrayList<Deli
             this.count = count
         }
 
-        constructor(price: Int, name: String, id: String) {
+        constructor(price: Int, name: String, id: Int) {
             this.name = name
             this.price = price
             this.id = id
