@@ -65,4 +65,7 @@
     <string name="lost_connection">ПОТЕРЯНА СВЯЗЬ С ИНТЕРНЕТОМ</string>
     <string name="search_network">ПОИСК СЕТИ</string>
     <string name="note_sent">Ваш отзыв отправлен</string>
+    <string name="your_review">Ваша оценка заказа:</string>
+    <string name="review_comment_hint">Какие у Вас пожелания?</string>
+    <string name="send_upcase">ОТПРАВИТЬ</string>
 </resources>
