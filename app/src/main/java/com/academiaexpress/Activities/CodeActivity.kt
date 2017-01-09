@@ -166,7 +166,7 @@ class CodeActivity : BaseActivity() {
     }
 
     private fun openProfileActivity() {
-        val intent = Intent(this@CodeActivity, ProfileActivity::class.java)
+        val intent = Intent(this@CodeActivity, CreateAccountActivity::class.java)
         intent.putExtra(EXTRA_FIRST, true)
         intent.putExtra(EXTRA_TOKEN, token)
         intent.putExtra(EXTRA_PHONE, getIntent().getStringExtra(EXTRA_PHONE))
