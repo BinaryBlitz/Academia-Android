@@ -69,4 +69,9 @@
     <string name="review_comment_hint">Какие у Вас пожелания?</string>
     <string name="send_upcase">ОТПРАВИТЬ</string>
     <string name="delivery_adapter_postfix">x</string>
+    <string name="order_price_code">"Заказ на сумму: "</string>
+    <string name="price_adapter">"На сумму: "</string>
+    <string name="orders_on_the_way">Заказы в пути</string>
+    <string name="completed_orders">Доставленные заказы</string>
+    <string name="order_from">"Заказ от "</string>
 </resources>
