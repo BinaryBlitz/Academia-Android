@@ -11,10 +11,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.academiaexpress.Activities.EditOrderActivity
 import com.academiaexpress.Activities.ProductsActivity
+import com.academiaexpress.Data.DeliveryOrder
 import com.academiaexpress.R
+import java.util.*
 
-class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DeliveryPastAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    internal var collection: ArrayList<DeliveryOrder.OrderPart> = ArrayList()
     var isInc = false
 
     private val EXTRA_PRICE = "price"
@@ -22,22 +25,12 @@ class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     private val EXTRA_NAME = "name"
     private val EXTRA_INDEX = "index"
 
-    fun changeItem(index: Int, count: Int) {
-        ProductsActivity.price -= ProductsActivity.collection[index].price * ProductsActivity.collection[index].count
-        ProductsActivity.product_count -= ProductsActivity.collection[index].count
-        ProductsActivity.collection[index].count = count
-        ProductsActivity.price += ProductsActivity.collection[index].price * ProductsActivity.collection[index].count
-        ProductsActivity.product_count += ProductsActivity.collection[index].count
-        notifyItemChanged(index)
-    }
-
-    fun remove(position: Int) {
-        ProductsActivity.collection.removeAt(position)
-        notifyDataSetChanged()
+    fun setCollection(collection: ArrayList<DeliveryOrder.OrderPart>) {
+        this.collection = collection
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_order_part, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_order_past, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -67,12 +60,13 @@ class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     }
 
     override fun getItemCount(): Int {
-        return if (ProductsActivity.collection == null) 0 else ProductsActivity.collection.size
+        return collection.size
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.textView27) as TextView
         val order: TextView = itemView.findViewById(R.id.textView21) as TextView
         val price: TextView = itemView.findViewById(R.id.textView22) as TextView
+
     }
 }
