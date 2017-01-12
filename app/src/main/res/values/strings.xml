@@ -74,4 +74,5 @@
     <string name="orders_on_the_way">Заказы в пути</string>
     <string name="completed_orders">Доставленные заказы</string>
     <string name="order_from">"Заказ от "</string>
+    <string name="event_order_added">Товар добавлен</string>
 </resources>
