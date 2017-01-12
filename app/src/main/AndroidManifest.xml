@@ -24,6 +24,7 @@
                  android:largeHeap="true"
                  android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <receiver android:name=".Utils.ConnectionReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -75,7 +76,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.ProfileActivity"
+                android:name=".Activities.CreateAccountActivity"
                 android:windowSoftInputMode="stateVisible|adjustPan"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -85,7 +86,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.AfterProfileActivity"
+                android:name=".Activities.EditProfileActivity"
                 android:windowSoftInputMode="stateVisible|adjustPan"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -186,7 +187,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.IncDecActivity"
+                android:name=".Activities.EditOrderActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities
 
+import android.app.ProgressDialog
 import com.google.gson.JsonObject
 
 import android.content.Intent
@@ -13,7 +14,6 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Custom.ProgressDialog
 import com.academiaexpress.R
 import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Server.ServerApi
@@ -30,9 +30,16 @@ class CodeActivity : BaseActivity() {
     internal var helperTextView: TextView? = null
     internal val myHandler = Handler()
 
+    private val REPEAT_STR = "repeat"
+    private val EXTRA_PHONE = "phone"
+    private val EXTRA_TOKEN = "token"
+    private val EXTRA_FIRST = "first"
+
+    private val SLEEP_TIME = 1000
+
     internal val myRunnable: Runnable = Runnable {
-        str = "Выслать код повторно через " + (milis.toDouble() / 1000.toDouble()).toInt()
-        if (milis < 2000) str = "repeat"
+        str = getString(R.string.send_code_again_after) + (milis.toDouble() / SLEEP_TIME.toDouble()).toInt()
+        if (milis < 2 * SLEEP_TIME) str = REPEAT_STR
     }
 
     private fun UpdateGUI() {
@@ -47,11 +54,11 @@ class CodeActivity : BaseActivity() {
         initTimer()
         startAuthProcess()
 
-        phone = intent.getStringExtra("phone")
+        phone = intent.getStringExtra(EXTRA_PHONE)
     }
 
     private fun startAuthProcess() {
-        if (phone != intent.getStringExtra("phone")) {
+        if (phone != intent.getStringExtra(EXTRA_PHONE)) {
             startTimer()
             Handler().post { auth() }
         }
@@ -99,12 +106,12 @@ class CodeActivity : BaseActivity() {
             override fun run() {
                 try {
                     while (!isInterrupted) {
-                        Thread.sleep(1000)
+                        Thread.sleep(SLEEP_TIME.toLong())
                         runOnUiThread {
-                            if (str == "repeat") activateSendAgainButton()
+                            if (str == REPEAT_STR) activateSendAgainButton()
                             else helperTextView!!.text = str
 
-                            helperTextView!!.isClickable = milis < 2000
+                            helperTextView!!.isClickable = milis < 2 * SLEEP_TIME
                         }
                     }
                 } catch (e: InterruptedException) {
@@ -118,14 +125,14 @@ class CodeActivity : BaseActivity() {
     }
 
     private fun activateSendAgainButton() {
-        val content = SpannableString("Выслать код повторно")
+        val content = SpannableString(getString(R.string.send_code_again))
         content.setSpan(UnderlineSpan(), 0, content.length, 0)
         helperTextView!!.text = content
     }
 
     private fun authResponse(obj: JsonObject) {
-        token = obj.get("token").asString
-        phoneFromServer = obj.get("phone_number").asString
+        token = AndroidUtilities.getStringFieldFromJson(obj.get("token"))
+        phoneFromServer = AndroidUtilities.getStringFieldFromJson(obj.get("phone_number"))
     }
 
     private fun auth() {
@@ -159,17 +166,17 @@ class CodeActivity : BaseActivity() {
     }
 
     private fun openProfileActivity() {
-        val intent = Intent(this@CodeActivity, ProfileActivity::class.java)
-        intent.putExtra("first", true)
-        intent.putExtra("token", token)
-        intent.putExtra("phone", getIntent().getStringExtra("phone"))
+        val intent = Intent(this@CodeActivity, CreateAccountActivity::class.java)
+        intent.putExtra(EXTRA_FIRST, true)
+        intent.putExtra(EXTRA_TOKEN, token)
+        intent.putExtra(EXTRA_PHONE, getIntent().getStringExtra(EXTRA_PHONE))
         startActivity(intent)
         finish()
     }
 
     private fun verify() {
-        val dialog = ProgressDialog()
-        dialog.show(fragmentManager, "delivery")
+        val dialog = ProgressDialog(this)
+        dialog.show()
 
         ServerApi.get(this).api().verify(token, (findViewById(R.id.editText3) as EditText).text.toString()).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

@@ -142,7 +142,7 @@ public class StartActivity extends BaseActivity {
         findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StartActivity.this, AfterProfileActivity.class);
+                Intent intent = new Intent(StartActivity.this, EditProfileActivity.class);
                 intent.putExtra("first", false);
                 startActivity(intent);
             }

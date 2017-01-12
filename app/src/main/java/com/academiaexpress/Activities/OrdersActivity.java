@@ -17,12 +17,13 @@ import com.academiaexpress.Data.DeliveryOrder;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
+import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.Image;
+import com.academiaexpress.Utils.LogUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -31,7 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
-    OrdersAdapter adapter;
+    private OrdersAdapter adapter;
     private SwipeRefreshLayout layout;
 
     @Override
@@ -39,25 +40,39 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orders_screen);
 
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        initElements();
+        setOnClickListeners();
+        initRecyclerView();
+        initSwipeRefresh();
+    }
 
-        RecyclerView view = (RecyclerView) findViewById(R.id.recyclerView);
-        view.setItemAnimator(new DefaultItemAnimator());
-        view.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrdersAdapter(this);
-        view.setAdapter(adapter);
-
-        layout = (SwipeRefreshLayout) findViewById(R.id.refresh);
-        layout.setOnRefreshListener(this);
-        layout.setColorSchemeResources(R.color.colorPrimaryDark);
-
+    private void setOnClickListeners() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+    }
 
+    private void initElements() {
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+    }
+
+    private void initRecyclerView() {
+        RecyclerView view = (RecyclerView) findViewById(R.id.recyclerView);
+        view.setItemAnimator(new DefaultItemAnimator());
+        view.setLayoutManager(new LinearLayoutManager(this));
+        view.setHasFixedSize(true);
+
+        adapter = new OrdersAdapter(this);
+        view.setAdapter(adapter);
+    }
+
+    private void initSwipeRefresh() {
+        layout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        layout.setOnRefreshListener(this);
+        layout.setColorSchemeResources(R.color.colorPrimaryDark);
     }
 
     @Override
@@ -89,75 +104,69 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         });
     }
 
+    private DeliveryOrder parseOrder(JsonObject object, ArrayList<DeliveryOrder.OrderPart> parts) {
+        DeliveryOrder order = new DeliveryOrder(parseDate(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("created_at"))),
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("total_price")), parts,
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")));
+
+        order.setOnTheWay(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("status")).equals("on_the_way"));
+        order.setReview(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("review")));
+        order.setRating(AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("rating")));
+        order.setReviewd(!object.get("review").isJsonNull());
+
+        return order;
+    }
+
+    private void parseCollection(ArrayList<DeliveryOrder> collection, JsonArray array) {
+        for (int i = 0; i < array.size(); i++) {
+            JsonObject object = array.get(i).getAsJsonObject().get("order").getAsJsonObject();
+            JsonArray items = object.get("line_items").getAsJsonArray();
+            ArrayList<DeliveryOrder.OrderPart> parts = new ArrayList<>();
+            for (int j = 0; j < items.size(); j++) {
+                parts.add(parsePart(items.get(j).getAsJsonObject()));
+            }
+
+            DeliveryOrder order = parseOrder(object, parts);
+            if (!order.isOnTheWay()) collection.add(order);
+            else collection.add(0, order);
+        }
+    }
+
     private void parseOrders(JsonArray array) {
         ArrayList<DeliveryOrder> collection = new ArrayList<>();
         try {
-            for (int i = 0; i < array.size(); i++) {
-                JsonObject object = array.get(i).getAsJsonObject().get("order").getAsJsonObject();
-                JsonArray array1 = object.get("line_items").getAsJsonArray();
-                ArrayList<DeliveryOrder.OrderPart> parts = new ArrayList<>();
-                for (int j = 0; j < array1.size(); j++) {
-                    JsonObject object1 = array1.get(j).getAsJsonObject();
-
-                    DeliveryOrder.OrderPart part =
-                            new DeliveryOrder.OrderPart(
-                                    object1.get("dish").getAsJsonObject().get("name").getAsString(),
-                                    object1.get("dish").getAsJsonObject().get("price").getAsInt(),
-                                    object1.get("quantity").getAsInt()
-                            );
-
-                    parts.add(part);
-                }
-
-                String date_str = "";
-
-                try {
-                    Calendar calendar = Calendar.getInstance();
-                    Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(
-                            object.get("created_at").getAsString().split("\\.")[0]);
-                    calendar.setTime(date);
-                    date_str = Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)) + "." +
-                            Integer.toString(calendar.get(Calendar.MONTH) + 1) + "." +
-                            Integer.toString(calendar.get(Calendar.YEAR));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-
-                DeliveryOrder order = new DeliveryOrder(date_str,
-                        object.get("total_price").getAsInt(), parts, object.get("id").getAsString());
-                order.setOnTheWay(object.get("status").getAsString().equals("on_the_way"));
-                order.setReview(object.get("review").getAsString());
-                try {
-                    order.setRating(object.get("rating").getAsInt());
-                } catch (Exception e) {
-
-                }
-                order.setReviewd(!object.get("review").isJsonNull());
-
-                if (!order.isOnTheWay()) {
-                    collection.add(order);
-                } else {
-                    collection.add(0, order);
-                }
-            }
-            if (collection.size() != 0) {
-                for (int i = 0; i < collection.size(); i++) {
-                    if (!collection.get(i).isOnTheWay()) {
-                        collection.add(i, null);
-                        break;
-                    }
-                }
-                collection.add(0, null);
-            } else {
-                collection.add(0, null);
-                collection.add(1, null);
-            }
+            parseCollection(collection, array);
+            addHeaderElements(collection);
             adapter.setCollection(collection);
-            layout.setRefreshing(false);
         } catch (Exception e) {
-            layout.setRefreshing(false);
-            e.printStackTrace();
+            LogUtil.logException(e);
         }
+    }
+
+    private void addHeaderElements(ArrayList<DeliveryOrder> collection) {
+        if (collection.size() != 0) {
+            for (int i = 0; i < collection.size(); i++) {
+                if (!collection.get(i).isOnTheWay()) {
+                    collection.add(i, null);
+                    break;
+                }
+            }
+            collection.add(0, null);
+        } else {
+            collection.add(0, null);
+            collection.add(1, null);
+        }
+    }
+
+    private DeliveryOrder.OrderPart parsePart(JsonObject object) {
+        return new DeliveryOrder.OrderPart(
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("dish").getAsJsonObject().get("name")),
+                        AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("dish").getAsJsonObject().get("price")),
+                        AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("quantity")));
+    }
+
+    private Date parseDate(String str) {
+        try { return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(str.split("\\.")[0]); }
+        catch (ParseException e) { return null; }
     }
 }

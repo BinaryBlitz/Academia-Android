@@ -3,6 +3,7 @@ package com.academiaexpress.Activities;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +19,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Custom.ProgressDialog;
 import com.academiaexpress.Data.DeliveryMeal;
 import com.academiaexpress.Data.DeliveryOrder;
 import com.academiaexpress.Fragments.BaseProductFragment;
@@ -28,6 +28,7 @@ import com.academiaexpress.Fragments.LunchFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
+import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.Animations;
 import com.academiaexpress.Utils.LogUtil;
 import com.academiaexpress.Utils.MoneyValues;
@@ -41,9 +42,9 @@ import retrofit2.Response;
 
 public class ProductsActivity extends BaseActivity {
 
-    public ArrayList<DeliveryMeal> products;
-    public ArrayList<BaseProductFragment> fragments;
-    FinalPageFragment fragment;
+    private ArrayList<DeliveryMeal> products;
+    private ArrayList<BaseProductFragment> fragments;
+    private FinalPageFragment fragment;
     public static int product_count = 0;
     public static int price = 0;
     static boolean canceled = false;
@@ -53,18 +54,27 @@ public class ProductsActivity extends BaseActivity {
 
     public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
 
-    public void addProduct(DeliveryOrder.OrderPart part) {
-        if(collection.indexOf(part) != -1) {
-            collection.get(collection.indexOf(part)).incCount();
-        } else {
-            part.setCount(1);
-            collection.add(part);
-        }
+    public void addPart(DeliveryOrder.OrderPart part) {
+        part.setCount(1);
+        collection.add(part);
+    }
+
+    private void recalculatePrice(DeliveryOrder.OrderPart part) {
         price += part.getPrice();
         product_count++;
-        findViewById(R.id.textView19).setVisibility(View.VISIBLE);
-        findViewById(R.id.next_btn).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textView19)).setText(Integer.toString(product_count));
+    }
+
+    private void incrementPart(DeliveryOrder.OrderPart part) {
+        collection.get(collection.indexOf(part)).incCount();
+    }
+
+    public void addProduct(DeliveryOrder.OrderPart part) {
+        if (collection.indexOf(part) != -1) incrementPart(part);
+        else addPart(part);
+
+        recalculatePrice(part);
+
+        showMenu();
     }
 
     private void iniFields() {
@@ -93,7 +103,7 @@ public class ProductsActivity extends BaseActivity {
         findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductsActivity.this, AfterProfileActivity.class);
+                Intent intent = new Intent(ProductsActivity.this, EditProfileActivity.class);
                 intent.putExtra("first", false);
                 startActivity(intent);
             }
@@ -149,7 +159,8 @@ public class ProductsActivity extends BaseActivity {
 
         defaultViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -158,37 +169,42 @@ public class ProductsActivity extends BaseActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) { }
+            public void onPageScrollStateChanged(int state) {
+            }
         });
     }
 
-    private void setStatistics() {
-        if(MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText(
-                    "ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
-        }
+    private void setupIfEmptyOrder() {
+        findViewById(R.id.textView19fd).setVisibility(View.GONE);
+    }
+
+    private void setupUIForMoneyValues() {
+        if (MoneyValues.countOfOrders == 0) setupIfEmptyOrder();
+        else setupIfNotEmptyOrders();
+    }
+
+    private void setupIfNotEmptyOrders() {
+        findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
+        ((TextView) findViewById(R.id.textView6)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.food_layout);
+        setContentView(R.layout.activity_menu);
 
         iniFields();
         initElements();
         initPager();
         setOnClickListeners();
-        setStatistics();
+        setupUIForMoneyValues();
         getDay();
     }
 
     private void getDay() {
-        final ProgressDialog dialog = new ProgressDialog();
-        dialog.show(getFragmentManager(), "delivery");
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.show();
 
         ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
@@ -206,149 +222,161 @@ public class ProductsActivity extends BaseActivity {
         });
     }
 
-    private void parseDay(JsonObject object) {
-        JsonArray array1 = object.get("dishes").getAsJsonArray();
-        JsonArray array2 = object.get("lunches").getAsJsonArray();
+    private String parseEnergy(JsonObject object) {
+        String energy = "";
 
-        for (int i = 0; i < array2.size(); i++) {
-            JsonObject object1 = array2.get(i).getAsJsonObject();
-            String energy = "";
+        energy += AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("proteins")) + "energy";
+        energy += AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("fats")) + "energy";
+        energy += AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("carbohydrates")) + "energy";
+        energy += AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("calories"));
 
-            energy += object1.get("proteins").getAsString() + "energy";
-            energy += object1.get("fats").getAsString() + "energy";
-            energy += object1.get("carbohydrates").getAsString() + "energy";
-            energy += object1.get("calories").getAsString();
+        return energy;
+    }
 
-            ArrayList<Pair<String, String>> ingr = new ArrayList<>();
-            if (!object1.get("ingredients").isJsonNull()) {
-                JsonArray ingr_json = object1.get("ingredients").getAsJsonArray();
+    private ArrayList<Pair<String, String>> getIngridients(JsonObject object) {
+        ArrayList<Pair<String, String>> ingridients = new ArrayList<>();
 
-                for (int j = 0; j < ingr_json.size(); j++) {
-                    JsonObject in = ingr_json.get(j).getAsJsonObject();
-                    ingr.add(new Pair<>(
-                            in.get("name").getAsString(),
-                            in.get("weight").getAsString()));
-                }
+        if (object.get("ingredients") != null && !object.get("ingredients").isJsonNull()) {
+            JsonArray ingridientsJson = object.get("ingredients").getAsJsonArray();
+
+            for (int j = 0; j < ingridientsJson.size(); j++) {
+                JsonObject ingridient = ingridientsJson.get(j).getAsJsonObject();
+                ingridients.add(new Pair<>(
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingridient.get("image_url")),
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingridient.get("name"))));
             }
-            ArrayList<Pair<String, String>> bages = new ArrayList<>();
-            if (!object1.get("badges").isJsonNull()) {
-                JsonArray bages_json = object1.get("badges").getAsJsonArray();
-
-                for (int j = 0; j < bages_json.size(); j++) {
-                    JsonObject in = bages_json.get(j).getAsJsonObject();
-                    bages.add(new Pair<>(
-                            in.get("image_url").getAsString(),
-                            in.get("name").getAsString()));
-                }
-            }
-
-            products.add(new DeliveryMeal(object1.get("name").getAsString(),
-                    object1.get("subtitle").getAsString(),
-                    object1.get("price").getAsInt(),
-                    ingr,
-                    object1.get("image_url").getAsString(),
-                    object1.get("description").getAsString(),
-                    bages,
-                    object1.get("id").getAsString(),
-                    object1.get("proteins").isJsonNull() ? null : energy,
-                    object1.get("out_of_stock").isJsonNull() ? true : object1.get("out_of_stock").getAsBoolean()
-            ));
-
-            BaseProductFragment fragment = new LunchFragment();
-            DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
-                    products.get(i).getMealName(), products.get(i).getId());
-            part.setCount(0);
-            fragment.setPart(part);
-            fragment.setInfo(products.get(i));
-            fragments.add(fragment);
         }
 
-        for (int i = 0; i < array1.size(); i++) {
-            JsonObject object1 = array1.get(i).getAsJsonObject();
-            ArrayList<Pair<String, String>> ingr = new ArrayList<>();
+        return ingridients;
+    }
 
-            String energy = "";
+    private ArrayList<Pair<String, String>> getBadges(JsonObject object) {
+        ArrayList<Pair<String, String>> badges = new ArrayList<>();
 
-            energy += object1.get("proteins").getAsString() + "energy";
-            energy += object1.get("fats").getAsString() + "energy";
-            energy += object1.get("carbohydrates").getAsString() + "energy";
-            energy += object1.get("calories").getAsString();
+        if (object.get("badges") != null && !object.get("badges").isJsonNull()) {
+            JsonArray ingridientsJson = object.get("badges").getAsJsonArray();
 
-            if (!object1.get("ingredients").isJsonNull()) {
-                JsonArray ingr_json = object1.get("ingredients").getAsJsonArray();
-
-                for (int j = 0; j < ingr_json.size(); j++) {
-                    JsonObject in = ingr_json.get(j).getAsJsonObject();
-                    ingr.add(new Pair<>(
-                            in.get("image_url").getAsString(),
-                            in.get("name").getAsString()));
-                }
+            for (int j = 0; j < ingridientsJson.size(); j++) {
+                JsonObject badge = ingridientsJson.get(j).getAsJsonObject();
+                badges.add(new Pair<>(
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(badge.get("image_url")),
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(badge.get("name"))));
             }
-            ArrayList<Pair<String, String>> bages = new ArrayList<>();
-            if (!object1.get("badges").isJsonNull()) {
-                JsonArray bages_json = object1.get("badges").getAsJsonArray();
-
-                for (int j = 0; j < bages_json.size(); j++) {
-                    JsonObject in = bages_json.get(j).getAsJsonObject();
-                    bages.add(new Pair<>(
-                            in.get("image_url").getAsString(),
-                            in.get("name").getAsString()));
-                }
-            }
-
-
-            products.add(new DeliveryMeal(object1.get("name").getAsString(),
-                    object1.get("subtitle").getAsString(),
-                    object1.get("price").getAsInt(),
-                    ingr,
-                    object1.get("image_url").getAsString(),
-                    object1.get("description").getAsString(),
-                    bages,
-                    object1.get("id").getAsString(),
-                    object1.get("proteins").isJsonNull() ? null : energy,
-                    object1.get("out_of_stock").isJsonNull() ? true : object1.get("out_of_stock").getAsBoolean()
-            ));
-
-            BaseProductFragment fragment = new DishFragment();
-            DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array2.size() + i).getPrice(),
-                    products.get(array2.size() + i).getMealName(), products.get(array2.size() + i).getId());
-            part.setCount(0);
-            fragment.setPart(part);
-            fragment.setInfo(products.get(array2.size() + i));
-            fragments.add(fragment);
         }
 
+        return badges;
+    }
+
+    private DeliveryMeal parseMeal(JsonObject object) {
+        return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
+                getIngridients(object),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("image_url")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("description")),
+                getBadges(object),
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")),
+                object.get("proteins") == null || object.get("proteins").isJsonNull() ? null : parseEnergy(object),
+                (object.get("out_of_stock") == null || object.get("out_of_stock").isJsonNull()) ||
+                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void addDishFragment(JsonArray array, int i) {
+        if (products.get(array.size() + i) == null || products.get(array.size() + i).getId() == null) return;
+
+        BaseProductFragment fragment = new DishFragment();
+        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array.size() + i).getPrice(),
+                products.get(array.size() + i).getMealName(), products.get(array.size() + i).getId());
+        part.setCount(0);
+        fragment.setPart(part);
+        fragment.setInfo(products.get(array.size() + i));
+        fragments.add(fragment);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void addLunchFragment(int i) {
+        if (products.get(i) == null || products.get(i).getId() == null) return;
+
+        BaseProductFragment fragment = new LunchFragment();
+        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
+                products.get(i).getMealName(), products.get(i).getId());
+        part.setCount(0);
+        fragment.setPart(part);
+        fragment.setInfo(products.get(i));
+        fragments.add(fragment);
+    }
+
+    private void parseDishes(JsonArray array) {
+        for (int i = 0; i < array.size(); i++) {
+            JsonObject object = array.get(i).getAsJsonObject();
+            products.add(parseMeal(object));
+            addDishFragment(array, i);
+        }
+    }
+
+    private void parseLunches(JsonArray array) {
+        for (int i = 0; i < array.size(); i++) {
+            JsonObject object = array.get(i).getAsJsonObject();
+            products.add(parseMeal(object));
+            addLunchFragment(i);
+        }
+    }
+
+    private void setupPages() {
         final DemoPagerAdapter defaultPagerAdapter = new DemoPagerAdapter(getSupportFragmentManager());
         defaultViewpager.setAdapter(defaultPagerAdapter);
         defaultIndicator.setViewPager(defaultViewpager);
         defaultViewpager.setOffscreenPageLimit(products.size() + 1);
+        initScrolls();
+    }
+
+    private void initScrolls() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 try {
-                    fragments.get(0).animateScroll();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setScrollListener(fragments.get(0).getScrollView());
-                        }
-                    }, 800);
-                } catch (Exception e) {LogUtil.logException(e); }
+                    listenToScroll();
+                } catch (Exception e) {
+                    LogUtil.logException(e);
+                }
             }
         }, 550);
+    }
+
+    private void listenToScroll() {
+        fragments.get(0).animateScroll();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setScrollListener(fragments.get(0).getScrollView());
+            }
+        }, 800);
+    }
+
+    private void parseDay(JsonObject object) {
+        parseLunches(object.get("lunches").getAsJsonArray());
+        parseDishes(object.get("dishes").getAsJsonArray());
+        setupPages();
+    }
+
+    private void hideMenu() {
+        findViewById(R.id.textView19).setVisibility(View.GONE);
+        findViewById(R.id.next_btn).setVisibility(View.GONE);
+    }
+
+    private void showMenu() {
+        findViewById(R.id.textView19).setVisibility(View.VISIBLE);
+        findViewById(R.id.next_btn).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.textView19)).setText(Integer.toString(product_count));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(product_count == 0) {
-            findViewById(R.id.textView19).setVisibility(View.GONE);
-            findViewById(R.id.next_btn).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.textView19).setVisibility(View.VISIBLE);
-            findViewById(R.id.next_btn).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19)).setText(Integer.toString(product_count));
-        }
+        if (product_count == 0) hideMenu();
+        else showMenu();
     }
 
     public void setScrollListener(final NestedScrollView scrollView) {
@@ -377,24 +405,25 @@ public class ProductsActivity extends BaseActivity {
     }
 
     public class DemoPagerAdapter extends FragmentPagerAdapter {
-        public DemoPagerAdapter(FragmentManager fm) {
+        DemoPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int i) {
-            if(i != products.size()) {
-                return fragments.get(i);
-            } else {
-                FinalPageFragment fragment = new FinalPageFragment();
-                ProductsActivity.this.fragment = fragment;
-                return fragment;
-            }
+            if (i != products.size()) return fragments.get(i);
+            else return initFinalPage();
         }
 
         @Override
         public int getCount() {
             return products.size() + 1;
+        }
+
+        private FinalPageFragment initFinalPage() {
+            FinalPageFragment fragment = new FinalPageFragment();
+            ProductsActivity.this.fragment = fragment;
+            return fragment;
         }
     }
 }

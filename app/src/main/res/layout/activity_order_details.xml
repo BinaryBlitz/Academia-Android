@@ -19,8 +19,9 @@
         android:src="@drawable/quit_sign"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
-        android:layout_gravity="right"
-        android:layout_marginRight="12dp" />
+        android:layout_gravity="end"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp" />
 
     <ImageView
         android:layout_width="56dp"
@@ -58,56 +59,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Ваша оценка заказа:"
+            android:text="@string/your_review"
             android:id="@+id/textView49"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="180dp"
             android:textColor="#212121"
             android:textStyle="bold" />
 
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:id="@+id/imageView231"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="134dp"
-            android:layout_marginLeft="48dp"
-            android:src="@drawable/star" />
-
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:id="@+id/imageView232"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="134dp"
-            android:src="@drawable/star" />
-
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:id="@+id/imageView233"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="134dp"
-            android:src="@drawable/star"
-            android:layout_marginRight="48dp" />
-
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:id="@+id/imageView234"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="134dp"
-            android:layout_marginLeft="96dp"
-            android:src="@drawable/star" />
-
-        <ImageView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:id="@+id/imageView23"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="134dp"
-            android:src="@drawable/star"
-            android:layout_marginRight="96dp" />
+        <RatingBar android:layout_width="wrap_content"
+                   android:layout_marginBottom="134dp"
+                   android:stepSize="1.0"
+                   android:numStars="5"
+                   android:id="@+id/ratingBar"
+                   android:layout_gravity="center_horizontal|bottom"
+                   android:layout_height="44dp"/>
 
         <EditText
             android:layout_width="fill_parent"
@@ -118,18 +83,17 @@
             android:layout_marginRight="56dp"
             android:layout_marginBottom="68dp"
             android:background="#ffffff"
-            android:hint="Какие у Вас пожелания?"
+            android:hint="@string/review_comment_hint"
             android:textSize="14sp"
-            android:gravity="left|top"
+            android:gravity="start|top"
             android:padding="8dp" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="44dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="ОТПРАВИТЬ"
+            android:text="@string/send_upcase"
             android:id="@+id/textView7"
-            android:layout_weight="1.0"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="#ffffff"
@@ -154,7 +118,6 @@
             android:gravity="center"
             android:textSize="14sp"
             android:textColor="#212121" />
-
     </FrameLayout>
 
     <TextView

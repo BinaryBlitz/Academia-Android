@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -19,7 +18,8 @@
         android:src="@drawable/quit_sign"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
+        android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp" />
 
     <ImageView
@@ -34,7 +34,7 @@
         android:layout_width="fill_parent"
         android:layout_height="48dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="УДАЛИТЬ"
+        android:text="@string/delete"
         android:id="@+id/textView28"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginLeft="32dp"
@@ -49,7 +49,7 @@
         android:layout_width="fill_parent"
         android:layout_height="48dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="СОХРАНИТЬ"
+        android:text="@string/save"
         android:id="@+id/textView28fd"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginLeft="32dp"
@@ -64,7 +64,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Product"
         android:id="@+id/textView29"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="76dp"
@@ -75,7 +74,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="5"
         android:id="@+id/textView30"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="150dp"
@@ -94,6 +92,7 @@
         android:background="@drawable/black_circle"
         android:gravity="center"
         android:textSize="24sp"
+        android:layout_marginStart="76dp"
         android:layout_marginLeft="76dp" />
 
     <TextView
@@ -108,13 +107,13 @@
         android:background="@drawable/black_circle"
         android:gravity="center"
         android:textSize="24sp"
+        android:layout_marginEnd="76dp"
         android:layout_marginRight="76dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Текущая цена: 230Р"
         android:id="@+id/textView31"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="120dp"
