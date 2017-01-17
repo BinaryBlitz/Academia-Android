@@ -107,10 +107,10 @@ public class LunchFragment extends BaseProductFragment {
         getView().findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!DishFragment.answer) {
+                if(!DishFragment.Companion.getAnswer()) {
                     Answers.getInstance().logCustom(new CustomEvent("Товар добавлен"));
                 }
-                DishFragment.answer = true;
+                DishFragment.Companion.setAnswer(true);
                 ((TextView) getView().findViewById(R.id.textView)).setText("ЗАКАЗАТЬ ЕЩЕ");
                 ((ProductsActivity) getActivity()).addProduct(part);
             }
@@ -135,7 +135,7 @@ public class LunchFragment extends BaseProductFragment {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.ingr_card, null);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_ingredient, null);
                 TextView textview = (TextView) convertView.findViewById(R.id.textView17);
                 textview.setText(meal.getBadges().get(position).second);
 

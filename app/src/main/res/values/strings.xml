@@ -75,4 +75,11 @@
     <string name="completed_orders">Доставленные заказы</string>
     <string name="order_from">"Заказ от "</string>
     <string name="event_order_added">Товар добавлен</string>
+    <string name="order">ЗАКАЗАТЬ</string>
+    <string name="dish_end">БЛЮДО ЗАКОНЧИЛОСЬ</string>
+    <string name="ingredients">Ингридиенты</string>
+    <string name="about_dish">О блюде</string>
+    <string name="energy_value">Энергетическая ценность</string>
+    <string name="event_product_added">Товар добавлен</string>
+    <string name="order_more_code">ЗАКАЗАТЬ ЕЩЕ</string>
 </resources>

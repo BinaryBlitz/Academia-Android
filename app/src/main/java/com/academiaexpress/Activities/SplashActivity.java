@@ -46,7 +46,7 @@ public class SplashActivity extends BaseActivity {
         hours = new ArrayList<>();
         calendars = new ArrayList<>();
 
-        DishFragment.answer = false;
+        DishFragment.Companion.setAnswer(false);
 
         initAnimation();
         getOrders();
