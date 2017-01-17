@@ -82,4 +82,7 @@
     <string name="energy_value">Энергетическая ценность</string>
     <string name="event_product_added">Товар добавлен</string>
     <string name="order_more_code">ЗАКАЗАТЬ ЕЩЕ</string>
+    <string name="final_page_description">Напитки / Десерты</string>
+    <string name="final_page_title">дополни свой ланч!</string>
+    <string name="view">ПОСМОТРЕТЬ</string>
 </resources>
