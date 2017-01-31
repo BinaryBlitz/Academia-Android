@@ -3,7 +3,6 @@ package com.academiaexpress.Adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,9 @@ import java.util.ArrayList;
 public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-
     private ArrayList<DeliveryOrder> collection;
+
+    private static final String EXTRA_PRICE = "price";
 
     public OrdersAdapter(Activity context) {
         this.context = context;
@@ -31,57 +31,68 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public void setContext(Activity context) {
-        this.context = context;
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View itemView = LayoutInflater.
                 from(parent.getContext()).
-                inflate(R.layout.order_card, parent, false);
+                inflate(R.layout.item_order, parent, false);
 
-        return new NewsViewHolder(itemView);
+        return new ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-        final NewsViewHolder holder = (NewsViewHolder) viewHolder;
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
+        final ViewHolder holder = (ViewHolder) viewHolder;
 
-        if(collection.get(position) == null) {
-            holder.date.setVisibility(View.GONE);
-            holder.price.setVisibility(View.GONE);
-            holder.order.setPadding(0, 50, 0, 50);
-            holder.itemView.findViewById(R.id.imageView24).setVisibility(View.GONE);
-            holder.order.setText(position == 0 ? "Заказы в пути" : "Доставленные заказы");
-        } else {
-            holder.date.setVisibility(View.VISIBLE);
-            holder.price.setVisibility(View.VISIBLE);
-            holder.itemView.findViewById(R.id.imageView24).setVisibility(View.VISIBLE);
-            holder.date.setText("Заказ от " + collection.get(position).getDate());
-            holder.order.setPadding(0, 0, 0, 0);
-            String order = "";
-            for (int i = 0; i < collection.get(position).getParts().size(); i++) {
-                order += collection.get(position).getParts().get(i).getName();
-                if(i != collection.get(position).getParts().size() - 1) {
-                    order += ", ";
-                }
+        if (collection.get(position) == null) setHeader(holder, position);
+        else setItem(holder, position);
+    }
+
+    private void setHeader(ViewHolder holder, int position) {
+        holder.date.setVisibility(View.GONE);
+        holder.price.setVisibility(View.GONE);
+        holder.order.setPadding(0, 50, 0, 50);
+        holder.itemView.findViewById(R.id.imageView24).setVisibility(View.GONE);
+        holder.order.setText(position == 0 ? context.getString(R.string.orders_on_the_way) : context.getString(R.string.completed_orders));
+    }
+
+    private void setItem(final ViewHolder holder, int position) {
+        holder.date.setVisibility(View.VISIBLE);
+        holder.price.setVisibility(View.VISIBLE);
+        holder.itemView.findViewById(R.id.imageView24).setVisibility(View.VISIBLE);
+        holder.date.setText(context.getString(R.string.order_from) + collection.get(position).getDate());
+        holder.order.setPadding(0, 0, 0, 0);
+
+        holder.order.setText(generateParts(position));
+        holder.price.setText(context.getString(R.string.price_adapter) + collection.get(position).getPrice() + context.getString(R.string.ruble_sign));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity(holder.getAdapterPosition());
             }
+        });
+    }
 
-            holder.order.setText(order);
+    @SuppressWarnings("ConstantConditions")
+    private String generateParts(int position) {
+        if (collection.get(position).getParts() == null) return "";
 
-            holder.price.setText("На сумму: " + collection.get(position).getPrice() + Html.fromHtml("<html>&#x20bd</html>").toString());
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, OrderDetailsActivity.class);
-                    OrderDetailsActivity.order = collection.get(position);
-                    intent.putExtra("price", "Заказ на сумму: " + collection.get(position).getPrice() + Html.fromHtml("<html>&#x20bd</html>").toString());
-                    context.startActivity(intent);
-                }
-            });
+        String order = "";
+        for (int i = 0; i < collection.get(position).getParts().size(); i++) {
+            order += collection.get(position).getParts().get(i).getName();
+            if (i != collection.get(position).getParts().size() - 1) order += ", ";
         }
+
+        return order;
+    }
+
+    private void openActivity(int position) {
+        Intent intent = new Intent(context, OrderDetailsActivity.class);
+        OrderDetailsActivity.order = collection.get(position);
+        intent.putExtra(EXTRA_PRICE, context.getString(R.string.order_price_code) +
+                collection.get(position).getPrice() + context.getString(R.string.ruble_sign));
+        context.startActivity(intent);
     }
 
     @Override
@@ -89,12 +100,12 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return collection.size();
     }
 
-    private class NewsViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder {
         private TextView date;
         private TextView order;
         private TextView price;
 
-        public NewsViewHolder(final View itemView) {
+        ViewHolder(final View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.textView20);
             order = (TextView) itemView.findViewById(R.id.textView24);
