@@ -383,8 +383,8 @@ public class ProductsActivity extends BaseActivity {
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY(); //for verticalScrollView
-                setOpacityOfElements(1 - (scrollY / DishFragment.convertDpToPixel(36f, ProductsActivity.this)));
+                int scrollY = scrollView.getScrollY();
+                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, 36f)));
             }
         });
     }
@@ -393,8 +393,8 @@ public class ProductsActivity extends BaseActivity {
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY(); //for verticalScrollView
-                setOpacityOfElements(1 - (scrollY / DishFragment.convertDpToPixel(36f, ProductsActivity.this)));
+                int scrollY = scrollView.getScrollY();
+                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, 36f)));
             }
         });
     }

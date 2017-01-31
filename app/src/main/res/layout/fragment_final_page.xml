@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Напитки / Десерты"
+                android:text="@string/final_page_description"
                 android:id="@+id/textView10"
                 android:textAllCaps="true"
                 android:layout_gravity="center_horizontal|top"
@@ -41,38 +41,32 @@
                 android:layout_marginTop="166dp"
                 android:textStyle="bold" />
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="126dp"
-                android:layout_gravity="center_horizontal">
-
-                <TextView
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="дополни свой ланч!"
+                    android:text="@string/final_page_title"
                     android:id="@+id/textView9"
                     android:textAllCaps="true"
                     android:layout_gravity="center_horizontal|top"
                     android:textSize="20sp"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
+                    android:layout_marginTop="126dp"
                     android:layout_marginBottom="8dp" />
 
-                <FrameLayout
+            <View
                     android:layout_width="310dp"
                     android:layout_height="2dp"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:background="#ffffff"
-                    android:layout_marginTop="4dp"></FrameLayout>
-            </FrameLayout>
+                    android:layout_marginTop="156dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#ffffff"/>
 
             <TextView
                 android:layout_width="250dp"
                 android:layout_height="42dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="ПОСМОТРЕТЬ"
+                android:text="@string/view"
                 android:id="@+id/textView"
                 android:layout_gravity="center_horizontal|bottom"
                 android:textColor="#ffffff"

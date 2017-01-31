@@ -35,7 +35,7 @@ public class StartActivity extends BaseActivity {
 
         ClosedActivity.closed = false;
 
-        try { FinalPageFragment.collection.clear(); } catch (Exception ignored) { }
+        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
 
         Image.loadPhoto(R.drawable.back_final_page, (ImageView) findViewById(R.id.imageView9));
 

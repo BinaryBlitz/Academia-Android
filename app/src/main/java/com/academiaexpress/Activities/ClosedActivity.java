@@ -108,7 +108,7 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void initScreen() {
-        try { FinalPageFragment.collection.clear(); } catch (Exception e) { LogUtil.logException(e); }
+        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception e) { LogUtil.logException(e); }
 
         closed = true;
         Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));

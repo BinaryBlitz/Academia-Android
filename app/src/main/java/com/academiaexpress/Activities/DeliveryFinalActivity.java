@@ -211,17 +211,17 @@ public class DeliveryFinalActivity extends BaseActivity {
                 ProductsActivity.product_count -= ProductsActivity.collection.get(r_INDEX).getCount();
                 ProductsActivity.price -=
                         ProductsActivity.collection.get(r_INDEX).getPrice() * ProductsActivity.collection.get(r_INDEX).getCount();
-                for (int i = 0; i < FinalPageFragment.collection.size(); i++) {
-                    if (FinalPageFragment.collection.get(i).getName().equals(ProductsActivity.collection.get(r_INDEX).getName())) {
-                        FinalPageFragment.collection.get(i).setCount(0);
+                for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
+                    if (FinalPageFragment.Companion.getCollection().get(i).getName().equals(ProductsActivity.collection.get(r_INDEX).getName())) {
+                        FinalPageFragment.Companion.getCollection().get(i).setCount(0);
                         break;
                     }
                 }
                 adapter.remove(r_INDEX);
             } else {
-                for (int i = 0; i < FinalPageFragment.collection.size(); i++) {
-                    if (FinalPageFragment.collection.get(i).getName().equals(ProductsActivity.collection.get(INDEX).getName())) {
-                        FinalPageFragment.collection.get(i).setCount(newCount);
+                for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
+                    if (FinalPageFragment.Companion.getCollection().get(i).getName().equals(ProductsActivity.collection.get(INDEX).getName())) {
+                        FinalPageFragment.Companion.getCollection().get(i).setCount(newCount);
                         break;
                     }
                 }
