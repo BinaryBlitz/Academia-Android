@@ -39,15 +39,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TimeActivity extends BaseActivity implements
-        TimePickerDialog.OnTimeSetListener {
+public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTimeSetListener {
 
     public static boolean now = true;
-
     public static String selected = "";
-
     public static boolean errors = false;
-
     static String id = "";
 
     @Override
@@ -131,12 +127,7 @@ public class TimeActivity extends BaseActivity implements
         findViewById(R.id.editText3f).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimeActivity.this.show(new DialogFinishedListener() {
-                    @Override
-                    public void onDialogFinished(int val) {
-
-                    }
-                }, 1);
+                TimeActivity.this.show();
             }
         });
 
@@ -164,7 +155,7 @@ public class TimeActivity extends BaseActivity implements
         }
     }
 
-    public void show(final DialogFinishedListener listener, int current) {
+    public void show() {
 
         final Dialog d = new Dialog(TimeActivity.this);
         d.setTitle("Выберите время");
@@ -238,9 +229,9 @@ public class TimeActivity extends BaseActivity implements
 
         try {
             object.add("line_items_attributes", array);
-//            object.addProperty("address", MapActivity.selected_final);
-//            object.addProperty("latitude", MapActivity.selected_lat_lng_final.latitude);
-//            object.addProperty("longitude", MapActivity.selected_lat_lng_final.longitude);
+            object.addProperty("address", MapActivity.selectedLocationName);
+            object.addProperty("latitude", MapActivity.selectedLocation.latitude);
+            object.addProperty("longitude", MapActivity.selectedLocation.longitude);
             if (!now) object.addProperty("scheduled_for", selected);
         } catch (Exception e) {
             e.printStackTrace();
@@ -278,8 +269,11 @@ public class TimeActivity extends BaseActivity implements
         ServerApi.get(this).api().createCard(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseCreateCard(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseCreateCard(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -293,8 +287,11 @@ public class TimeActivity extends BaseActivity implements
         ServerApi.get(this).api().sendOrder(toSend, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseOrder(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseOrder(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -336,8 +333,11 @@ public class TimeActivity extends BaseActivity implements
         ServerApi.get(this).api().getUser(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseUser(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseUser(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -397,8 +397,11 @@ public class TimeActivity extends BaseActivity implements
         ServerApi.get(this).api().getCards(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                if (response.isSuccessful()) parseCards(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseCards(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -418,8 +421,11 @@ public class TimeActivity extends BaseActivity implements
         ServerApi.get(this).api().pay(generatePayJson(binding), id, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parsePayment();
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parsePayment();
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -443,9 +449,5 @@ public class TimeActivity extends BaseActivity implements
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         selected = format.format(calendar.getTime());
-    }
-
-    public interface DialogFinishedListener {
-        void onDialogFinished(int val);
     }
 }

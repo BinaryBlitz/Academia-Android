@@ -10,6 +10,10 @@ import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.R;
 
 public class WebActivity extends BaseActivity {
+    private static final String SUCCESS = "sakses";
+    private static final String FAILURE = "feylur";
+    private static final String EXTRA_URL = "url";
+    private static final String EXTRA_NEW_CARD = "newCard";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,23 +30,32 @@ public class WebActivity extends BaseActivity {
             webView.getSettings().setDisplayZoomControls(false);
         }
 
-        webView.loadUrl(getIntent().getStringExtra("url"));
+        webView.loadUrl(getIntent().getStringExtra(EXTRA_URL));
 
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                TimeActivity.errors = !url.contains("sakses");
+                TimeActivity.errors = !url.contains(SUCCESS);
 
-                if(url.contains("sakses") || url.contains("feylur")) {
-                    if(getIntent().getBooleanExtra("newCard", false)) {
-                        Intent intent = new Intent(WebActivity.this, DeliveryProcessActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    finish();
+                if(url.contains(SUCCESS) || url.contains(FAILURE)) {
+                    processResult();
                 }
                 return false;
             }
         });
+    }
+
+    private void processResult() {
+        if(getIntent().getBooleanExtra(EXTRA_NEW_CARD, false)) {
+            openProcessActivity();
+        } else {
+            finish();
+        }
+    }
+
+    private void openProcessActivity() {
+        Intent intent = new Intent(WebActivity.this, DeliveryProcessActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
