@@ -238,9 +238,9 @@ public class TimeActivity extends BaseActivity implements
 
         try {
             object.add("line_items_attributes", array);
-            object.addProperty("address", MapActivity.selected_final);
-            object.addProperty("latitude", MapActivity.selected_lat_lng_final.latitude);
-            object.addProperty("longitude", MapActivity.selected_lat_lng_final.longitude);
+//            object.addProperty("address", MapActivity.selected_final);
+//            object.addProperty("latitude", MapActivity.selected_lat_lng_final.latitude);
+//            object.addProperty("longitude", MapActivity.selected_lat_lng_final.longitude);
             if (!now) object.addProperty("scheduled_for", selected);
         } catch (Exception e) {
             e.printStackTrace();
@@ -361,11 +361,11 @@ public class TimeActivity extends BaseActivity implements
             } catch (Exception e) { LogUtil.logException(e); }
 
 
-            collection.add(new CreditCard(
-                    object.get("number").getAsString(),
-                    object.get("binding_id").getAsString(),
-                    start
-            ));
+//            collection.add(new CreditCard(
+//                    object.get("number").getAsString(),
+//                    object.get("binding_id").getAsString(),
+//                    start
+//            ));
         }
 
         Collections.sort(collection, new Comparator<CreditCard>() {

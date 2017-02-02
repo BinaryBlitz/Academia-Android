@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities;
 
+import com.academiaexpress.Utils.AndroidUtilities;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -55,6 +56,12 @@ public class DeliveryFinalActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_order);
 
+        initElements();
+        setOnClickListeners();
+        getCards();
+    }
+
+    private void initElements() {
         Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
 
         RecyclerView view = (RecyclerView) findViewById(R.id.recyclerView);
@@ -69,11 +76,12 @@ public class DeliveryFinalActivity extends BaseActivity {
         newCard = false;
         binding = "";
 
-
         ((TextView) findViewById(R.id.textView26)).setText("ВАШ ЗАКАЗ НА " +
                 (ProductsActivity.price >= 1000 ? ProductsActivity.price : ProductsActivity.price + 200)
                 + " Р");
+    }
 
+    private void setOnClickListeners() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,10 +117,10 @@ public class DeliveryFinalActivity extends BaseActivity {
         findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MapActivity.selected_final == null || MapActivity.selected_final.isEmpty()) {
-                    Snackbar.make(findViewById(R.id.main), "Выберите адресс доставки.", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (MapActivity.selected_final == null || MapActivity.selected_final.isEmpty()) {
+//                    Snackbar.make(findViewById(R.id.main), "Выберите адресс доставки.", Snackbar.LENGTH_SHORT).show();
+//                    return;
+//                }
 
                 if (ProductsActivity.price == 0) {
                     Snackbar.make(findViewById(R.id.main), "Заказ пуст.", Snackbar.LENGTH_SHORT).show();
@@ -131,37 +139,39 @@ public class DeliveryFinalActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+    }
 
-        getCards();
+    private Date parseDate(String dateString) {
+        Date date = null;
+        String formatPattern = "yyyy-MM-dd'T'HH:mm:ss";
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(formatPattern, Locale.getDefault());
+            date = format.parse(dateString);
+        } catch (Exception e) {
+            LogUtil.logException(e);
+        }
+
+        return date;
     }
 
     private void parseCards(JsonArray array) {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
-
-            Calendar start = Calendar.getInstance();
-
-            try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-                Date date = format.parse(object.get("created_at").getAsString());
-                start.setTime(date);
-            } catch (Exception e) {
-                LogUtil.logException(e);
-            }
-
-
             collection.add(new CreditCard(
-                    object.get("number").getAsString(),
-                    object.get("binding_id").getAsString(),
-                    start
+                    AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("number")),
+                    AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("binding_id")),
+                    parseDate(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("created_at")))
             ));
         }
 
         Collections.sort(collection, new Comparator<CreditCard>() {
             @Override
             public int compare(CreditCard lhs, CreditCard rhs) {
-                if (lhs.getDate().before(rhs.getDate())) return 1;
-                else return -1;
+                if (lhs.getDate().before(rhs.getDate())) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
         });
 
@@ -179,8 +189,11 @@ public class DeliveryFinalActivity extends BaseActivity {
         ServerApi.get(this).api().getCards(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                if (response.isSuccessful()) parseCards(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseCards(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -232,14 +245,14 @@ public class DeliveryFinalActivity extends BaseActivity {
             ((TextView) findViewById(R.id.textView26)).setText("ВАШ ЗАКАЗ НА " + ProductsActivity.price + " Р");
         }
 
-        if (!MapActivity.selected_final.isEmpty()) {
-            ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selected_final);
-            ((TextView) findViewById(R.id.textView40)).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView41)).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView42)).setVisibility(View.VISIBLE);
-            findViewById(R.id.editText3f).setVisibility(View.GONE);
-            MapActivity.selected = "";
-        }
+//        if (!MapActivity.selected_final.isEmpty()) {
+//            ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selected_final);
+//            ((TextView) findViewById(R.id.textView40)).setVisibility(View.VISIBLE);
+//            ((TextView) findViewById(R.id.textView41)).setVisibility(View.VISIBLE);
+//            ((TextView) findViewById(R.id.textView42)).setVisibility(View.VISIBLE);
+//            findViewById(R.id.editText3f).setVisibility(View.GONE);
+//            MapActivity.selected = "";
+//        }
 
         if (ProductsActivity.price >= 1000) {
             ((TextView) findViewById(R.id.textView18)).setVisibility(View.GONE);

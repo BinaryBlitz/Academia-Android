@@ -74,9 +74,8 @@ public class LocationSearchAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapActivity.selected = places.get(position).place_name;
-                MapActivity.selected_lat_lng = getLocationFromAddress(places.get(position).place_name);
-                MapActivity.picked = true;
+                MapActivity.selectedLocationName = places.get(position).place_name;
+                MapActivity.selectedLocation = getLocationFromAddress(places.get(position).place_name);
                 ((Activity) context).finish();
             }
         });
@@ -91,7 +90,6 @@ public class LocationSearchAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         lastSearchLocation = coordinate;
         if (searching) {
             searching = false;
-           // requestQueue.cancelAll("search");
         }
         String url = "https://dadata.ru/api/v2/suggest/address";
 
