@@ -1,9 +1,5 @@
 package com.academiaexpress.Activities;
 
-import com.academiaexpress.Utils.AndroidUtilities;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -21,12 +17,15 @@ import com.academiaexpress.Fragments.FinalPageFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
+import com.academiaexpress.Utils.AndroidUtilities;
+import com.academiaexpress.Utils.AppConfig;
 import com.academiaexpress.Utils.Image;
 import com.academiaexpress.Utils.LogUtil;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,15 +36,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DeliveryFinalActivity extends BaseActivity {
-    DeliveryAdapter adapter;
+    private DeliveryAdapter adapter;
 
-    public static int INDEX = -1;
-    public static int r_INDEX = -1;
+    public static int itemToEdit = -1;
     public static int newCount = -1;
-
     public static int cardIndex = 0;
-
-    public static String id = "";
 
     public static ArrayList<CreditCard> collection;
     public static String binding = "";
@@ -76,9 +71,7 @@ public class DeliveryFinalActivity extends BaseActivity {
         newCard = false;
         binding = "";
 
-        ((TextView) findViewById(R.id.textView26)).setText("ВАШ ЗАКАЗ НА " +
-                (ProductsActivity.price >= 1000 ? ProductsActivity.price : ProductsActivity.price + 200)
-                + " Р");
+        ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
     }
 
     private void setOnClickListeners() {
@@ -117,28 +110,38 @@ public class DeliveryFinalActivity extends BaseActivity {
         findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (MapActivity.selected_final == null || MapActivity.selected_final.isEmpty()) {
-//                    Snackbar.make(findViewById(R.id.main), "Выберите адресс доставки.", Snackbar.LENGTH_SHORT).show();
-//                    return;
-//                }
-
-                if (ProductsActivity.price == 0) {
-                    Snackbar.make(findViewById(R.id.main), "Заказ пуст.", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (binding.equals("") && !newCard) {
-                    Snackbar.make(findViewById(R.id.main), "Карта не выбрана.", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
+                if (!check()) return;
 
                 Intent intent = new Intent(DeliveryFinalActivity.this, TimeActivity.class);
-                intent.putExtra("price", "ВАШ ЗАКАЗ НА " +
-                        (ProductsActivity.price >= 1000 ? ProductsActivity.price : ProductsActivity.price + 200)
-                        + " Р");
+                intent.putExtra("price", getPriceText());
                 startActivity(intent);
             }
         });
+    }
+
+    private String getPriceText() {
+        return getString(R.string.your_order_code) +
+                (ProductsActivity.price >= AppConfig.freeDeliveryFrom ? ProductsActivity.price : ProductsActivity.price + AppConfig.deliveryPrice)
+                + getString(R.string.ruble_sign);
+    }
+
+    private boolean check() {
+        if (MapActivity.selectedLocationName == null || MapActivity.selectedLocationName.isEmpty()) {
+            Snackbar.make(findViewById(R.id.main), R.string.select_delivery_place, Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (ProductsActivity.price == 0) {
+            Snackbar.make(findViewById(R.id.main), R.string.empty_order, Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (binding.isEmpty() && !newCard) {
+            Snackbar.make(findViewById(R.id.main), R.string.card_not_selected, Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private Date parseDate(String dateString) {
@@ -211,7 +214,7 @@ public class DeliveryFinalActivity extends BaseActivity {
         }
 
         if (newCard) {
-            ((TextView) findViewById(R.id.editText35)).setText("НОВАЯ КАРТА");
+            ((TextView) findViewById(R.id.editText35)).setText(R.string.new_card);
             if (collection.size() != 0) {
                 findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
             }
@@ -242,24 +245,28 @@ public class DeliveryFinalActivity extends BaseActivity {
                 adapter.changeItem(INDEX, newCount);
             }
             INDEX = -1;
-            ((TextView) findViewById(R.id.textView26)).setText("ВАШ ЗАКАЗ НА " + ProductsActivity.price + " Р");
+            ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
         }
 
-//        if (!MapActivity.selected_final.isEmpty()) {
-//            ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selected_final);
-//            ((TextView) findViewById(R.id.textView40)).setVisibility(View.VISIBLE);
-//            ((TextView) findViewById(R.id.textView41)).setVisibility(View.VISIBLE);
-//            ((TextView) findViewById(R.id.textView42)).setVisibility(View.VISIBLE);
-//            findViewById(R.id.editText3f).setVisibility(View.GONE);
-//            MapActivity.selected = "";
-//        }
+        if (!MapActivity.selectedLocationName.isEmpty()) {
+            showLocationButtons();
+        }
 
-        if (ProductsActivity.price >= 1000) {
-            ((TextView) findViewById(R.id.textView18)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.textView4)).setText("Доставка бесплатна.");
+        if (ProductsActivity.price >= AppConfig.freeDeliveryFrom) {
+            findViewById(R.id.textView18).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery);
         } else {
-            ((TextView) findViewById(R.id.textView18)).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView4)).setText("Бесплатная доставка от 1000 руб.");
+            findViewById(R.id.textView18).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery_from);
         }
+    }
+
+    private void showLocationButtons() {
+        ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selectedLocationName);
+        findViewById(R.id.textView40).setVisibility(View.VISIBLE);
+        findViewById(R.id.textView41).setVisibility(View.VISIBLE);
+        findViewById(R.id.textView42).setVisibility(View.VISIBLE);
+        findViewById(R.id.editText3f).setVisibility(View.GONE);
+        MapActivity.selectedLocationName = "";
     }
 }
