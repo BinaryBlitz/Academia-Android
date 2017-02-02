@@ -248,7 +248,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
     private void processSelectedTime(final NumberPicker numberPicker, final String[] values) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss z", Locale.getDefault());
 
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(values[numberPicker.getValue()].split(" - ")[0].split(":")[0]));
         calendar.set(Calendar.MINUTE, Integer.parseInt(values[numberPicker.getValue()].split(" - ")[0].split(":")[1]));
@@ -256,7 +256,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
         format.setTimeZone(TimeZone.getDefault());
         selected = format.format(calendar.getTime());
-        selected += "+03:00";
     }
 
     private String[] getContentForPicker() {
