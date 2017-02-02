@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Custom.NumberPicker;
-import com.academiaexpress.Custom.ProgressDialog;
 import com.academiaexpress.Data.CreditCard;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -150,9 +150,9 @@ public class TimeActivity extends BaseActivity implements
         if(id.isEmpty() || errors) {
             return;
         }
-        final ProgressDialog dialog = new ProgressDialog();
+        final ProgressDialog dialog = new ProgressDialog(this);
 
-        dialog.show(getFragmentManager(), "delivery");
+        dialog.show();
 
         if(DeliveryFinalActivity.newCard) {
             getCards();
@@ -218,8 +218,8 @@ public class TimeActivity extends BaseActivity implements
     }
 
     private void addOrder() {
-        final ProgressDialog dialog = new ProgressDialog();
-        dialog.show(getFragmentManager(), "delivery");
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.show();
 
         final JsonObject object = new JsonObject();
 

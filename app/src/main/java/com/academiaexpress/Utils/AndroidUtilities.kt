@@ -75,7 +75,7 @@ object AndroidUtilities {
 
         val phoneNumberUtil = PhoneNumberUtil.getInstance()
         val isoCode = phoneNumberUtil.getRegionCodeForCountryCode(Integer.parseInt("+7"))
-        var phoneNumber: Phonenumber.PhoneNumber? = null
+        var phoneNumber: Phonenumber.PhoneNumber?
         try {
             phoneNumber = phoneNumberUtil.parse(phNumber, isoCode)
         } catch (e: NumberParseException) {

@@ -18,12 +18,12 @@ public class MyMapFragment {
 
         private long lastTouched = 0;
         private static final long SCROLL_TIME = 200L;
-        private UpdateMapAfterUserInterection updateMapAfterUserInterection;
+        private UpdateMapAfterUserInteraction updateMapAfterUserInteraction;
 
         public TouchableWrapper(Context context) {
             super(context);
             try {
-                updateMapAfterUserInterection = (MapActivity) context;
+                updateMapAfterUserInteraction = (MapActivity) context;
             } catch (ClassCastException e) {
                 throw new ClassCastException(context.toString() + " must implement UpdateMapAfterUserInterection");
             }
@@ -39,15 +39,15 @@ public class MyMapFragment {
                     final long now = SystemClock.uptimeMillis();
                     if (now - lastTouched > SCROLL_TIME) {
                         // Update the map
-                        updateMapAfterUserInterection.onUpdateMapAfterUserInterection();
+                        updateMapAfterUserInteraction.onUpdateMapAfterUserInteraction();
                     }
                     break;
             }
             return super.dispatchTouchEvent(ev);
         }
 
-        public interface UpdateMapAfterUserInterection {
-            void onUpdateMapAfterUserInterection();
+        public interface UpdateMapAfterUserInteraction {
+            void onUpdateMapAfterUserInteraction();
         }
     }
 

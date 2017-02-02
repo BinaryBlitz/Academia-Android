@@ -1,43 +1,44 @@
 package com.academiaexpress.Activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.view.View;
+import android.widget.TextView;
+
+import com.academiaexpress.Base.BaseActivity;
+import com.academiaexpress.Custom.MyMapFragment;
+import com.academiaexpress.R;
+import com.academiaexpress.Server.DeviceInfoStore;
+import com.academiaexpress.Server.ServerApi;
+import com.academiaexpress.Utils.AndroidUtilities;
+import com.academiaexpress.Utils.LogUtil;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.maps.android.PolyUtil;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-
-import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Custom.MyMapFragment;
-import com.academiaexpress.Fragments.DishFragment;
-import com.academiaexpress.R;
-import com.academiaexpress.Server.DeviceInfoStore;
-import com.academiaexpress.Server.ServerApi;
-import com.academiaexpress.Utils.AndroidUtilities;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,15 +46,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyMapFragment.TouchableWrapper.UpdateMapAfterUserInterection {
+public class MapActivity extends BaseActivity
+        implements MyMapFragment.TouchableWrapper.UpdateMapAfterUserInteraction, OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    GoogleMap googleMap;
+    private static final int LOCATION_PERMISSION = 1;
+    private GoogleMap googleMap;
 
     static public LatLng selected_lat_lng;
     static public String selected = "";
 
-    static public LatLng selected_lat_lng_final;
-    static public String selected_final = "";
+    protected GoogleApiClient mGoogleApiClient;
+    protected Location mLastLocation;
 
     ArrayList<LatLng> lats;
 
@@ -65,6 +69,27 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
     public void onLowMemory() {
         super.onLowMemory();
         System.gc();
+    }
+
+    private void initMap() {
+        final SupportMapFragment mMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.scroll);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                mMap.getMapAsync(MapActivity.this);
+            }
+        });
+    }
+
+    private void initGoogleApiClient() {
+        if (mGoogleApiClient != null) return;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     @Override
@@ -91,11 +116,9 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
                     if (((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
                             ((TextView) findViewById(R.id.editText3)).getText().toString().equals("ВВЕСТИ АДРЕС")
                             || lats == null
-                            || !PolyUtil.containsLocation(selected_lat_lng_final, lats, false)) {
+                            || !PolyUtil.containsLocation(selected_lat_lng, lats, false)) {
                         selected = "";
                         selected_lat_lng = null;
-                        selected_lat_lng_final = null;
-                        selected_final = selected;
                         Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
@@ -110,261 +133,37 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
         selected = "";
         selected_lat_lng = null;
 
-        Handler handler = new Handler();
-
-        final SupportMapFragment mMap = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.scroll);
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e("qwetry", "q7");
-                mMap.getMapAsync(MapActivity.this);
-            }
-        }, 100);
+        initMap();
+        initGoogleApiClient();
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (picked) {
-            picked = false;
-            if (!selected.isEmpty() && selected_lat_lng != null) {
+    @SuppressLint("NewApi")
+    private boolean checkPermission() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    }
 
-                selected_lat_lng_final = selected_lat_lng;
-                selected_final = selected;
-
-                try {
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(selected_lat_lng)      // Sets the center of the map to location user
-                            .zoom(17)                   // Sets the zoom
-                            .bearing(0)                // Sets the orientation of the camera to east
-                            .tilt(45)                   // Sets the tilt of the camera to 30 degrees
-                            .build();                   // Creates a CameraPosition from the builder
-
-
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                        @Override
-                        public void onFinish() {
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((TextView) findViewById(R.id.editText3)).setText(selected);
-                                    selected_lat_lng = null;
-                                    selected = "";
-                                }
-                            }, 50);
-                        }
-
-                        @Override
-                        public void onCancel() {
-
-                        }
-                    });
-                } catch (Exception e) {
-                    Snackbar.
-                            make(findViewById(R.id.main), "Ошибка определения адреса. Попробуйте еще раз.",
-                                    Snackbar.LENGTH_LONG).show();
-                }
-
-            } else {
-                Snackbar.
-                        make(findViewById(R.id.main), "Ошибка определения адреса. Попробуйте еще раз.",
-                                Snackbar.LENGTH_LONG).show();
-            }
+    private void setUpMap() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+        googleMap.setMyLocationEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        googleMap.setPadding(0, (int) AndroidUtilities.INSTANCE.convertDpToPixel(66f, this), 0, 0);
     }
 
     @Override
-    public void onMapReady(final GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         try {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-                        // Creating a criteria object to retrieve provider
-                        Criteria criteria = new Criteria();
-
-                        // Getting the name of the best provider
-                        String provider = locationManager.getBestProvider(criteria, true);
-                        if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                        Location location = locationManager.getLastKnownLocation(provider);
-                        // Getting Current Location
-                        // Getting latitude of the current location
-                        double latitude = location.getLatitude();
-
-                        // Getting longitude of the current location
-                        double longitude = location.getLongitude();
-
-                        LatLng myPosition = new LatLng(latitude, longitude);
-                        final CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(myPosition)      // Sets the center of the map to location user
-                                .zoom(17)                   // Sets the zoom
-                                .bearing(90)                // Sets the orientation of the camera to east
-                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                                .build();                   // Creates a CameraPosition from the builder
-
-                        selected_lat_lng = myPosition;
-
-                        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    } catch (Exception e) {
-
-                    }
-
-                    new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                                googleMap.getCameraPosition().target.longitude);
-
-                                        selected_lat_lng_final = new LatLng(googleMap.getCameraPosition().target.latitude,
-                                                googleMap.getCameraPosition().target.longitude);
-                                        ((TextView) findViewById(R.id.editText3)).setText(selected);
-                                        selected_final = getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                                googleMap.getCameraPosition().target.longitude);
-                                    } catch (Exception e) {
-                                        Snackbar.
-                                                make(findViewById(R.id.main), "Ошибка определения адреса. Попробуйте передвинуть маркер.",
-                                                        Snackbar.LENGTH_LONG).show();
-                                    }
-                                }
-                            }, 50);
-                }
-            }, 450);
-
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            googleMap.setPadding(0, (int) DishFragment.convertDpToPixel(66f, this), 0, 0);
-
-        } catch (Exception e) {
-        }
-
-        try {
-            googleMap.setMyLocationEnabled(true);
-
-            googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-
-                @Override
-                public void onMyLocationChange(Location arg0) {
-                    if(arg0 == null) {
-                        Snackbar.
-                                make(findViewById(R.id.main), "Невозможно определить ваше текущее местоположение.",
-                                        Snackbar.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    if(fir) {
-                        fir = false;
-                        double latitude = arg0.getLatitude();
-
-                        // Getting longitude of the current location
-                        double longitude = arg0.getLongitude();
-
-                        LatLng myPosition = new LatLng(latitude, longitude);
-                        final CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(myPosition)      // Sets the center of the map to location user
-                                .zoom(17)                   // Sets the zoom
-                                .bearing(90)                // Sets the orientation of the camera to east
-                                .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                                .build();                   // Creates a CameraPosition from the builder
-
-                        selected_lat_lng = myPosition;
-
-                        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                            googleMap.getCameraPosition().target.longitude);
-
-                                    selected_lat_lng_final = new LatLng(googleMap.getCameraPosition().target.latitude,
-                                            googleMap.getCameraPosition().target.longitude);
-                                    ((TextView) findViewById(R.id.editText3)).setText(selected);
-                                    selected_final = getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                            googleMap.getCameraPosition().target.longitude);
-                                } catch (Exception e) {
-                                    Snackbar.
-                                            make(findViewById(R.id.main), "Ошибка определения адреса. Попробуйте передвинуть маркер.",
-                                                    Snackbar.LENGTH_LONG).show();
-                                }
-                            }
-                        }, 50);
-                    }
-                }
-            });
-
-            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    if(googleMap.getMyLocation() == null) {
-                        Snackbar.
-                                make(findViewById(R.id.main), "Невозможно определить ваше текущее местоположение.",
-                                        Snackbar.LENGTH_LONG).show();
-                        return false;
-                    }
-                    double latitude = googleMap.getMyLocation().getLatitude();
-
-                    // Getting longitude of the current location
-                    double longitude = googleMap.getMyLocation().getLongitude();
-
-                    LatLng myPosition = new LatLng(latitude, longitude);
-                    final CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(myPosition)      // Sets the center of the map to location user
-                            .zoom(17)                   // Sets the zoom
-                            .bearing(90)                // Sets the orientation of the camera to east
-                            .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                            .build();                   // Creates a CameraPosition from the builder
-
-                    selected_lat_lng = myPosition;
-
-                    googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                        googleMap.getCameraPosition().target.longitude);
-
-                                selected_lat_lng_final = new LatLng(googleMap.getCameraPosition().target.latitude,
-                                        googleMap.getCameraPosition().target.longitude);
-                                ((TextView) findViewById(R.id.editText3)).setText(selected);
-                                selected_final = getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                                        googleMap.getCameraPosition().target.longitude);
-                            } catch (Exception e) {
-                                Snackbar.
-                                        make(findViewById(R.id.main), "Ошибка определения адреса. Попробуйте передвинуть маркер.",
-                                                Snackbar.LENGTH_LONG).show();
-                            }
-                        }
-                    }, 50);
-                    return false;
-                }
-            });
-        } catch (Exception e) {
-
-        }
-
-        getEdgePoints();
-
-        findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!AndroidUtilities.INSTANCE.isConnected(MapActivity.this)) {
-                    return;
-                }
-                Intent intent = new Intent(MapActivity.this, PickLocationActivity.class);
-                startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkPermission()) {
+                ActivityCompat.requestPermissions(MapActivity.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION);
+            } else {
+                setUpMap();
             }
-        });
+        } catch (Exception e) {
+            LogUtil.logException(e);
+        }
     }
 
     private void getEdgePoints() {
@@ -395,52 +194,74 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
         }
 
         MapActivity.this.lats = new ArrayList<>();
-        for (int i = 0; i < lats.length; i++) {
-            MapActivity.this.lats.add(lats[i]);
-        }
+        Collections.addAll(MapActivity.this.lats, lats);
+
         PolygonOptions rectOptions = new PolygonOptions()
                 .fillColor(Color.argb(30, 56, 142, 60))
                 .strokeColor(Color.parseColor("#4CAF50"))
                 .add(lats);
-        Polygon polygon = googleMap.addPolygon(rectOptions);
+        googleMap.addPolygon(rectOptions);
     }
 
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+    private String getCompleteAddressString(double latitude, double lognitude) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            List<Address> addresses = geocoder.getFromLocation(latitude, lognitude, 1);
             if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
-
-                try {
-                    for (int i = 0; i < returnedAddress.getMaxAddressLineIndex() - 2; i++) {
-                        strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                    }
-                } catch (Exception e) {
-                    strReturnedAddress = new StringBuilder("");
-                    for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                        strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                    }
+                if (addresses.size() > 0) {
+                    strAdd = addresses.get(0).getAddressLine(0);
                 }
-                strAdd = strReturnedAddress.toString();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
+
+        selected_lat_lng = new LatLng(latitude, lognitude);
+
         selected = strAdd;
         return strAdd;
     }
 
     @Override
-    public void onUpdateMapAfterUserInterection() {
-        String res = getCompleteAddressString(googleMap.getCameraPosition().target.latitude,
-                googleMap.getCameraPosition().target.longitude);
-        ((TextView) findViewById(R.id.editText3)).setText(res);
-        selected_lat_lng_final = new LatLng(googleMap.getCameraPosition().target.latitude,
-                googleMap.getCameraPosition().target.longitude);
-        selected_final = res;
+    public void onUpdateMapAfterUserInteraction() {
+        try {
+            String res = getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
+            ((TextView) findViewById(R.id.editText3)).setText(res);
+        } catch (Exception e) {
+            LogUtil.logException(e);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mGoogleApiClient.isConnected()) {
+                    getLocation();
+                } else {
+                    mGoogleApiClient.connect();
+                }
+            }
+        }, 50);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION);
+                } else {
+                    getLocation();
+                }
+            } catch (Exception e) {
+                LogUtil.logException(e);
+            }
+        } else {
+            getLocation();
+        }
     }
 
     private boolean isPointInPolygon(LatLng tap, ArrayList<LatLng> vertices) {
@@ -451,11 +272,10 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
             }
         }
 
-        return ((intersectCount % 2) == 1); // odd = inside, even = outside;
+        return ((intersectCount % 2) == 1);
     }
 
     private boolean rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {
-
         double aY = vertA.latitude;
         double bY = vertB.latitude;
         double aX = vertA.longitude;
@@ -463,16 +283,80 @@ public class MapActivity extends BaseActivity implements OnMapReadyCallback, MyM
         double pY = tap.latitude;
         double pX = tap.longitude;
 
-        if ((aY > pY && bY > pY) || (aY < pY && bY < pY)
-                || (aX < pX && bX < pX)) {
-            return false; // a and b can't both be above or below pt.y, and a or
-            // b must be east of pt.x
+        if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
+            return false;
         }
 
-        double m = (aY - bY) / (aX - bX); // Rise over run
-        double bee = (-aX) * m + aY; // y = mx + b
-        double x = (pY - bee) / m; // algebra is neat!
+        double m = (aY - bY) / (aX - bX);
+        double bee = (-aX) * m + aY;
+        double x = (pY - bee) / m;
 
         return x > pX;
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            onLocationError();
+            return;
+        }
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            selected_lat_lng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            moveCamera(true);
+        } else {
+            onLocationError();
+        }
+    }
+
+    private void moveCamera(final boolean setText) {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(selected_lat_lng)
+                .zoom(17)
+                .bearing(0)
+                .tilt(0)
+                .build();
+
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (setText) {
+                            getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
+                        }
+                    }
+                }, 50);
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation();
+                } else {
+                    onLocationError();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        onLocationError();
     }
 }
