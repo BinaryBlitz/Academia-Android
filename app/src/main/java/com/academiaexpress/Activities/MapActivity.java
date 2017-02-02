@@ -153,15 +153,20 @@ public class MapActivity extends BaseActivity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        googleMap.setMyLocationEnabled(true);
+        googleMap.setMyLocationEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         if (selectedLocation != null) {
-            onUpdateMapAfterUserInteraction();
-            moveCamera(true);
+            processPreviouslySelectedLocation();
         } else {
             getLocationFromGoogle();
         }
+    }
+
+    private void processPreviouslySelectedLocation() {
+        getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
+        ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
+        moveCamera(true);
     }
 
     private void getLocationFromGoogle() {
@@ -232,8 +237,8 @@ public class MapActivity extends BaseActivity
         googleMap.addPolygon(rectOptions);
     }
 
-    private String getCompleteAddressString(double latitude, double longitude) {
-        String strAdd = "";
+    private void getCompleteAddressString(double latitude, double longitude) {
+        String strAdd = selectedLocationName;
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -247,16 +252,14 @@ public class MapActivity extends BaseActivity
         }
 
         selectedLocationName = strAdd;
-
-        return strAdd;
     }
 
     @Override
     public void onUpdateMapAfterUserInteraction() {
         try {
             selectedLocation = googleMap.getCameraPosition().target;
-            String res = getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
-            ((TextView) findViewById(R.id.editText3)).setText(res);
+            getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
+            ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
         } catch (Exception e) {
             LogUtil.logException(e);
         }
@@ -284,14 +287,18 @@ public class MapActivity extends BaseActivity
             return;
         }
 
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if (mLastLocation != null) {
-            selectedLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            String res = getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
-            ((TextView) findViewById(R.id.editText3)).setText(res);
-            moveCamera(true);
+        if (lastLocation != null) {
+            processGoogleLocation(lastLocation);
         }
+    }
+
+    private void processGoogleLocation(Location lastLocation) {
+        selectedLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
+        ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
+        moveCamera(true);
     }
 
     private void moveCamera(final boolean setText) {
