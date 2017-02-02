@@ -53,7 +53,7 @@ public class TimeActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.time_layout);
+        setContentView(R.layout.activity_time);
 
         now = true;
         errors = true;

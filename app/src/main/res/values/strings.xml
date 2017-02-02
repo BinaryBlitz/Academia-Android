@@ -86,4 +86,12 @@
     <string name="final_page_title">дополни свой ланч!</string>
     <string name="view">ПОСМОТРЕТЬ</string>
     <string name="ingredient_postfix">г</string>
+    <string name="order_upcase">ЗАКАЗАТЬ</string>
+    <string name="select_card">ВЫБРАТЬ КАРТУ</string>
+    <string name="select_address">Выберите адрес</string>
+    <string name="delivery_address">АДРЕС ДОСТАВКИ</string>
+    <string name="pay">ОПЛАТИТЬ</string>
+    <string name="select_time">ВЫБРАТЬ ВРЕМЯ</string>
+    <string name="now">СЕЙЧАС</string>
+    <string name="help_delivery_time">Когда доставить?</string>
 </resources>

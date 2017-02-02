@@ -53,7 +53,7 @@ public class DeliveryFinalActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.delivery_finish_layout);
+        setContentView(R.layout.activity_create_order);
 
         Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
 
