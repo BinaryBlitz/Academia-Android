@@ -104,4 +104,9 @@
     <string name="free_delivery_from">Бесплатная доставка от 1000 руб.</string>
     <string name="free_delivery">Доставка бесплатна.</string>
     <string name="new_card">НОВАЯ КАРТА</string>
+    <string name="orders_history">История заказов</string>
+    <string name="start">НАЧАТЬ</string>
+    <string name="profile">ПРОФИЛЬ</string>
+    <string name="orders">ЗАКАЗЫ</string>
+    <string name="help">ПОМОЩЬ</string>
 </resources>

@@ -38,7 +38,7 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.orders_screen);
+        setContentView(R.layout.activity_orders);
 
         initElements();
         setOnClickListeners();

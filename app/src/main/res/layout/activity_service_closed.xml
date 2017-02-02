@@ -85,6 +85,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
-        <include layout="@layout/main_menu_layout" />
+        <include layout="@layout/fragment_menu" />
     </com.academiaexpress.CircularReveal.widget.RevealFrameLayout>
 </FrameLayout>

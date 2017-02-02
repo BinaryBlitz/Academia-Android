@@ -41,7 +41,7 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Answers(), new Crashlytics());
-        setContentView(R.layout.splash_activity);
+        setContentView(R.layout.activity_splash);
 
         hours = new ArrayList<>();
         calendars = new ArrayList<>();
