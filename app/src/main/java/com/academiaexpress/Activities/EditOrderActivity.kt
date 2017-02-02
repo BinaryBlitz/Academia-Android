@@ -36,14 +36,14 @@ class EditOrderActivity : BaseActivity() {
 
     private fun setOnClickListeners() {
         findViewById(R.id.textView28fd).setOnClickListener {
-            DeliveryFinalActivity.INDEX = intent.getIntExtra(EXTRA_INDEX, 0)
+            DeliveryFinalActivity.itemToEdit = intent.getIntExtra(EXTRA_INDEX, 0)
             DeliveryFinalActivity.newCount = count
             finish()
         }
 
         findViewById(R.id.textView28).setOnClickListener {
-            DeliveryFinalActivity.INDEX = -2
-            DeliveryFinalActivity.r_INDEX = intent.getIntExtra(EXTRA_INDEX, 0)
+            DeliveryFinalActivity.itemToEdit = intent.getIntExtra(EXTRA_INDEX, 0)
+            DeliveryFinalActivity.newCount = DeliveryFinalActivity.REMOVE_ACTION
             finish()
         }
 

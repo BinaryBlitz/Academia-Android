@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.academiaexpress.Adapters.DeliveryAdapter;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.CreditCard;
+import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.MiniProduct;
 import com.academiaexpress.Fragments.FinalPageFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -38,8 +40,11 @@ import retrofit2.Response;
 public class DeliveryFinalActivity extends BaseActivity {
     private DeliveryAdapter adapter;
 
-    public static int itemToEdit = -1;
-    public static int newCount = -1;
+    private static int NO_ACTION = -1;
+    public static int REMOVE_ACTION = -2;
+
+    public static int itemToEdit = -NO_ACTION;
+    public static int newCount = -NO_ACTION;
     public static int cardIndex = 0;
 
     public static ArrayList<CreditCard> collection;
@@ -209,43 +214,59 @@ public class DeliveryFinalActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        updateUI();
+
+        if (itemToEdit != NO_ACTION) {
+            editOrder();
+        }
+    }
+
+    private void editOrder() {
+        if (newCount == REMOVE_ACTION) {
+            removeItem();
+        } else {
+            editItemCount();
+        }
+
+        itemToEdit = NO_ACTION;
+        ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
+    }
+
+    private void removeItem() {
+        DeliveryOrder.OrderPart part = ProductsActivity.collection.get(itemToEdit);
+        ProductsActivity.product_count -= part.getCount();
+        ProductsActivity.price -= part.getPrice() * part.getCount();
+
+        removeMiniProducts();
+        adapter.remove(itemToEdit);
+    }
+
+    private void removeMiniProducts() {
+        for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
+            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
+            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+                FinalPageFragment.Companion.getCollection().get(i).setCount(0);
+                break;
+            }
+        }
+    }
+
+    private void editItemCount() {
+        for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
+            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
+            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+                FinalPageFragment.Companion.getCollection().get(i).setCount(newCount);
+                break;
+            }
+        }
+
+        adapter.changeItem(itemToEdit, newCount);
+    }
+
+    private void updateUI() {
         if (collection.size() != 0) {
             ((TextView) findViewById(R.id.editText35)).setText(collection.get(cardIndex).getNumber());
-        }
-
-        if (newCard) {
-            ((TextView) findViewById(R.id.editText35)).setText(R.string.new_card);
-            if (collection.size() != 0) {
-                findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
-            }
-        } else {
-            findViewById(R.id.imageView20).setVisibility(View.GONE);
-        }
-
-        if (INDEX != -1) {
-            if (INDEX == -2) {
-                ProductsActivity.product_count -= ProductsActivity.collection.get(r_INDEX).getCount();
-                ProductsActivity.price -=
-                        ProductsActivity.collection.get(r_INDEX).getPrice() * ProductsActivity.collection.get(r_INDEX).getCount();
-                for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-                    if (FinalPageFragment.Companion.getCollection().get(i).getName().equals(ProductsActivity.collection.get(r_INDEX).getName())) {
-                        FinalPageFragment.Companion.getCollection().get(i).setCount(0);
-                        break;
-                    }
-                }
-                adapter.remove(r_INDEX);
-            } else {
-                for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-                    if (FinalPageFragment.Companion.getCollection().get(i).getName().equals(ProductsActivity.collection.get(INDEX).getName())) {
-                        FinalPageFragment.Companion.getCollection().get(i).setCount(newCount);
-                        break;
-                    }
-                }
-
-                adapter.changeItem(INDEX, newCount);
-            }
-            INDEX = -1;
-            ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
         }
 
         if (!MapActivity.selectedLocationName.isEmpty()) {
@@ -253,12 +274,37 @@ public class DeliveryFinalActivity extends BaseActivity {
         }
 
         if (ProductsActivity.price >= AppConfig.freeDeliveryFrom) {
-            findViewById(R.id.textView18).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery);
+            setFreeDelivery();
         } else {
-            findViewById(R.id.textView18).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery_from);
+            setPriceForDelivery();
         }
+
+        if (newCard) {
+            setNewCard();
+        } else {
+            setSelectedCard();
+        }
+    }
+
+    private void setNewCard() {
+        ((TextView) findViewById(R.id.editText35)).setText(R.string.new_card);
+        if (collection.size() != 0) {
+            findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setSelectedCard() {
+        findViewById(R.id.imageView20).setVisibility(View.GONE);
+    }
+
+    private void setFreeDelivery() {
+        findViewById(R.id.textView18).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery);
+    }
+
+    private void setPriceForDelivery() {
+        findViewById(R.id.textView18).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery_from);
     }
 
     private void showLocationButtons() {
