@@ -1,5 +1,27 @@
 package com.academiaexpress.Activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.view.View;
+import android.widget.TextView;
+
+import com.academiaexpress.Base.BaseActivity;
+import com.academiaexpress.Custom.MyMapFragment;
+import com.academiaexpress.R;
+import com.academiaexpress.Server.DeviceInfoStore;
+import com.academiaexpress.Server.ServerApi;
+import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.LogUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -10,42 +32,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.maps.android.PolyUtil;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-
-import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Custom.MyMapFragment;
-import com.academiaexpress.Fragments.DishFragment;
-import com.academiaexpress.R;
-import com.academiaexpress.Server.DeviceInfoStore;
-import com.academiaexpress.Server.ServerApi;
-import com.academiaexpress.Utils.AndroidUtilities;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -113,31 +106,29 @@ public class MapActivity extends BaseActivity
 
         fir = true;
 
-//        findViewById(R.id.editText3fd).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!AndroidUtilities.INSTANCE.isConnected(MapActivity.this)) {
-//                    return;
-//                }
-//                try {
-//                    if (((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
-//                            ((TextView) findViewById(R.id.editText3)).getText().toString().equals("ВВЕСТИ АДРЕС")
-//                            || lats == null
-//                            || !PolyUtil.containsLocation(selected_lat_lng_final, lats, false)) {
-//                        selected = "";
-//                        selected_lat_lng = null;
-//                        selected_lat_lng_final = null;
-//                        selected_final = selected;
-//                        Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//                    finish();
-//                } catch (Exception e) {
-//                    Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        findViewById(R.id.editText3fd).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!AndroidUtilities.INSTANCE.isConnected(MapActivity.this)) {
+                    return;
+                }
+                try {
+                    if (((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
+                            ((TextView) findViewById(R.id.editText3)).getText().toString().equals("ВВЕСТИ АДРЕС")
+                            || lats == null
+                            || !PolyUtil.containsLocation(selected_lat_lng, lats, false)) {
+                        selected = "";
+                        selected_lat_lng = null;
+                        Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    finish();
+                } catch (Exception e) {
+                    Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         selected = "";
         selected_lat_lng = null;
@@ -203,14 +194,13 @@ public class MapActivity extends BaseActivity
         }
 
         MapActivity.this.lats = new ArrayList<>();
-        for (int i = 0; i < lats.length; i++) {
-            MapActivity.this.lats.add(lats[i]);
-        }
+        Collections.addAll(MapActivity.this.lats, lats);
+
         PolygonOptions rectOptions = new PolygonOptions()
                 .fillColor(Color.argb(30, 56, 142, 60))
                 .strokeColor(Color.parseColor("#4CAF50"))
                 .add(lats);
-        Polygon polygon = googleMap.addPolygon(rectOptions);
+        googleMap.addPolygon(rectOptions);
     }
 
     private String getCompleteAddressString(double latitude, double lognitude) {

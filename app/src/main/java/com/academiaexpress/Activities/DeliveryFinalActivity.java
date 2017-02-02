@@ -109,10 +109,10 @@ public class DeliveryFinalActivity extends BaseActivity {
         findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MapActivity.selected_final == null || MapActivity.selected_final.isEmpty()) {
-                    Snackbar.make(findViewById(R.id.main), "Выберите адресс доставки.", Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
+//                if (MapActivity.selected_final == null || MapActivity.selected_final.isEmpty()) {
+//                    Snackbar.make(findViewById(R.id.main), "Выберите адресс доставки.", Snackbar.LENGTH_SHORT).show();
+//                    return;
+//                }
 
                 if (ProductsActivity.price == 0) {
                     Snackbar.make(findViewById(R.id.main), "Заказ пуст.", Snackbar.LENGTH_SHORT).show();
@@ -150,11 +150,11 @@ public class DeliveryFinalActivity extends BaseActivity {
             }
 
 
-            collection.add(new CreditCard(
-                    object.get("number").getAsString(),
-                    object.get("binding_id").getAsString(),
-                    start
-            ));
+//            collection.add(new CreditCard(
+//                    object.get("number").getAsString(),
+//                    object.get("binding_id").getAsString(),
+//                    start
+//            ));
         }
 
         Collections.sort(collection, new Comparator<CreditCard>() {
@@ -232,14 +232,14 @@ public class DeliveryFinalActivity extends BaseActivity {
             ((TextView) findViewById(R.id.textView26)).setText("ВАШ ЗАКАЗ НА " + ProductsActivity.price + " Р");
         }
 
-        if (!MapActivity.selected_final.isEmpty()) {
-            ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selected_final);
-            ((TextView) findViewById(R.id.textView40)).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView41)).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView42)).setVisibility(View.VISIBLE);
-            findViewById(R.id.editText3f).setVisibility(View.GONE);
-            MapActivity.selected = "";
-        }
+//        if (!MapActivity.selected_final.isEmpty()) {
+//            ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selected_final);
+//            ((TextView) findViewById(R.id.textView40)).setVisibility(View.VISIBLE);
+//            ((TextView) findViewById(R.id.textView41)).setVisibility(View.VISIBLE);
+//            ((TextView) findViewById(R.id.textView42)).setVisibility(View.VISIBLE);
+//            findViewById(R.id.editText3f).setVisibility(View.GONE);
+//            MapActivity.selected = "";
+//        }
 
         if (ProductsActivity.price >= 1000) {
             ((TextView) findViewById(R.id.textView18)).setVisibility(View.GONE);
