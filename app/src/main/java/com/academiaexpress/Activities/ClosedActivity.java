@@ -61,8 +61,11 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setupUIForMoneyValues() {
-        if (MoneyValues.countOfOrders == 0) setupIfEmptyOrder();
-        else setupIfNotEmptyOrders();
+        if (MoneyValues.countOfOrders == 0) {
+            setupIfEmptyOrder();
+        } else {
+            setupIfNotEmptyOrders();
+        }
     }
 
     private void setupIfEmptyOrder() {

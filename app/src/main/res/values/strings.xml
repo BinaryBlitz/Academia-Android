@@ -109,4 +109,15 @@
     <string name="profile">ПРОФИЛЬ</string>
     <string name="orders">ЗАКАЗЫ</string>
     <string name="help">ПОМОЩЬ</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">ОТМЕНА</string>
+    <string name="full_price">"Цена с доставкой: "</string>
+    <string name="discount">"Скидка: "</string>
+    <string name="bonuses">"Бонусы: "</string>
+    <string name="final_price">"Итого: "</string>
+    <string name="select_time_code">Выберите время</string>
+    <string name="no_time_error">Нет доступного для заказа времени.</string>
+    <string name="cancel_upcase">ОТМЕНА</string>
+    <string name="select">ВЫБРАТЬ</string>
 </resources>

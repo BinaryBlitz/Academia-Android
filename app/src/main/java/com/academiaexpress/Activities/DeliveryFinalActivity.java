@@ -43,8 +43,8 @@ public class DeliveryFinalActivity extends BaseActivity {
     private static int NO_ACTION = -1;
     public static int REMOVE_ACTION = -2;
 
-    public static int itemToEdit = -NO_ACTION;
-    public static int newCount = -NO_ACTION;
+    public static int itemToEdit = NO_ACTION;
+    public static int newCount = NO_ACTION;
     public static int cardIndex = 0;
 
     public static ArrayList<CreditCard> collection;
@@ -313,6 +313,5 @@ public class DeliveryFinalActivity extends BaseActivity {
         findViewById(R.id.textView41).setVisibility(View.VISIBLE);
         findViewById(R.id.textView42).setVisibility(View.VISIBLE);
         findViewById(R.id.editText3f).setVisibility(View.GONE);
-        MapActivity.selectedLocationName = "";
     }
 }
