@@ -127,7 +127,7 @@ public class MapActivity extends BaseActivity
                     return;
                 }
                 try {
-                    if (checkSelectedPoint()) {
+                    if (isSelectedPointCorrect()) {
                         Snackbar.make(findViewById(R.id.main), R.string.location_out_zone, Snackbar.LENGTH_SHORT).show();
                         return;
                     }
@@ -140,7 +140,7 @@ public class MapActivity extends BaseActivity
         });
     }
 
-    private boolean checkSelectedPoint() {
+    private boolean isSelectedPointCorrect() {
         return ((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
                 ((TextView) findViewById(R.id.editText3)).getText().toString().equals(getString(R.string.select_address))
                 || coordinates == null
