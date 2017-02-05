@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.academiaexpress.Activities.DeliveryFinalActivity
 import com.academiaexpress.Activities.EditOrderActivity
 import com.academiaexpress.Activities.ProductsActivity
 import com.academiaexpress.R
@@ -63,6 +64,7 @@ class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
         intent.putExtra(EXTRA_COUNT, ProductsActivity.collection[position].count)
         intent.putExtra(EXTRA_NAME, ProductsActivity.collection[position].name)
         intent.putExtra(EXTRA_INDEX, position)
+        DeliveryFinalActivity.itemToEdit = position
         context.startActivity(intent)
     }
 

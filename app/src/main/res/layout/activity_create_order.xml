@@ -19,13 +19,13 @@
         android:src="@drawable/quit_sign"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
+        android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="44dp"
-        android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/editText3"
         android:layout_gravity="center_horizontal|bottom"
@@ -36,7 +36,7 @@
         android:layout_marginRight="56dp"
         android:gravity="center"
         android:textColor="#212121"
-        android:text="ЗАКАЗАТЬ"
+        android:text="@string/order_upcase"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="12dp" />
@@ -44,7 +44,6 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="44dp"
-        android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/editText35"
         android:layout_gravity="center_horizontal|bottom"
@@ -55,7 +54,7 @@
         android:layout_marginRight="56dp"
         android:gravity="center"
         android:textColor="#212121"
-        android:text="ВЫБРАТЬ КАРТУ"
+        android:text="@string/select_card"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="62dp"
@@ -72,7 +71,6 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="44dp"
-        android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/editText3f"
         android:layout_gravity="center_horizontal|top"
@@ -81,7 +79,7 @@
         android:paddingRight="8dp"
         android:gravity="center"
         android:textColor="#212121"
-        android:text="Выберите адрес"
+        android:text="@string/select_address"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginLeft="56dp"
@@ -107,26 +105,27 @@
         android:id="@+id/imageView20"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginLeft="102dp"
+        android:layout_marginStart="102dp"
         android:src="@drawable/check"
         android:visibility="gone"
         android:layout_marginBottom="72dp" />
 
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="#212121"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginTop="174dp"></FrameLayout>
+        android:layout_marginTop="174dp"/>
 
-    <FrameLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="#212121"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="150dp"></FrameLayout>
+        android:layout_marginBottom="150dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -142,7 +141,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Москва Россия"
         android:id="@+id/textView40"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="118dp"
@@ -152,7 +150,7 @@
         android:layout_marginRight="32dp"
         android:gravity="fill_horizontal"
         android:visibility="gone"
-        android:singleLine="true" />
+        android:maxLines="1" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -171,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="АДРЕС ДОСТАВКИ"
+        android:text="@string/delivery_address"
         android:id="@+id/textView42"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="86dp"
@@ -184,7 +182,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="До бесплатной доставки осталось 90Р"
         android:id="@+id/textView4"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="160dp"
@@ -195,7 +192,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Доставка - 200р"
         android:id="@+id/textView18"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="174dp"

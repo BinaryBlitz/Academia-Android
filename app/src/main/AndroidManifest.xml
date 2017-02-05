@@ -31,13 +31,9 @@
             </intent-filter>
         </receiver>
 
-        <!--<meta-data-->
-        <!--android:name="com.google.android.geo.API_KEY"-->
-        <!--android:value="AIzaSyAo761oDjvHhIamQ8hrvxNoRLNC21S8a5c"/>-->
-
         <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyDtp9VVDZqlQHOzOGajThvNFjQ3uWOv8mo"/>
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyCMjChYhBT-MVpGR9VCTk29F1GeRUmeKAI"/>
 
         <activity
                 android:name=".Activities.ProductsActivity"

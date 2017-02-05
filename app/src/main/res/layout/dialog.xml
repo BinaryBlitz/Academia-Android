@@ -17,27 +17,22 @@
         android:layout_gravity="bottom">
 
         <TextView
-            android:id="@+id/button2"
+            android:id="@+id/cancelBtn"
             android:layout_width="150dp"
             android:layout_height="56dp"
-            android:layout_below="@+id/numberPicker1"
-            android:layout_toRightOf="@+id/numberPicker1"
-            android:text="ОТМЕНА"
-            android:layout_gravity="right|bottom"
+            android:text="@string/cancel_upcase"
+            android:layout_gravity="end|bottom"
             android:textSize="16sp"
             android:gravity="center"
             android:background="#333"
             android:textColor="#ffffff" />
 
         <TextView
-            android:id="@+id/button1"
+            android:id="@+id/okBtn"
             android:layout_width="150dp"
             android:layout_height="56dp"
-            android:layout_alignBaseline="@+id/button2"
-            android:layout_alignBottom="@+id/button2"
-            android:layout_toLeftOf="@+id/numberPicker1"
-            android:text="ВЫБРАТЬ"
-            android:layout_gravity="left|bottom"
+            android:text="@string/select"
+            android:layout_gravity="start|bottom"
             android:textSize="16sp"
             android:gravity="center"
             android:background="#212121"

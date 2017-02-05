@@ -2,6 +2,7 @@ package com.academiaexpress.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -53,17 +54,13 @@ public class MapActivity extends BaseActivity
     private static final int LOCATION_PERMISSION = 1;
     private GoogleMap googleMap;
 
-    static public LatLng selected_lat_lng;
-    static public String selected = "";
+    public static LatLng selectedLocation = null;
+    public static String selectedLocationName = "";
 
-    protected GoogleApiClient mGoogleApiClient;
-    protected Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
 
-    ArrayList<LatLng> lats;
-
-    public static boolean picked = false;
-
-    public static boolean fir = true;
+    private ArrayList<LatLng> coordinates;
+    private ProgressDialog dialog;
 
     @Override
     public void onLowMemory() {
@@ -72,6 +69,7 @@ public class MapActivity extends BaseActivity
     }
 
     private void initMap() {
+        dialog.show();
         final SupportMapFragment mMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.scroll);
 
         new Handler().post(new Runnable() {
@@ -95,16 +93,32 @@ public class MapActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_layout);
+        setContentView(R.layout.activity_map);
 
+        initFields();
+        initMap();
+        initGoogleApiClient();
+        setOnClickListeners();
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                getEdgePoints();
+            }
+        });
+    }
+
+    private void initFields() {
+        dialog = new ProgressDialog(this);
+    }
+
+    private void setOnClickListeners() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
-        fir = true;
 
         findViewById(R.id.editText3fd).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,29 +127,24 @@ public class MapActivity extends BaseActivity
                     return;
                 }
                 try {
-                    if (((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
-                            ((TextView) findViewById(R.id.editText3)).getText().toString().equals("ВВЕСТИ АДРЕС")
-                            || lats == null
-                            || !PolyUtil.containsLocation(selected_lat_lng, lats, false)) {
-                        selected = "";
-                        selected_lat_lng = null;
-                        Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
+                    if (isSelectedPointCorrect()) {
+                        Snackbar.make(findViewById(R.id.main), R.string.location_out_zone, Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
                     finish();
                 } catch (Exception e) {
-                    Snackbar.make(findViewById(R.id.main), "Мы доставляем только внутри Садового Кольца.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main), R.string.location_out_zone, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
-        selected = "";
-        selected_lat_lng = null;
-
-        initMap();
-        initGoogleApiClient();
-
+    private boolean isSelectedPointCorrect() {
+        return ((TextView) findViewById(R.id.editText3)).getText().toString().isEmpty() ||
+                ((TextView) findViewById(R.id.editText3)).getText().toString().equals(getString(R.string.select_address))
+                || coordinates == null
+                || !PolyUtil.containsLocation(selectedLocation, coordinates, false);
     }
 
     @SuppressLint("NewApi")
@@ -144,12 +153,37 @@ public class MapActivity extends BaseActivity
     }
 
     private void setUpMap() {
+        dialog.dismiss();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         googleMap.setMyLocationEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        googleMap.setPadding(0, (int) AndroidUtilities.INSTANCE.convertDpToPixel(66f, this), 0, 0);
+
+        if (selectedLocation != null) {
+            processPreviouslySelectedLocation();
+        } else {
+            getLocationFromGoogle();
+        }
+    }
+
+    private void processPreviouslySelectedLocation() {
+        getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
+        ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
+        moveCamera(true);
+    }
+
+    private void getLocationFromGoogle() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mGoogleApiClient.isConnected()) {
+                    getLocation();
+                } else {
+                    mGoogleApiClient.connect();
+                }
+            }
+        }, 50);
     }
 
     @Override
@@ -157,11 +191,13 @@ public class MapActivity extends BaseActivity
         this.googleMap = googleMap;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkPermission()) {
+                dialog.dismiss();
                 ActivityCompat.requestPermissions(MapActivity.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION);
             } else {
                 setUpMap();
             }
         } catch (Exception e) {
+            dialog.dismiss();
             LogUtil.logException(e);
         }
     }
@@ -170,7 +206,9 @@ public class MapActivity extends BaseActivity
         ServerApi.get(this).api().getEdgePoints(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                if (response.isSuccessful()) parseEdgePoints(response.body());
+                if (response.isSuccessful()) {
+                    parseEdgePoints(response.body());
+                }
             }
 
             @Override
@@ -193,8 +231,8 @@ public class MapActivity extends BaseActivity
             }
         }
 
-        MapActivity.this.lats = new ArrayList<>();
-        Collections.addAll(MapActivity.this.lats, lats);
+        coordinates = new ArrayList<>();
+        Collections.addAll(coordinates, lats);
 
         PolygonOptions rectOptions = new PolygonOptions()
                 .fillColor(Color.argb(30, 56, 142, 60))
@@ -203,48 +241,32 @@ public class MapActivity extends BaseActivity
         googleMap.addPolygon(rectOptions);
     }
 
-    private String getCompleteAddressString(double latitude, double lognitude) {
-        String strAdd = "";
+    private void getCompleteAddressString(double latitude, double longitude) {
+        String strAdd = selectedLocationName;
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, lognitude, 1);
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses != null) {
                 if (addresses.size() > 0) {
                     strAdd = addresses.get(0).getAddressLine(0);
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            LogUtil.logException(e);
         }
 
-        selected_lat_lng = new LatLng(latitude, lognitude);
-
-        selected = strAdd;
-        return strAdd;
+        selectedLocationName = strAdd;
     }
 
     @Override
     public void onUpdateMapAfterUserInteraction() {
         try {
-            String res = getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
-            ((TextView) findViewById(R.id.editText3)).setText(res);
+            selectedLocation = googleMap.getCameraPosition().target;
+            getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
+            ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
         } catch (Exception e) {
             LogUtil.logException(e);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mGoogleApiClient.isConnected()) {
-                    getLocation();
-                } else {
-                    mGoogleApiClient.connect();
-                }
-            }
-        }, 50);
     }
 
     @Override
@@ -264,55 +286,28 @@ public class MapActivity extends BaseActivity
         }
     }
 
-    private boolean isPointInPolygon(LatLng tap, ArrayList<LatLng> vertices) {
-        int intersectCount = 0;
-        for (int j = 0; j < vertices.size() - 1; j++) {
-            if (rayCastIntersect(tap, vertices.get(j), vertices.get(j + 1))) {
-                intersectCount++;
-            }
-        }
-
-        return ((intersectCount % 2) == 1);
-    }
-
-    private boolean rayCastIntersect(LatLng tap, LatLng vertA, LatLng vertB) {
-        double aY = vertA.latitude;
-        double bY = vertB.latitude;
-        double aX = vertA.longitude;
-        double bX = vertB.longitude;
-        double pY = tap.latitude;
-        double pX = tap.longitude;
-
-        if ((aY > pY && bY > pY) || (aY < pY && bY < pY) || (aX < pX && bX < pX)) {
-            return false;
-        }
-
-        double m = (aY - bY) / (aX - bX);
-        double bee = (-aX) * m + aY;
-        double x = (pY - bee) / m;
-
-        return x > pX;
-    }
-
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            onLocationError();
             return;
         }
 
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if (mLastLocation != null) {
-            selected_lat_lng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            moveCamera(true);
-        } else {
-            onLocationError();
+        if (lastLocation != null) {
+            processGoogleLocation(lastLocation);
         }
+    }
+
+    private void processGoogleLocation(Location lastLocation) {
+        selectedLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
+        ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
+        moveCamera(true);
     }
 
     private void moveCamera(final boolean setText) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(selected_lat_lng)
+                .target(selectedLocation)
                 .zoom(17)
                 .bearing(0)
                 .tilt(0)
@@ -321,14 +316,14 @@ public class MapActivity extends BaseActivity
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                new Handler().postDelayed(new Runnable() {
+                new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         if (setText) {
                             getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
                         }
                     }
-                }, 50);
+                });
             }
 
             @Override

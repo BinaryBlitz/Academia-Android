@@ -39,7 +39,9 @@ class CodeActivity : BaseActivity() {
 
     internal val myRunnable: Runnable = Runnable {
         str = getString(R.string.send_code_again_after) + (milis.toDouble() / SLEEP_TIME.toDouble()).toInt()
-        if (milis < 2 * SLEEP_TIME) str = REPEAT_STR
+        if (milis < 2 * SLEEP_TIME) {
+            str = REPEAT_STR
+        }
     }
 
     private fun UpdateGUI() {
@@ -108,8 +110,11 @@ class CodeActivity : BaseActivity() {
                     while (!isInterrupted) {
                         Thread.sleep(SLEEP_TIME.toLong())
                         runOnUiThread {
-                            if (str == REPEAT_STR) activateSendAgainButton()
-                            else helperTextView!!.text = str
+                            if (str == REPEAT_STR) {
+                                activateSendAgainButton()
+                            } else {
+                                helperTextView!!.text = str
+                            }
 
                             helperTextView!!.isClickable = milis < 2 * SLEEP_TIME
                         }
@@ -138,8 +143,11 @@ class CodeActivity : BaseActivity() {
     private fun auth() {
         ServerApi.get(this).api().authWithPhoneNumber(phone).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) authResponse(response.body())
-                else onInternetConnectionError()
+                if (response.isSuccessful) {
+                    authResponse(response.body())
+                } else {
+                    onInternetConnectionError()
+                }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -149,8 +157,11 @@ class CodeActivity : BaseActivity() {
     }
 
     private fun parseVerify(obj: JsonObject) {
-        if (obj.get("api_token").isJsonNull) openProfileActivity()
-        else processToken(obj.get("api_token").asString)
+        if (obj.get("api_token").isJsonNull) {
+            openProfileActivity()
+        } else {
+            processToken(obj.get("api_token").asString)
+        }
     }
 
     private fun processToken(apiToken: String) {
@@ -181,8 +192,11 @@ class CodeActivity : BaseActivity() {
         ServerApi.get(this).api().verify(token, (findViewById(R.id.editText3) as EditText).text.toString()).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 dialog.dismiss()
-                if (response.isSuccessful) parseVerify(response.body())
-                else onInternetConnectionError()
+                if (response.isSuccessful) {
+                    parseVerify(response.body())
+                } else {
+                    onInternetConnectionError()
+                }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
