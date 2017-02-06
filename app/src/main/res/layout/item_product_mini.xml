@@ -69,7 +69,7 @@
         android:background="#eaeaea"
         android:layout_marginEnd="16sp"
         android:layout_marginRight="16sp"
-        android:src="@drawable/plus_ic" />
+        android:src="@drawable/ic_plus" />
 
     <TextView
         android:layout_width="20dp"

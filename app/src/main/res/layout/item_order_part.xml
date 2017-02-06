@@ -44,5 +44,5 @@
         android:layout_height="24dp"
         android:id="@+id/imageView24"
         android:layout_gravity="end|center_vertical"
-        android:src="@drawable/arrow" />
+        android:src="@drawable/ic_next" />
 </FrameLayout>

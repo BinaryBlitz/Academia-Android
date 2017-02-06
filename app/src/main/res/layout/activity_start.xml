@@ -15,7 +15,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
         android:id="@+id/content_hamburger"
-        android:src="@drawable/menu_icon"
+        android:src="@drawable/ic_menu"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
         android:layout_marginTop="8dp" />
