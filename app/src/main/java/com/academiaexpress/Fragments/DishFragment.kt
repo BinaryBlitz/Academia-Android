@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.academiaexpress.Activities.ProductsActivity
+import com.academiaexpress.Base.BaseProductFragment
 import com.academiaexpress.Custom.ExpandableHeightGridView
 import com.academiaexpress.Data.DeliveryMeal
 import com.academiaexpress.Data.DeliveryOrder
@@ -18,6 +19,7 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
 
 class DishFragment : BaseProductFragment() {
+    private val ANIMATION_DURATION = 400L
 
     private var meal: DeliveryMeal? = null
     private var part: DeliveryOrder.OrderPart? = null
@@ -25,7 +27,7 @@ class DishFragment : BaseProductFragment() {
     override fun animateScroll() {
         val coordinate = (AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)) / 5
         smoothScroll(0, coordinate)
-        Handler().postDelayed({ smoothScroll(coordinate, 0) }, 500)
+        Handler().postDelayed({ smoothScroll(coordinate, 0) }, ANIMATION_DURATION)
     }
 
     private fun smoothScroll(start: Int,  end: Int) {
@@ -161,12 +163,9 @@ class DishFragment : BaseProductFragment() {
                 convertView = inflater.inflate(R.layout.item_ingredient, null)
                 val name = convertView.findViewById(R.id.textView17) as TextView
                 name.text = meal!!.badges!![position].second
-
+                val padding = AndroidUtilities.dpToPx(name.context, 25f)
                 val icon = convertView.findViewById(R.id.imageView6) as ImageView
-                icon.setPadding(AndroidUtilities.dpToPx(name.context, 25f),
-                        AndroidUtilities.dpToPx(name.context, 25f),
-                        AndroidUtilities.dpToPx(name.context, 25f),
-                        AndroidUtilities.dpToPx(name.context, 25f))
+                icon.setPadding(padding, padding, padding, padding)
 
                 Image.loadPhoto(meal!!.badges!![position].first, icon)
 

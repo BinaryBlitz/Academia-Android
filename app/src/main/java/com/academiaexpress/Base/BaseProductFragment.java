@@ -1,4 +1,4 @@
-package com.academiaexpress.Fragments;
+package com.academiaexpress.Base;
 
 import android.support.v4.app.Fragment;
 import android.widget.ScrollView;

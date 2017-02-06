@@ -5,21 +5,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Pair;
-import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
+import com.academiaexpress.Base.BaseProductFragment;
+import com.academiaexpress.Base.SmartFragmentStatePagerAdapter;
 import com.academiaexpress.Data.DeliveryMeal;
 import com.academiaexpress.Data.DeliveryOrder;
-import com.academiaexpress.Fragments.BaseProductFragment;
 import com.academiaexpress.Fragments.DishFragment;
 import com.academiaexpress.Fragments.FinalPageFragment;
 import com.academiaexpress.Fragments.LunchFragment;
@@ -41,6 +39,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductsActivity extends BaseActivity {
+    private static final int DELAY_BEFORE_FRAGMENT_ANIMATION = 800;
+    private static final int ANIMATION_DURATION = 500;
+    private static final float BUTTON_HIDE_OFFSET = 36f;
+
+    private static final String EXTRA_FIRST = "first";
 
     private ArrayList<DeliveryMeal> products;
     private ArrayList<Fragment> fragments;
@@ -104,7 +107,7 @@ public class ProductsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductsActivity.this, EditProfileActivity.class);
-                intent.putExtra("first", false);
+                intent.putExtra(EXTRA_FIRST, false);
                 startActivity(intent);
             }
         });
@@ -215,12 +218,14 @@ public class ProductsActivity extends BaseActivity {
                 if (response.isSuccessful()) {
                     parseDay(response.body());
                 } else {
+                    findViewById(R.id.loading_indicator).setVisibility(View.GONE);
                     onInternetConnectionError();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                findViewById(R.id.loading_indicator).setVisibility(View.GONE);
                 onInternetConnectionError();
             }
         });
@@ -399,7 +404,7 @@ public class ProductsActivity extends BaseActivity {
                     LogUtil.logException(e);
                 }
             }
-        }, 300);
+        }, DELAY_BEFORE_FRAGMENT_ANIMATION);
     }
 
     private void listenToScroll() {
@@ -411,7 +416,7 @@ public class ProductsActivity extends BaseActivity {
             public void run() {
                 setScrollListener(((BaseProductFragment) fragments.get(0)).getScrollView());
             }
-        }, 600);
+        }, ANIMATION_DURATION);
     }
 
     private void parseDay(final JsonObject object) {
@@ -457,7 +462,7 @@ public class ProductsActivity extends BaseActivity {
             @Override
             public void onScrollChanged() {
                 int scrollY = scrollView.getScrollY();
-                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, 36f)));
+                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, BUTTON_HIDE_OFFSET)));
             }
         });
     }
@@ -467,7 +472,7 @@ public class ProductsActivity extends BaseActivity {
             @Override
             public void onScrollChanged() {
                 int scrollY = scrollView.getScrollY();
-                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, 36f)));
+                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, BUTTON_HIDE_OFFSET)));
             }
         });
     }
@@ -477,34 +482,8 @@ public class ProductsActivity extends BaseActivity {
         findViewById(R.id.indicator_default).setAlpha(f);
     }
 
-    public static abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
-        private SparseArray<Fragment> registeredFragments = new SparseArray<>();
-
-        public SmartFragmentStatePagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-            registeredFragments.put(position, fragment);
-            return fragment;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            registeredFragments.remove(position);
-            super.destroyItem(container, position, object);
-        }
-
-        public Fragment getRegisteredFragment(int position) {
-            return registeredFragments.get(position);
-        }
-    }
-
-    public class MyPagerAdapter extends ProductsActivity.SmartFragmentStatePagerAdapter {
-
-        public MyPagerAdapter(FragmentManager fragmentManager) {
+    public class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
+        MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
