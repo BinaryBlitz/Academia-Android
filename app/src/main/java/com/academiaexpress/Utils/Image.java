@@ -20,6 +20,7 @@ public class Image {
                 .load(path)
                 .resize(550, 1000)
                 .centerCrop()
+                .noFade()
                 .into(imageView);
     }
 

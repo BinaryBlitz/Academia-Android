@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.academiaexpress.Activities.ProductsActivity
+import com.academiaexpress.Base.BaseProductFragment
 import com.academiaexpress.Custom.ExpandableHeightGridView
 import com.academiaexpress.Data.DeliveryMeal
 import com.academiaexpress.Data.DeliveryOrder
@@ -18,6 +19,7 @@ import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
 
 class LunchFragment : BaseProductFragment() {
+    private val ANIMATION_DURATION = 400L
 
     private var meal: DeliveryMeal? = null
     private var part: DeliveryOrder.OrderPart? = null
@@ -28,8 +30,8 @@ class LunchFragment : BaseProductFragment() {
 
     override fun animateScroll() {
         val coordinate = (AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)) / 5
-        smoothScroll(0, coordinate)
-        Handler().postDelayed({ smoothScroll(coordinate, 0) }, 500)
+        Handler().post({ smoothScroll(0, coordinate) })
+        Handler().postDelayed({ smoothScroll(coordinate, 0) }, ANIMATION_DURATION)
     }
 
     private fun smoothScroll(start: Int,  end: Int) {
@@ -42,20 +44,20 @@ class LunchFragment : BaseProductFragment() {
         (view!!.findViewById(R.id.textView16) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
 
         (view!!.findViewById(R.id.textView11) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
+
         Image.loadDishPhoto(meal!!.photoLink, view!!.findViewById(R.id.imageView3) as ImageView)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (view == null) return
+        if (view == null) {
+            return
+        }
 
-        val isCanBuyIndicator = view.findViewById(R.id.textViewfdfdfsfs)
-
-        if (!meal!!.isCanBuy) isCanBuyIndicator.visibility = View.GONE
-        else isCanBuyIndicator.visibility = View.VISIBLE
-
-        isCanBuyIndicator.setOnClickListener(null)
+        val outOfStockIndicator = view.findViewById(R.id.textViewfdfdfsfs)
+        outOfStockIndicator.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator.setOnClickListener(null)
     }
 
     private fun hideEnergy() {
@@ -129,7 +131,6 @@ class LunchFragment : BaseProductFragment() {
         val params = layout.layoutParams as LinearLayout.LayoutParams
         params.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
 
-
         view!!.findViewById(R.id.textView).setOnClickListener {
             if (!DishFragment.answer) {
                 Answers.getInstance().logCustom(CustomEvent(getString(R.string.event_product_added)))
@@ -155,10 +156,9 @@ class LunchFragment : BaseProductFragment() {
                 name.text = meal!!.badges!![position].second
 
                 val icon = convertView.findViewById(R.id.imageView6) as ImageView
-                icon.setPadding(AndroidUtilities.dpToPx(icon.context, 25f),
-                        AndroidUtilities.dpToPx(icon.context, 25f),
-                        AndroidUtilities.dpToPx(icon.context, 25f),
-                        AndroidUtilities.dpToPx(icon.context, 25f))
+                val padding = AndroidUtilities.dpToPx(icon.context, 25f)
+
+                icon.setPadding(padding, padding, padding, padding)
                 Image.loadPhoto(meal!!.badges!![position].first, icon)
 
                 return convertView
