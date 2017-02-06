@@ -51,6 +51,7 @@ public class ProductsActivity extends BaseActivity {
 
     private ViewPager defaultViewpager;
     private CircleIndicator defaultIndicator;
+    private ProgressDialog dialog;
 
     public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
 
@@ -87,6 +88,7 @@ public class ProductsActivity extends BaseActivity {
         price = 0;
 
         canceled = false;
+        dialog = new ProgressDialog(this);
     }
 
     private void initElements() {
@@ -206,13 +208,11 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void getDay() {
-        final ProgressDialog dialog = new ProgressDialog(this);
         dialog.show();
 
         ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                dialog.dismiss();
                 if (response.isSuccessful()) {
                     parseDay(response.body());
                 } else {
@@ -305,7 +305,6 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private DeliveryMeal parseLunch(JsonObject object) {
-        LogUtil.logError(object.toString());
         return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
@@ -366,11 +365,23 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void setupPages() {
-        final DemoPagerAdapter defaultPagerAdapter = new DemoPagerAdapter(getSupportFragmentManager());
-        defaultViewpager.setAdapter(defaultPagerAdapter);
-        defaultIndicator.setViewPager(defaultViewpager);
-        defaultViewpager.setOffscreenPageLimit(products.size() + 1);
-        initScrolls();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final DemoPagerAdapter defaultPagerAdapter = new DemoPagerAdapter(getSupportFragmentManager());
+                defaultViewpager.setAdapter(defaultPagerAdapter);
+                defaultViewpager.setOffscreenPageLimit(products.size() + 1);
+                defaultViewpager.setAdapter(defaultPagerAdapter);
+                defaultIndicator.setViewPager(defaultViewpager);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 200);
+                initScrolls();
+            }
+        });
     }
 
     private void initScrolls() {
@@ -383,7 +394,7 @@ public class ProductsActivity extends BaseActivity {
                     LogUtil.logException(e);
                 }
             }
-        }, 550);
+        }, 150);
     }
 
     private void listenToScroll() {
@@ -394,13 +405,18 @@ public class ProductsActivity extends BaseActivity {
             public void run() {
                 setScrollListener(fragments.get(0).getScrollView());
             }
-        }, 800);
+        }, 600);
     }
 
-    private void parseDay(JsonObject object) {
-        parseLunches(object.get("lunches").getAsJsonArray());
-        parseDishes(object.get("dishes").getAsJsonArray());
-        setupPages();
+    private void parseDay(final JsonObject object) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                parseLunches(object.get("lunches").getAsJsonArray());
+                parseDishes(object.get("dishes").getAsJsonArray());
+                setupPages();
+            }
+        }).start();
     }
 
     private void hideMenu() {
