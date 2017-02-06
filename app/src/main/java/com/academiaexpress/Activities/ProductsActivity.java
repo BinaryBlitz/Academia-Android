@@ -179,8 +179,11 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void setupUIForMoneyValues() {
-        if (MoneyValues.countOfOrders == 0) setupIfEmptyOrder();
-        else setupIfNotEmptyOrders();
+        if (MoneyValues.countOfOrders == 0) {
+            setupIfEmptyOrder();
+        } else {
+            setupIfNotEmptyOrders();
+        }
     }
 
     private void setupIfNotEmptyOrders() {
@@ -210,8 +213,11 @@ public class ProductsActivity extends BaseActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 dialog.dismiss();
-                if (response.isSuccessful()) parseDay(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseDay(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -233,31 +239,48 @@ public class ProductsActivity extends BaseActivity {
         return energy;
     }
 
-    private ArrayList<Pair<String, String>> getIngridients(JsonObject object) {
-        ArrayList<Pair<String, String>> ingridients = new ArrayList<>();
+    private ArrayList<Pair<String, String>> getIngredientsForDish(JsonObject object) {
+        ArrayList<Pair<String, String>> ingredients = new ArrayList<>();
 
         if (object.get("ingredients") != null && !object.get("ingredients").isJsonNull()) {
-            JsonArray ingridientsJson = object.get("ingredients").getAsJsonArray();
+            JsonArray ingredientsJson = object.get("ingredients").getAsJsonArray();
 
-            for (int j = 0; j < ingridientsJson.size(); j++) {
-                JsonObject ingridient = ingridientsJson.get(j).getAsJsonObject();
-                ingridients.add(new Pair<>(
-                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingridient.get("image_url")),
-                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingridient.get("name"))));
+            for (int j = 0; j < ingredientsJson.size(); j++) {
+                JsonObject ingredient = ingredientsJson.get(j).getAsJsonObject();
+                ingredients.add(new Pair<>(
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("image_url")),
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("name"))));
             }
         }
 
-        return ingridients;
+        return ingredients;
+    }
+
+    private ArrayList<Pair<String, String>> getIngredientsForLunch(JsonObject object) {
+        ArrayList<Pair<String, String>> ingredients = new ArrayList<>();
+
+        if (object.get("ingredients") != null && !object.get("ingredients").isJsonNull()) {
+            JsonArray ingredientsJson = object.get("ingredients").getAsJsonArray();
+
+            for (int j = 0; j < ingredientsJson.size(); j++) {
+                JsonObject ingredient = ingredientsJson.get(j).getAsJsonObject();
+                ingredients.add(new Pair<>(
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("name")),
+                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("weight"))));
+            }
+        }
+
+        return ingredients;
     }
 
     private ArrayList<Pair<String, String>> getBadges(JsonObject object) {
         ArrayList<Pair<String, String>> badges = new ArrayList<>();
 
         if (object.get("badges") != null && !object.get("badges").isJsonNull()) {
-            JsonArray ingridientsJson = object.get("badges").getAsJsonArray();
+            JsonArray ingredientsJson = object.get("badges").getAsJsonArray();
 
-            for (int j = 0; j < ingridientsJson.size(); j++) {
-                JsonObject badge = ingridientsJson.get(j).getAsJsonObject();
+            for (int j = 0; j < ingredientsJson.size(); j++) {
+                JsonObject badge = ingredientsJson.get(j).getAsJsonObject();
                 badges.add(new Pair<>(
                         AndroidUtilities.INSTANCE.getStringFieldFromJson(badge.get("image_url")),
                         AndroidUtilities.INSTANCE.getStringFieldFromJson(badge.get("name"))));
@@ -267,11 +290,26 @@ public class ProductsActivity extends BaseActivity {
         return badges;
     }
 
-    private DeliveryMeal parseMeal(JsonObject object) {
+    private DeliveryMeal parseDish(JsonObject object) {
         return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
-                getIngridients(object),
+                getIngredientsForDish(object),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("image_url")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("description")),
+                getBadges(object),
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")),
+                object.get("proteins") == null || object.get("proteins").isJsonNull() ? null : parseEnergy(object),
+                (object.get("out_of_stock") == null || object.get("out_of_stock").isJsonNull()) ||
+                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")));
+    }
+
+    private DeliveryMeal parseLunch(JsonObject object) {
+        LogUtil.logError(object.toString());
+        return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
+                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
+                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
+                getIngredientsForLunch(object),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("image_url")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("description")),
                 getBadges(object),
@@ -283,7 +321,9 @@ public class ProductsActivity extends BaseActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void addDishFragment(JsonArray array, int i) {
-        if (products.get(array.size() + i) == null || products.get(array.size() + i).getId() == null) return;
+        if (products.get(array.size() + i) == null || products.get(array.size() + i).getId() == null) {
+            return;
+        }
 
         BaseProductFragment fragment = new DishFragment();
         DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array.size() + i).getPrice(),
@@ -296,7 +336,9 @@ public class ProductsActivity extends BaseActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void addLunchFragment(int i) {
-        if (products.get(i) == null || products.get(i).getId() == null) return;
+        if (products.get(i) == null || products.get(i).getId() == null) {
+            return;
+        }
 
         BaseProductFragment fragment = new LunchFragment();
         DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
@@ -310,7 +352,7 @@ public class ProductsActivity extends BaseActivity {
     private void parseDishes(JsonArray array) {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
-            products.add(parseMeal(object));
+            products.add(parseDish(object));
             addDishFragment(array, i);
         }
     }
@@ -318,7 +360,7 @@ public class ProductsActivity extends BaseActivity {
     private void parseLunches(JsonArray array) {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
-            products.add(parseMeal(object));
+            products.add(parseLunch(object));
             addLunchFragment(i);
         }
     }
@@ -375,8 +417,11 @@ public class ProductsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (product_count == 0) hideMenu();
-        else showMenu();
+        if (product_count == 0) {
+            hideMenu();
+        } else {
+            showMenu();
+        }
     }
 
     public void setScrollListener(final NestedScrollView scrollView) {
@@ -411,8 +456,11 @@ public class ProductsActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int i) {
-            if (i != products.size()) return fragments.get(i);
-            else return initFinalPage();
+            if (i != products.size()) {
+                return fragments.get(i);
+            } else {
+                return initFinalPage();
+            }
         }
 
         @Override

@@ -52,8 +52,11 @@ class LunchFragment : BaseProductFragment() {
 
         val isCanBuyIndicator = view.findViewById(R.id.textViewfdfdfsfs)
 
-        if (!meal!!.isCanBuy) isCanBuyIndicator.visibility = View.GONE
-        else isCanBuyIndicator.visibility = View.VISIBLE
+        if (!meal!!.isCanBuy) {
+            isCanBuyIndicator.visibility = View.GONE
+        } else {
+            isCanBuyIndicator.visibility = View.VISIBLE
+        }
 
         isCanBuyIndicator.setOnClickListener(null)
     }
