@@ -51,7 +51,6 @@ public class ProductsActivity extends BaseActivity {
 
     private ViewPager defaultViewpager;
     private CircleIndicator defaultIndicator;
-    private ProgressDialog dialog;
 
     public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
 
@@ -88,7 +87,6 @@ public class ProductsActivity extends BaseActivity {
         price = 0;
 
         canceled = false;
-        dialog = new ProgressDialog(this);
     }
 
     private void initElements() {
@@ -208,7 +206,6 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void getDay() {
-        dialog.show();
 
         ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
@@ -222,7 +219,6 @@ public class ProductsActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                dialog.dismiss();
                 onInternetConnectionError();
             }
         });
@@ -373,12 +369,6 @@ public class ProductsActivity extends BaseActivity {
                 defaultViewpager.setOffscreenPageLimit(products.size() + 1);
                 defaultViewpager.setAdapter(defaultPagerAdapter);
                 defaultIndicator.setViewPager(defaultViewpager);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                    }
-                }, 200);
                 initScrolls();
             }
         });
@@ -394,7 +384,7 @@ public class ProductsActivity extends BaseActivity {
                     LogUtil.logException(e);
                 }
             }
-        }, 150);
+        }, 200);
     }
 
     private void listenToScroll() {

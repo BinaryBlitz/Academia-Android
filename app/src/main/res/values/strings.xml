@@ -120,4 +120,5 @@
     <string name="no_time_error">Нет доступного для заказа времени.</string>
     <string name="cancel_upcase">ОТМЕНА</string>
     <string name="select">ВЫБРАТЬ</string>
+    <string name="loading_menu">Загружаем меню...</string>
 </resources>
