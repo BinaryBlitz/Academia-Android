@@ -1,19 +1,17 @@
 package com.academiaexpress.Activities;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,6 +30,8 @@ import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.Animations;
 import com.academiaexpress.Utils.LogUtil;
 import com.academiaexpress.Utils.MoneyValues;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -43,14 +43,14 @@ import retrofit2.Response;
 public class ProductsActivity extends BaseActivity {
 
     private ArrayList<DeliveryMeal> products;
-    private ArrayList<BaseProductFragment> fragments;
-    private FinalPageFragment fragment;
+    private ArrayList<Fragment> fragments;
     public static int product_count = 0;
     public static int price = 0;
     static boolean canceled = false;
 
     private ViewPager defaultViewpager;
     private CircleIndicator defaultIndicator;
+    private MyPagerAdapter defaultPagerAdapter;
 
     public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
 
@@ -164,8 +164,11 @@ public class ProductsActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == products.size()) setScrollListener(fragment.getScrollView());
-                else setScrollListener(fragments.get(position).getScrollView());
+                if (position == products.size()) {
+                    setScrollListener(((FinalPageFragment) fragments.get(products.size())).getScrollView());
+                } else {
+                    setScrollListener(((BaseProductFragment) fragments.get(position)).getScrollView());
+                }
             }
 
             @Override
@@ -206,7 +209,6 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void getDay() {
-
         ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -320,13 +322,20 @@ public class ProductsActivity extends BaseActivity {
             return;
         }
 
-        BaseProductFragment fragment = new DishFragment();
+        final BaseProductFragment fragment = new DishFragment();
         DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array.size() + i).getPrice(),
                 products.get(array.size() + i).getMealName(), products.get(array.size() + i).getId());
         part.setCount(0);
         fragment.setPart(part);
         fragment.setInfo(products.get(array.size() + i));
-        fragments.add(fragment);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fragments.add(fragment);
+                defaultPagerAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -335,13 +344,20 @@ public class ProductsActivity extends BaseActivity {
             return;
         }
 
-        BaseProductFragment fragment = new LunchFragment();
+        final BaseProductFragment fragment = new LunchFragment();
         DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
                 products.get(i).getMealName(), products.get(i).getId());
         part.setCount(0);
         fragment.setPart(part);
         fragment.setInfo(products.get(i));
-        fragments.add(fragment);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fragments.add(fragment);
+                defaultPagerAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void parseDishes(JsonArray array) {
@@ -364,10 +380,9 @@ public class ProductsActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final DemoPagerAdapter defaultPagerAdapter = new DemoPagerAdapter(getSupportFragmentManager());
-                defaultViewpager.setAdapter(defaultPagerAdapter);
-                defaultViewpager.setOffscreenPageLimit(products.size() + 1);
-                defaultViewpager.setAdapter(defaultPagerAdapter);
+                fragments.add(initFinalPage());
+                defaultPagerAdapter.notifyDataSetChanged();
+                defaultViewpager.setOffscreenPageLimit(fragments.size());
                 defaultIndicator.setViewPager(defaultViewpager);
                 initScrolls();
             }
@@ -384,21 +399,24 @@ public class ProductsActivity extends BaseActivity {
                     LogUtil.logException(e);
                 }
             }
-        }, 200);
+        }, 300);
     }
 
     private void listenToScroll() {
-        fragments.get(0).animateScroll();
+        findViewById(R.id.loading_indicator).setVisibility(View.GONE);
+        ((BaseProductFragment) fragments.get(0)).animateScroll();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                setScrollListener(fragments.get(0).getScrollView());
+                setScrollListener(((BaseProductFragment) fragments.get(0)).getScrollView());
             }
         }, 600);
     }
 
     private void parseDay(final JsonObject object) {
+        defaultPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        defaultViewpager.setAdapter(defaultPagerAdapter);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -407,6 +425,10 @@ public class ProductsActivity extends BaseActivity {
                 setupPages();
             }
         }).start();
+    }
+
+    private FinalPageFragment initFinalPage() {
+        return new FinalPageFragment();
     }
 
     private void hideMenu() {
@@ -455,29 +477,50 @@ public class ProductsActivity extends BaseActivity {
         findViewById(R.id.indicator_default).setAlpha(f);
     }
 
-    public class DemoPagerAdapter extends FragmentPagerAdapter {
-        DemoPagerAdapter(FragmentManager fm) {
-            super(fm);
+    public static abstract class SmartFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+        private SparseArray<Fragment> registeredFragments = new SparseArray<>();
+
+        public SmartFragmentStatePagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
-        public Fragment getItem(int i) {
-            if (i != products.size()) {
-                return fragments.get(i);
-            } else {
-                return initFinalPage();
-            }
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+    }
+
+    public class MyPagerAdapter extends ProductsActivity.SmartFragmentStatePagerAdapter {
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
         public int getCount() {
-            return products.size() + 1;
+            return fragments.size();
         }
 
-        private FinalPageFragment initFinalPage() {
-            FinalPageFragment fragment = new FinalPageFragment();
-            ProductsActivity.this.fragment = fragment;
-            return fragment;
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
         }
     }
 }

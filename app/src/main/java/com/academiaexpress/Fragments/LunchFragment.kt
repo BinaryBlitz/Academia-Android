@@ -28,7 +28,7 @@ class LunchFragment : BaseProductFragment() {
 
     override fun animateScroll() {
         val coordinate = (AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)) / 5
-        smoothScroll(0, coordinate)
+        Handler().postDelayed({ smoothScroll(0, coordinate) }, 100)
         Handler().postDelayed({ smoothScroll(coordinate, 0) }, 500)
     }
 
