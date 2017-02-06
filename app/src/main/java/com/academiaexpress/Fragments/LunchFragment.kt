@@ -51,17 +51,13 @@ class LunchFragment : BaseProductFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (view == null) return
-
-        val isCanBuyIndicator = view.findViewById(R.id.textViewfdfdfsfs)
-
-        if (!meal!!.isCanBuy) {
-            isCanBuyIndicator.visibility = View.GONE
-        } else {
-            isCanBuyIndicator.visibility = View.VISIBLE
+        if (view == null) {
+            return
         }
 
-        isCanBuyIndicator.setOnClickListener(null)
+        val outOfStockIndicator = view.findViewById(R.id.textViewfdfdfsfs)
+        outOfStockIndicator.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator.setOnClickListener(null)
     }
 
     private fun hideEnergy() {
