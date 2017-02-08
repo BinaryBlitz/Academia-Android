@@ -121,4 +121,6 @@
     <string name="cancel_upcase">ОТМЕНА</string>
     <string name="select">ВЫБРАТЬ</string>
     <string name="loading_menu">Загружаем меню...</string>
+    <string name="order_status_changed">Статус заказа изменен</string>
+    <string name="default_notification_text">Просмотрите ваш заказ</string>
 </resources>
