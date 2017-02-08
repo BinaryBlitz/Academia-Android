@@ -1,17 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.academiaexpress">
 
-    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <permission android:name="com.academiaexpress.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
-    <uses-permission android:name="com.academiaexpress.permission.C2D_MESSAGE" />
 
     <uses-feature
             android:glEsVersion="0x00020000"
@@ -63,15 +58,6 @@
         </activity>
 
         <activity
-                android:name=".Activities.LoadingActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
                 android:name=".Activities.CreateAccountActivity"
                 android:windowSoftInputMode="stateVisible|adjustPan"
                 android:screenOrientation="portrait">
@@ -92,52 +78,6 @@
         </activity>
 
         <activity
-                android:name=".Activities.PasswordResetActivity"
-                android:windowSoftInputMode="stateVisible|adjustPan"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.EmPassActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PromoScreen"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PrizeScreen"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.AddProductActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
                 android:name=".Activities.DeliveryFinalActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -148,15 +88,6 @@
 
         <activity
                 android:name=".Activities.HelpActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PrizeCardActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -192,34 +123,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.PaymentsActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PaymentCardActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
                 android:name=".Activities.MapActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PickLocationActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -282,33 +186,6 @@
         </activity>
 
         <activity
-                android:name=".Activities.NewPassActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.NewPassCodeActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-                android:name=".Activities.PhoneActivity"
-                android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
                 android:name=".Activities.TimeActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -344,39 +221,18 @@
             </intent-filter>
         </activity>
 
-        <receiver
-                android:name="com.google.android.gms.gcm.GcmReceiver"
-                android:exported="true"
-                android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.academiaexpress" />
-            </intent-filter>
-        </receiver>
-        <!-- [END gcm_receiver] -->
-
-
-        <!-- [START gcm_listener] -->
         <service
-                android:name=".Push.MyGcmListenerService"
-                android:exported="false" >
+            android:name=".Push.MyGcmListenerService" android:exported="false" android:priority="500">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <!-- [END gcm_listener] -->
-        <!-- [START instanceId_listener] -->
+
         <service
-                android:name=".Push.MyInstanceIDListenerService"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            android:name=".Push.MyInstanceIDListenerService" android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
-        </service>
-        <!-- [END instanceId_listener] -->
-        <service
-                android:name=".Push.RegistrationIntentService"
-                android:exported="false">
         </service>
 
         <meta-data
