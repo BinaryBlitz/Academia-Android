@@ -16,7 +16,7 @@
         android:layout_width="36dp"
         android:layout_marginTop="8dp"
         android:id="@+id/guillotine_hamburger"
-        android:src="@drawable/quit_sign"
+        android:src="@drawable/ic_quit"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
         android:layout_gravity="end"
@@ -105,7 +105,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="60dp"
         android:layout_marginStart="60dp"
-        android:src="@drawable/check"
+        android:src="@drawable/ic_checkmark"
         android:visibility="gone"
         android:layout_marginBottom="100dp" />
 
@@ -116,7 +116,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="102dp"
         android:layout_marginStart="102dp"
-        android:src="@drawable/check"
+        android:src="@drawable/ic_checkmark"
         android:visibility="gone"
         android:layout_marginBottom="100dp"
         android:layout_marginTop="52dp" />

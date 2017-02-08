@@ -14,7 +14,7 @@
         android:layout_width="36dp"
         android:layout_marginTop="8dp"
         android:id="@+id/guillotine_hamburger"
-        android:src="@drawable/quit_sign"
+        android:src="@drawable/ic_quit"
         android:padding="10dp"
         android:background="@drawable/white_circle_back"
         android:layout_gravity="end"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView12"
         android:layout_gravity="center"
-        android:src="@drawable/marker"
+        android:src="@drawable/ic_marker"
         android:layout_marginBottom="56dp" />
 
     <TextView

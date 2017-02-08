@@ -18,5 +18,5 @@
             android:id="@+id/imageView3"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/load_mack"/>
+            android:src="@drawable/mask_loading"/>
 </FrameLayout>

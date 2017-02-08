@@ -21,6 +21,6 @@
         android:layout_height="28dp"
         android:id="@+id/imageView25"
         android:layout_gravity="center_vertical|right"
-        android:src="@drawable/check"
+        android:src="@drawable/ic_checkmark"
         android:layout_marginRight="16dp" />
 </FrameLayout>
