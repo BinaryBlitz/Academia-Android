@@ -18,6 +18,7 @@ import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Server.ServerApi
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.Image
+import com.google.firebase.iid.FirebaseInstanceId
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,8 +39,12 @@ class CreateAccountActivity : BaseActivity() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener { finish() }
 
         findViewById(R.id.textView7).setOnClickListener(View.OnClickListener {
-            if (!AndroidUtilities.isConnected(this@CreateAccountActivity)) return@OnClickListener
-            if (check()) createUser()
+            if (!AndroidUtilities.isConnected(this@CreateAccountActivity)) {
+                return@OnClickListener
+            }
+            if (check()) {
+                createUser()
+            }
         })
     }
 
@@ -94,6 +99,8 @@ class CreateAccountActivity : BaseActivity() {
             user.addProperty("email", (findViewById(R.id.editText3) as EditText).text.toString())
             user.addProperty("phone_number", intent.getStringExtra("phone"))
             user.addProperty("verification_token", intent.getStringExtra("token"))
+            user.addProperty("device_token", FirebaseInstanceId.getInstance().token)
+            user.addProperty("platform", intent.getStringExtra("token"))
 
             val deliveryUser = DeliveryUser(
                     (findViewById(R.id.editText2) as EditText).text.toString(),

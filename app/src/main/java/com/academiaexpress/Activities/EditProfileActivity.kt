@@ -40,8 +40,12 @@ class EditProfileActivity : BaseActivity() {
 
     private fun setOnClickListeners() {
         findViewById(R.id.textView7).setOnClickListener(View.OnClickListener {
-            if (!AndroidUtilities.isConnected(this@EditProfileActivity)) return@OnClickListener
-            if (check()) updateUser(userFromFields, false)
+            if (!AndroidUtilities.isConnected(this@EditProfileActivity)) {
+                return@OnClickListener
+            }
+            if (check()) {
+                updateUser(userFromFields, false)
+            }
         })
 
         findViewById(R.id.textViewdsb7).setOnClickListener { quit() }
