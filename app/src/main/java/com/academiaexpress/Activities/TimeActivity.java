@@ -381,11 +381,11 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         parsePrices();
 
         if (MoneyValues.discount == 0) {
-            findViewById(R.id.textView65).setVisibility(View.GONE);
+            findViewById(R.id.discount).setVisibility(View.GONE);
         }
 
         if (MoneyValues.balance == 0) {
-            findViewById(R.id.textView66).setVisibility(View.GONE);
+            findViewById(R.id.bonuses).setVisibility(View.GONE);
         }
     }
 

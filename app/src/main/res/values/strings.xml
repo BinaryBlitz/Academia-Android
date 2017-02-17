@@ -132,4 +132,10 @@
     <string name="event_login">Вход в приложение</string>
     <string name="show_menu_code">ПОСМОТРЕТЬ МЕНЮ</string>
     <string name="event_auth">Пользовательская авторизация</string>
+    <string name="proteins">Белки</string>
+    <string name="fats">Жиры</string>
+    <string name="carbohydrates">Углеводы</string>
+    <string name="nutritional_value">Ккал.</string>
+    <string name="content">Состав</string>
+    <string name="energy">Энергетическая ценность</string>
 </resources>
