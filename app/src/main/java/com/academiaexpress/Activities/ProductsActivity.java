@@ -72,8 +72,11 @@ public class ProductsActivity extends BaseActivity {
     }
 
     public void addProduct(DeliveryOrder.OrderPart part) {
-        if (collection.indexOf(part) != -1) incrementPart(part);
-        else addPart(part);
+        if (collection.indexOf(part) != -1) {
+            incrementPart(part);
+        } else {
+            addPart(part);
+        }
 
         recalculatePrice(part);
 
@@ -93,17 +96,17 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void initElements() {
-        findViewById(R.id.textView19).setVisibility(View.GONE);
+        findViewById(R.id.indicator).setVisibility(View.GONE);
         findViewById(R.id.next_btn).setVisibility(View.GONE);
 
-        findViewById(R.id.textView19).setVisibility(View.GONE);
+        findViewById(R.id.indicator).setVisibility(View.GONE);
         findViewById(R.id.next_btn).setVisibility(View.GONE);
 
         findViewById(R.id.menu_layout).setVisibility(View.GONE);
     }
 
     private void setOnClickListeners() {
-        findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductsActivity.this, EditProfileActivity.class);
@@ -112,7 +115,7 @@ public class ProductsActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.textView5).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductsActivity.this, HelpActivity.class);
@@ -120,7 +123,7 @@ public class ProductsActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.textView6).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_orders).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductsActivity.this, OrdersActivity.class);
@@ -181,7 +184,7 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void setupIfEmptyOrder() {
-        findViewById(R.id.textView19fd).setVisibility(View.GONE);
+        findViewById(R.id.orders_indicator).setVisibility(View.GONE);
     }
 
     private void setupUIForMoneyValues() {
@@ -193,9 +196,9 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void setupIfNotEmptyOrders() {
-        findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-        ((TextView) findViewById(R.id.textView6)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
+        findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
+        ((TextView) findViewById(R.id.menu_orders)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
     }
 
     @Override
@@ -437,14 +440,14 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void hideMenu() {
-        findViewById(R.id.textView19).setVisibility(View.GONE);
+        findViewById(R.id.indicator).setVisibility(View.GONE);
         findViewById(R.id.next_btn).setVisibility(View.GONE);
     }
 
     private void showMenu() {
-        findViewById(R.id.textView19).setVisibility(View.VISIBLE);
+        findViewById(R.id.indicator).setVisibility(View.VISIBLE);
         findViewById(R.id.next_btn).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textView19)).setText(Integer.toString(product_count));
+        ((TextView) findViewById(R.id.indicator)).setText(Integer.toString(product_count));
     }
 
     @Override
@@ -478,7 +481,7 @@ public class ProductsActivity extends BaseActivity {
     }
 
     public void setOpacityOfElements(float f) {
-        findViewById(R.id.imageView81).setAlpha(f);
+        findViewById(R.id.logo).setAlpha(f);
         findViewById(R.id.indicator_default).setAlpha(f);
     }
 

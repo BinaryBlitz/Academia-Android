@@ -28,6 +28,8 @@ import retrofit2.Response;
 
 public class StartActivity extends BaseActivity {
 
+    private static final String EXTRA_FIRST = "first";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +39,7 @@ public class StartActivity extends BaseActivity {
 
         try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
 
-        Image.loadPhoto(R.drawable.back_final_page, (ImageView) findViewById(R.id.imageView9));
+        Image.loadPhoto(R.drawable.back_final_page, (ImageView) findViewById(R.id.background));
 
         initScreen();
         setOnClickListeners();
@@ -50,13 +52,14 @@ public class StartActivity extends BaseActivity {
         MoneyValues.promocode = object.get("promo_code").getAsString();
         MoneyValues.discount = object.get("discount").getAsInt();
         MoneyValues.promoUsed = object.get("promo_used").getAsBoolean();
+
         if(MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
+            findViewById(R.id.orders_indicator).setVisibility(View.GONE);
         } else {
-            findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText(
-                    "ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
+            findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
+            ((TextView) findViewById(R.id.menu_orders)).setText(
+                    getString(R.string.orders_upcase_code) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
         }
 
         DeliveryUser deliveryUser = new DeliveryUser(
@@ -73,7 +76,9 @@ public class StartActivity extends BaseActivity {
         ServerApi.get(this).api().getUser(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseUser(response.body());
+                if (response.isSuccessful()) {
+                    parseUser(response.body());
+                }
             }
 
             @Override
@@ -83,10 +88,10 @@ public class StartActivity extends BaseActivity {
 
     private void initScreen() {
         if (!DeviceInfoStore.getToken(this).equals("null")) {
-            Answers.getInstance().logCustom(new CustomEvent("Вход в приложение"));
+            Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_login)));
             initIfLoggedIn();
         } else {
-            Answers.getInstance().logCustom(new CustomEvent("Пользовательская авторизация"));
+            Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_auth)));
             initNotLoggedIn();
         }
 
@@ -95,19 +100,19 @@ public class StartActivity extends BaseActivity {
 
     private void initOrders() {
         if (MoneyValues.countOfOrders == 0) {
-            findViewById(R.id.textView19fd).setVisibility(View.GONE);
+            findViewById(R.id.orders_indicator).setVisibility(View.GONE);
         } else {
-            findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-            ((TextView) findViewById(R.id.textView6)).setText(
-                    "ЗАКАЗЫ" + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
+            findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
+            ((TextView) findViewById(R.id.menu_orders)).setText(
+                    getString(R.string.orders_upcase_code) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
         }
     }
 
     private void initIfLoggedIn() {
-        Answers.getInstance().logCustom(new CustomEvent("Вход в приложение"));
-        ((TextView) findViewById(R.id.textView)).setText("ПОСМОТРЕТЬ МЕНЮ");
-        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+        Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_login)));
+        ((TextView) findViewById(R.id.start)).setText(R.string.show_menu_code);
+        findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!AndroidUtilities.INSTANCE.isConnected(StartActivity.this)) return;
@@ -121,9 +126,9 @@ public class StartActivity extends BaseActivity {
     }
 
     private void initNotLoggedIn() {
-        Answers.getInstance().logCustom(new CustomEvent("Пользовательская авторизация"));
+        Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_auth)));
         findViewById(R.id.content_hamburger).setVisibility(View.GONE);
-        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, AuthActivity.class);
@@ -139,16 +144,16 @@ public class StartActivity extends BaseActivity {
     }
 
     private void setOnClickListeners() {
-        findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, EditProfileActivity.class);
-                intent.putExtra("first", false);
+                intent.putExtra(EXTRA_FIRST, false);
                 startActivity(intent);
             }
         });
 
-        findViewById(R.id.textView5).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, HelpActivity.class);
@@ -156,7 +161,7 @@ public class StartActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.textView6).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_orders).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, OrdersActivity.class);

@@ -35,11 +35,11 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.textView7).setOnClickListener(View.OnClickListener {
+        findViewById(R.id.save).setOnClickListener(View.OnClickListener {
             if (!AndroidUtilities.isConnected(this@EditProfileActivity)) {
                 return@OnClickListener
             }
@@ -48,19 +48,19 @@ class EditProfileActivity : BaseActivity() {
             }
         })
 
-        findViewById(R.id.textViewdsb7).setOnClickListener { quit() }
+        findViewById(R.id.logOut).setOnClickListener { logOut() }
 
         findViewById(R.id.guillotine_hamburger).setOnClickListener { finish() }
     }
 
-    private fun quit() {
+    private fun logOut() {
         DeviceInfoStore.resetUser(this@EditProfileActivity)
         DeviceInfoStore.resetToken(this@EditProfileActivity)
 
-        updateUser(generateQuitJson(), true)
+        updateUser(generateLogOutJson(), true)
     }
 
-    private fun generateQuitJson(): JsonObject {
+    private fun generateLogOutJson(): JsonObject {
         val obj = JsonObject()
         val user = JsonObject()
 
@@ -72,8 +72,11 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun parse(flag: Boolean) {
-        if (flag) openStartActivity()
-        else openProductsActivity()
+        if (flag) {
+            openStartActivity()
+        } else {
+            openProductsActivity()
+        }
     }
 
     private fun openStartActivity() {
@@ -107,13 +110,13 @@ class EditProfileActivity : BaseActivity() {
     }
 
     fun check(): Boolean {
-        if ((findViewById(R.id.editText2) as EditText).text.toString().isEmpty()) {
+        if ((findViewById(R.id.firstName) as EditText).text.toString().isEmpty()) {
             Snackbar.make(findViewById(R.id.main), R.string.name_error, Snackbar.LENGTH_SHORT).show()
             return false
-        } else if ((findViewById(R.id.editText) as EditText).text.toString().isEmpty()) {
+        } else if ((findViewById(R.id.lastName) as EditText).text.toString().isEmpty()) {
             Snackbar.make(findViewById(R.id.main), R.string.lastname_error, Snackbar.LENGTH_SHORT).show()
             return false
-        } else if (!isValidEmail((findViewById(R.id.editText3) as EditText).text.toString())) {
+        } else if (!isValidEmail((findViewById(R.id.email) as EditText).text.toString())) {
             Snackbar.make(findViewById(R.id.main), R.string.email_error, Snackbar.LENGTH_SHORT).show()
             return false
         }
@@ -126,27 +129,29 @@ class EditProfileActivity : BaseActivity() {
             val obj = JsonObject()
             val user = JsonObject()
 
-            user.addProperty("first_name", (findViewById(R.id.editText2) as EditText).text.toString())
-            user.addProperty("last_name", (findViewById(R.id.editText) as EditText).text.toString())
-            user.addProperty("email", (findViewById(R.id.editText3) as EditText).text.toString())
+            user.addProperty("first_name", (findViewById(R.id.firstName) as EditText).text.toString())
+            user.addProperty("last_name", (findViewById(R.id.lastName) as EditText).text.toString())
+            user.addProperty("email", (findViewById(R.id.email) as EditText).text.toString())
             obj.add("user", user)
 
             DeviceInfoStore.saveUser(this, DeliveryUser(
-                    (findViewById(R.id.editText2) as EditText).text.toString(),
-                    (findViewById(R.id.editText) as EditText).text.toString(),
-                    (findViewById(R.id.editText3) as EditText).text.toString(), ""))
+                    (findViewById(R.id.firstName) as EditText).text.toString(),
+                    (findViewById(R.id.lastName) as EditText).text.toString(),
+                    (findViewById(R.id.email) as EditText).text.toString(), ""))
 
             return obj
         }
 
     fun loadInfo() {
-        if (DeviceInfoStore.getUser(this) == "null") return
+        if (DeviceInfoStore.getUser(this) == "null") {
+            return
+        }
 
         val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this))
 
-        (findViewById(R.id.editText2) as EditText).setText(myProfile.firstName)
-        (findViewById(R.id.editText) as EditText).setText(myProfile.lastName)
-        (findViewById(R.id.editText3) as EditText).setText(myProfile.email)
+        (findViewById(R.id.firstName) as EditText).setText(myProfile.firstName)
+        (findViewById(R.id.lastName) as EditText).setText(myProfile.lastName)
+        (findViewById(R.id.email) as EditText).setText(myProfile.email)
     }
 
     fun isValidEmail(target: CharSequence): Boolean {

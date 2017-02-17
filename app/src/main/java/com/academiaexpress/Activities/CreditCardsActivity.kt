@@ -21,7 +21,7 @@ class CreditCardsActivity : BaseActivity() {
     }
 
     private fun initScreen() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
     }
 
     private fun initRecyclerView() {
@@ -44,12 +44,12 @@ class CreditCardsActivity : BaseActivity() {
     private fun setOnClickListeners() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener { finish() }
 
-        findViewById(R.id.editText3).setOnClickListener {
+        findViewById(R.id.newCard).setOnClickListener {
             DeliveryFinalActivity.newCard = true
             finish()
         }
 
-        findViewById(R.id.editText35).setOnClickListener {
+        findViewById(R.id.next_btn).setOnClickListener {
             DeliveryFinalActivity.newCard = false
             finish()
         }

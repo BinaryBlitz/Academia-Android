@@ -42,43 +42,48 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
         holder.name.text = collection!![position].name
-        holder.sub_name.text = collection!![position].ingridients
+        holder.description.text = collection!![position].ingridients
         holder.price.text = collection!![position].price.toString() + context.getString(R.string.ruble_sign)
 
         Image.loadPhoto(collection!![position].photoLink, holder.avatar)
 
-        if (collection!![position].count == 0) hideCountTextView(holder)
-        else showCountTextView(holder, position)
+        if (collection!![position].count == 0) {
+            hideCountTextView(holder)
+        } else {
+            showCountTextView(holder, position)
+        }
 
         holder.itemView.findViewById(R.id.imageView5).setOnClickListener { addProduct(holder, holder.adapterPosition) }
     }
 
     private fun hideCountTextView(holder: ViewHolder) {
-        holder.itemView.findViewById(R.id.textView19fd).visibility = View.GONE
+        holder.itemView.findViewById(R.id.count_indicator).visibility = View.GONE
     }
 
     private fun showCountTextView(holder: ViewHolder, position: Int) {
-        holder.itemView.findViewById(R.id.textView19fd).visibility = View.VISIBLE
-        (holder.itemView.findViewById(R.id.textView19fd) as TextView).text = Integer.toString(collection!![position].count)
+        holder.itemView.findViewById(R.id.count_indicator).visibility = View.VISIBLE
+        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection!![position].count)
     }
 
     private fun addProduct(holder: ViewHolder, position: Int) {
-        if (!DishFragment.answer) Answers.getInstance().logCustom(CustomEvent(context.getString(R.string.event_order_added)))
+        if (!DishFragment.answer) {
+            Answers.getInstance().logCustom(CustomEvent(context.getString(R.string.event_order_added)))
+        }
         DishFragment.answer = true
 
-        holder.itemView.findViewById(R.id.textView19fd).visibility = View.VISIBLE
+        holder.itemView.findViewById(R.id.count_indicator).visibility = View.VISIBLE
         collection!![position].count = collection!![position].count + 1
-        (holder.itemView.findViewById(R.id.textView19fd) as TextView).text = Integer.toString(collection!![position].count)
+        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection!![position].count)
         (context as ProductsActivity).addProduct(partsCollection!![position])
     }
 
     override fun getItemCount(): Int { return collection!!.size }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.textView12) as TextView
-        val sub_name: TextView = itemView.findViewById(R.id.textView13) as TextView
-        val price: TextView = itemView.findViewById(R.id.textView14) as TextView
-        val avatar: ImageView = itemView.findViewById(R.id.imageView4) as ImageView
+        val name: TextView = itemView.findViewById(R.id.name) as TextView
+        val description: TextView = itemView.findViewById(R.id.description) as TextView
+        val price: TextView = itemView.findViewById(R.id.price) as TextView
+        val avatar: ImageView = itemView.findViewById(R.id.image) as ImageView
 
     }
 }

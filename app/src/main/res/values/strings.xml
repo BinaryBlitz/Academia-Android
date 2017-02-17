@@ -123,4 +123,19 @@
     <string name="loading_menu">Загружаем меню...</string>
     <string name="order_status_changed">Статус заказа изменен</string>
     <string name="default_notification_text">Просмотрите ваш заказ</string>
+    <string name="make_preorder">СДЕЛАТЬ ПРЕДЗАКАЗ</string>
+    <string name="code">КОД</string>
+    <string name="verify_help_text">На Ваш телефон был отправлен код подтверждения, введите его, пожалуйста</string>
+    <string name="your_cards">Ваши карты</string>
+    <string name="select_upcase">ВЫБРАТЬ</string>
+    <string name="orders_upcase_code">ЗАКАЗЫ</string>
+    <string name="event_login">Вход в приложение</string>
+    <string name="show_menu_code">ПОСМОТРЕТЬ МЕНЮ</string>
+    <string name="event_auth">Пользовательская авторизация</string>
+    <string name="proteins">Белки</string>
+    <string name="fats">Жиры</string>
+    <string name="carbohydrates">Углеводы</string>
+    <string name="nutritional_value">Ккал.</string>
+    <string name="content">Состав</string>
+    <string name="energy">Энергетическая ценность</string>
 </resources>

@@ -60,7 +60,7 @@ class FinalPageFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        Image.loadPhoto(R.drawable.back3, view!!.findViewById(R.id.imageView3) as ImageView)
+        Image.loadPhoto(R.drawable.back3, view!!.findViewById(R.id.background) as ImageView)
 
         initButtonClick()
         initList()

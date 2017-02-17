@@ -8,19 +8,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textView63"
+        android:id="@+id/name"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:textColor="#212121"
         android:textSize="18sp"
+        android:layout_marginEnd="56dp"
         android:layout_marginRight="56dp"
         android:layout_gravity="center_vertical" />
 
     <ImageView
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:id="@+id/imageView25"
-        android:layout_gravity="center_vertical|right"
+        android:id="@+id/indicator"
+        android:layout_gravity="center_vertical|end"
         android:src="@drawable/ic_checkmark"
+        android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp" />
 </FrameLayout>

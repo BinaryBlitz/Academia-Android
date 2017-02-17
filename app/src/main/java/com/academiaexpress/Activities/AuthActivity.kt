@@ -49,8 +49,8 @@ class AuthActivity : BaseActivity() {
         span.setSpan(object : TouchableSpan(Color.parseColor(DEFAULT_COLOR), Color.parseColor(DEFAULT_COLOR), Color.TRANSPARENT) {
             override fun onClick(v: View) { browseTerms() } }, 0, span.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        (findViewById(R.id.textView61) as TextView).movementMethod = LinkTouchMovementMethod()
-        (findViewById(R.id.textView61) as TextView).text = span
+        (findViewById(R.id.help_text) as TextView).movementMethod = LinkTouchMovementMethod()
+        (findViewById(R.id.help_text) as TextView).text = span
     }
 
     private fun browseTerms() {
@@ -59,16 +59,18 @@ class AuthActivity : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
         (findViewById(R.id.phone) as EditText).addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
         initSpan()
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.textView7).setOnClickListener(View.OnClickListener {
-            if (!AndroidUtilities.isConnected(this@AuthActivity)) return@OnClickListener
-            if (!check()) return@OnClickListener
+        findViewById(R.id.next_btn).setOnClickListener(View.OnClickListener {
+            if (!AndroidUtilities.isConnected(this@AuthActivity) || !check()) {
+                return@OnClickListener
+            }
+
             openCodeActivity()
         })
     }

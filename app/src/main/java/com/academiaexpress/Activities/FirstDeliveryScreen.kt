@@ -19,6 +19,8 @@ import retrofit2.Response
 
 class FirstDeliveryScreen : BaseActivity() {
 
+    private val EXTRA_NAME = "name"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_delivery)
@@ -28,14 +30,14 @@ class FirstDeliveryScreen : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
 
-        (findViewById(R.id.textView8) as TextView).text =
-                getString(R.string.congratulations) + intent.getStringExtra("name") + getString(R.string.you_logged_in)
+        (findViewById(R.id.help_text) as TextView).text =
+                getString(R.string.congratulations) + intent.getStringExtra(EXTRA_NAME) + getString(R.string.you_logged_in)
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.textView).setOnClickListener { getOrders() }
+        findViewById(R.id.make_order).setOnClickListener { getOrders() }
     }
 
     private fun getOrders() {
@@ -45,7 +47,9 @@ class FirstDeliveryScreen : BaseActivity() {
         ServerApi.get(this).api().getOrders(DeviceInfoStore.getToken(this)).enqueue(object : Callback<JsonArray> {
             override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
                 dialog.dismiss()
-                if (response.isSuccessful) parseOrders(response.body())
+                if (response.isSuccessful) {
+                    parseOrders(response.body())
+                }
             }
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {

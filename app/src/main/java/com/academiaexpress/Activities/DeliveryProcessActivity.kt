@@ -24,12 +24,13 @@ class DeliveryProcessActivity : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.load_pic, findViewById(R.id.imageView17) as ImageView)
+        Image.loadPhoto(R.drawable.load_pic, findViewById(R.id.background) as ImageView)
         Answers.getInstance().logCustom(CustomEvent(getString(R.string.event_order_paid)))
-//        MapActivity.selected_final = ""
+        MapActivity.selectedLocationName = ""
+        MapActivity.selectedLocation = null
 
         val animation = AnimationUtils.loadAnimation(this, R.anim.rotate_anim)
-        findViewById(R.id.imageView19).startAnimation(animation)
+        findViewById(R.id.indicator).startAnimation(animation)
     }
 
     private fun openDetails() {
@@ -41,9 +42,9 @@ class DeliveryProcessActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.textView).setOnClickListener { openDetails() }
+        findViewById(R.id.show_order).setOnClickListener { openDetails() }
 
-        findViewById(R.id.textViewfd).setOnClickListener { AndroidUtilities.call(this@DeliveryProcessActivity, AppConfig.phone) }
+        findViewById(R.id.call).setOnClickListener { AndroidUtilities.call(this@DeliveryProcessActivity, AppConfig.phone) }
     }
 
     private fun finishActivity(c: Class<*>) {
@@ -55,8 +56,11 @@ class DeliveryProcessActivity : BaseActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (ClosedActivity.closed) finishActivity(ClosedActivity::class.java)
-        else finishActivity(StartActivity::class.java)
+        if (ClosedActivity.closed) {
+            finishActivity(ClosedActivity::class.java)
+        } else {
+            finishActivity(StartActivity::class.java)
+        }
     }
 
     companion object {

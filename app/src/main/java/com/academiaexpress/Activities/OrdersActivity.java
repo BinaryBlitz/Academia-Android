@@ -56,7 +56,7 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private void initElements() {
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
     }
 
     private void initRecyclerView() {
@@ -92,8 +92,11 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 layout.setRefreshing(false);
-                if (response.isSuccessful()) parseOrders(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseOrders(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -127,8 +130,11 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
             }
 
             DeliveryOrder order = parseOrder(object, parts);
-            if (!order.isOnTheWay()) collection.add(order);
-            else collection.add(0, order);
+            if (!order.isOnTheWay()) {
+                collection.add(order);
+            } else {
+                collection.add(0, order);
+            }
         }
     }
 
@@ -166,7 +172,10 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private Date parseDate(String str) {
-        try { return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(str.split("\\.")[0]); }
-        catch (ParseException e) { return null; }
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(str.split("\\.")[0]);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

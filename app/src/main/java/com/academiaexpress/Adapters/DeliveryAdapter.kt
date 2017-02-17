@@ -45,17 +45,19 @@ class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
 
-        holder.date.text = ProductsActivity.collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
+        holder.count.text = ProductsActivity.collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
         setOrderText(position, holder)
         holder.price.text = ProductsActivity.collection[position].price.toString() + context.getString(R.string.ruble_sign)
 
-        if (isInc) holder.itemView.setOnClickListener { openActivity(holder.adapterPosition) }
+        if (isInc) {
+            holder.itemView.setOnClickListener { openActivity(holder.adapterPosition) }
+        }
     }
 
     private fun setOrderText(position: Int, holder: ViewHolder) {
         val content = SpannableString(ProductsActivity.collection[position].name)
         content.setSpan(UnderlineSpan(), 0, ProductsActivity.collection[position].name!!.length, 0)
-        holder.order.text = content
+        holder.name.text = content
     }
 
     private fun openActivity(position: Int) {
@@ -73,8 +75,8 @@ class DeliveryAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val date: TextView = itemView.findViewById(R.id.textView27) as TextView
-        val order: TextView = itemView.findViewById(R.id.textView21) as TextView
-        val price: TextView = itemView.findViewById(R.id.textView22) as TextView
+        val count: TextView = itemView.findViewById(R.id.count) as TextView
+        val name: TextView = itemView.findViewById(R.id.name) as TextView
+        val price: TextView = itemView.findViewById(R.id.price) as TextView
     }
 }
