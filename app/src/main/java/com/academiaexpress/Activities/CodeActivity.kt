@@ -67,19 +67,23 @@ class CodeActivity : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
-        helperTextView = findViewById(R.id.textView37) as TextView
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
+        helperTextView = findViewById(R.id.resend_textView) as TextView
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.editText35).setOnClickListener(View.OnClickListener {
-            if (!AndroidUtilities.isConnected(this@CodeActivity)) return@OnClickListener
+        findViewById(R.id.next_btn).setOnClickListener(View.OnClickListener {
+            if (!AndroidUtilities.isConnected(this@CodeActivity)) {
+                return@OnClickListener
+            }
 
             verify()
         })
 
-        findViewById(R.id.textView37).setOnClickListener(View.OnClickListener {
-            if (!AndroidUtilities.isConnected(this@CodeActivity)) return@OnClickListener
+        findViewById(R.id.resend_textView).setOnClickListener(View.OnClickListener {
+            if (!AndroidUtilities.isConnected(this@CodeActivity)) {
+                return@OnClickListener
+            }
             Handler().post {
                 Handler().post { auth() }
                 startTimer()
@@ -189,7 +193,7 @@ class CodeActivity : BaseActivity() {
         val dialog = ProgressDialog(this)
         dialog.show()
 
-        ServerApi.get(this).api().verify(token, (findViewById(R.id.editText3) as EditText).text.toString()).enqueue(object : Callback<JsonObject> {
+        ServerApi.get(this).api().verify(token, (findViewById(R.id.code_editText) as EditText).text.toString()).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 dialog.dismiss()
                 if (response.isSuccessful) {

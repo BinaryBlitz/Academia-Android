@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/imageView9"
+        android:id="@+id/background"
         android:scaleType="centerCrop" />
 
     <ImageView
@@ -25,7 +25,7 @@
         android:layout_height="42dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/start"
-        android:id="@+id/textView"
+        android:id="@+id/start"
         android:layout_gravity="center_horizontal|bottom"
         android:textColor="#ffffff"
         android:background="@drawable/main_btn_border_background"
@@ -38,7 +38,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textView19fd"
+        android:id="@+id/orders_indicator"
         android:layout_gravity="top"
         android:textColor="#ffffff"
         android:layout_marginTop="2dp"

@@ -38,6 +38,7 @@ public class ClosedActivity extends BaseActivity {
 
     private static final String EXTRA_CLOSED = "closed";
     private static final String EXTRA_FIRST = "first";
+    private static final String EXTRA_PREORDER = "preorder";
     private static final int EARLY_HOUR = 6;
 
     @Override
@@ -69,13 +70,13 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setupIfEmptyOrder() {
-        findViewById(R.id.textView19fd).setVisibility(View.GONE);
+        findViewById(R.id.orders_indicator).setVisibility(View.GONE);
     }
 
     private void setupIfNotEmptyOrders() {
-        findViewById(R.id.textView19fd).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textView19fd)).setText(Integer.toString(MoneyValues.countOfOrders));
-        ((TextView) findViewById(R.id.textView6)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
+        findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
+        ((TextView) findViewById(R.id.menu_orders)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
     }
 
     private void saveMoneyValues(JsonObject object) {
@@ -116,7 +117,9 @@ public class ClosedActivity extends BaseActivity {
         closed = true;
         Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));
 
-        if (getIntent().getBooleanExtra(EXTRA_CLOSED, false)) findViewById(R.id.textView).setVisibility(View.GONE);
+        if (getIntent().getBooleanExtra(EXTRA_CLOSED, false)) {
+            findViewById(R.id.preorder_btn).setVisibility(View.GONE);
+        }
     }
 
     private void setTexts() {
@@ -134,10 +137,10 @@ public class ClosedActivity extends BaseActivity {
 
     private void setTextToUpperText(String text) {
         try {
-            ((TextView) findViewById(R.id.textView36)).setText(text + ", " +
+            ((TextView) findViewById(R.id.help_text)).setText(text + ", " +
                     DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
         } catch (Exception e) {
-            ((TextView) findViewById(R.id.textView36)).setText(text);
+            ((TextView) findViewById(R.id.help_text)).setText(text);
         }
     }
 
@@ -149,7 +152,7 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setValidDateToBottomTextView() {
-        ((TextView) findViewById(R.id.textView36hj)).setText(
+        ((TextView) findViewById(R.id.time_text)).setText(
                 getString(R.string.now_closed_valid) +
                         DateUtils.INSTANCE.getCalendarDate(this, getIntent().getStringExtra("open_time"))
                         + getString(R.string.in_code) +
@@ -157,13 +160,16 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setClosedTextToBottomTextView() {
-        ((TextView) findViewById(R.id.textView36hj)).setText(getString(R.string.now_closed_str));
+        ((TextView) findViewById(R.id.time_text)).setText(getString(R.string.now_closed_str));
     }
 
     private Date getDateFromIntent() {
         Calendar calendar = DateUtils.INSTANCE.getCalendarFromString(getIntent().getStringExtra("open_time"));
-        if (calendar == null) return null;
-        else return calendar.getTime();
+        if (calendar == null) {
+            return null;
+        } else {
+            return calendar.getTime();
+        }
     }
 
     private boolean isValidDate() {
@@ -172,25 +178,31 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void initElements() {
-        if (getIntent().getBooleanExtra("preorder", false)) findViewById(R.id.textView).setVisibility(View.VISIBLE);
-        else findViewById(R.id.textView).setVisibility(View.GONE);
+        if (getIntent().getBooleanExtra(EXTRA_PREORDER, false)) {
+            findViewById(R.id.preorder_btn).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.preorder_btn).setVisibility(View.GONE);
+        }
 
         findViewById(R.id.menu_layout).setVisibility(View.GONE);
     }
 
     private void loadBackground() {
-        if (imageUrl.isEmpty()) setDefaultBackground();
-        else setServerBackground();
+        if (imageUrl.isEmpty()) {
+            setDefaultBackground();
+        } else {
+            setServerBackground();
+        }
     }
 
     private void setDefaultBackground() {
-        Image.loadPhoto(R.drawable.back2, (ImageView) findViewById(R.id.imageView17));
+        Image.loadPhoto(R.drawable.back2, (ImageView) findViewById(R.id.background));
     }
 
     private void setServerBackground() {
-        findViewById(R.id.textView36).setVisibility(View.GONE);
-        findViewById(R.id.textView36hj).setVisibility(View.GONE);
-        Image.loadPhoto(imageUrl, (ImageView) findViewById(R.id.imageView17));
+        findViewById(R.id.help_text).setVisibility(View.GONE);
+        findViewById(R.id.time_text).setVisibility(View.GONE);
+        Image.loadPhoto(imageUrl, (ImageView) findViewById(R.id.background));
     }
 
     private void openProductsActivity() {
@@ -211,29 +223,31 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setOnClickListeners() {
-        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.preorder_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AndroidUtilities.INSTANCE.isConnected(ClosedActivity.this)) return;
+                if (!AndroidUtilities.INSTANCE.isConnected(ClosedActivity.this)) {
+                    return;
+                }
                 openProductsActivity();
             }
         });
 
-        findViewById(R.id.textView2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openEditProfileActivity();
             }
         });
 
-        findViewById(R.id.textView5).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_help).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openActivity(HelpActivity.class);
             }
         });
 
-        findViewById(R.id.textView6).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu_orders).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openActivity(OrdersActivity.class);

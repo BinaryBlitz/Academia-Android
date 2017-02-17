@@ -31,6 +31,8 @@ public class OrderDetailsActivity extends BaseActivity {
     public static DeliveryOrder order;
     private RatingBar ratingBar;
 
+    private static final String EXTRA_PRICE = "price";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +45,25 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void processOrder() {
-        if (order.getParts() == null) return;
+        if (order.getParts() == null) {
+            return;
+        }
 
         int price = 0;
 
-        for (int i = 0; i < order.getParts().size(); i++) price += order.getParts().get(i).getPrice();
+        for (int i = 0; i < order.getParts().size(); i++) {
+            price += order.getParts().get(i).getPrice();
+        }
 
-        ((TextView) findViewById(R.id.textView62)).setText(order.getAddress());
+        ((TextView) findViewById(R.id.address)).setText(order.getAddress());
 
-        if (order.getPrice() > price) findViewById(R.id.textView50).setVisibility(View.VISIBLE);
-        else findViewById(R.id.textView50).setVisibility(View.GONE);
+        if (order.getPrice() > price) {
+            findViewById(R.id.help_text).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.help_text).setVisibility(View.GONE);
+        }
 
-        ((TextView) findViewById(R.id.textView35)).setText(getIntent().getStringExtra("price"));
+        ((TextView) findViewById(R.id.price)).setText(getIntent().getStringExtra(EXTRA_PRICE));
 
         ratingBar.setRating(order.getRating());
     }
@@ -78,7 +87,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void initElements() {
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         initRecyclerView();
     }
@@ -87,12 +96,15 @@ public class OrderDetailsActivity extends BaseActivity {
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (order.isReviewd()) sendReview();
-                else finish();
+                if (order.isReviewd()) {
+                    sendReview();
+                } else {
+                    finish();
+                }
             }
         });
 
-        findViewById(R.id.textView7).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendReview();
@@ -101,7 +113,7 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void disableEditText() {
-        EditText editText = (EditText) findViewById(R.id.editText7);
+        EditText editText = (EditText) findViewById(R.id.commentEditText);
         editText.setText(order.getReview());
         editText.setClickable(false);
         editText.setEnabled(false);
@@ -114,14 +126,20 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     public void check() {
-        if (order.isOnTheWay()) hideCommentBox();
-        else if (order.isReviewd()) disableEditText();
+        if (order.isOnTheWay()) {
+            hideCommentBox();
+        } else if (order.isReviewd()) {
+            disableEditText();
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (order.isReviewd()) sendReview();
-        else OrderDetailsActivity.super.onBackPressed();
+        if (order.isReviewd()) {
+            sendReview();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private JsonObject generateReview() {
@@ -135,11 +153,11 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void parseReview() {
-        if (((EditText) findViewById(R.id.editText7)).getText().toString().length() != 0) {
-            findViewById(R.id.editText7).setClickable(false);
-            findViewById(R.id.editText7).setEnabled(false);
-            findViewById(R.id.editText7).setFocusable(false);
-            findViewById(R.id.editText7).setHovered(true);
+        if (((EditText) findViewById(R.id.commentEditText)).getText().toString().length() != 0) {
+            findViewById(R.id.commentEditText).setClickable(false);
+            findViewById(R.id.commentEditText).setEnabled(false);
+            findViewById(R.id.commentEditText).setFocusable(false);
+            findViewById(R.id.commentEditText).setHovered(true);
         }
 
         Snackbar.make(findViewById(R.id.main), R.string.note_sent, Snackbar.LENGTH_SHORT).show();
@@ -147,7 +165,9 @@ public class OrderDetailsActivity extends BaseActivity {
     }
 
     private void sendReview() {
-        if (ratingBar.getRating() == 0f) return;
+        if (ratingBar.getRating() == 0f) {
+            return;
+        }
 
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.show();
@@ -156,8 +176,11 @@ public class OrderDetailsActivity extends BaseActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 dialog.dismiss();
-                if (response.isSuccessful()) parseReview();
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseReview();
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override

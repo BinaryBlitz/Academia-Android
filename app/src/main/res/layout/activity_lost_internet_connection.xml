@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/search_network"
-        android:id="@+id/textView36hj"
+        android:id="@+id/time_text"
         android:layout_gravity="center_horizontal|bottom"
         android:textColor="#ffffff"
         android:textSize="20sp"

@@ -67,10 +67,10 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         now = true;
         errors = true;
 
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
 
-        findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
-        findViewById(R.id.imageView20d).setVisibility(View.GONE);
+        findViewById(R.id.selected_indicator).setVisibility(View.VISIBLE);
+        findViewById(R.id.selected_time_indicator).setVisibility(View.GONE);
 
         if (ClosedActivity.closed) {
             setClosed();
@@ -78,21 +78,21 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     }
 
     private void setClosed() {
-        findViewById(R.id.editText3f).setVisibility(View.VISIBLE);
-        findViewById(R.id.editText3d).setVisibility(View.GONE);
-        findViewById(R.id.imageView20).setVisibility(View.GONE);
-        findViewById(R.id.imageView20d).setVisibility(View.GONE);
+        findViewById(R.id.select_time_btn).setVisibility(View.VISIBLE);
+        findViewById(R.id.now_btn).setVisibility(View.GONE);
+        findViewById(R.id.selected_indicator).setVisibility(View.GONE);
+        findViewById(R.id.selected_time_indicator).setVisibility(View.GONE);
     }
 
     private void setOnClickListeners() {
-        findViewById(R.id.editText3f).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.select_time_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 show();
             }
         });
 
-        findViewById(R.id.editText3d).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.now_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (now) {
@@ -112,7 +112,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             }
         });
 
-        findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.pay_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!AndroidUtilities.INSTANCE.isConnected(TimeActivity.this)) {
@@ -158,13 +158,13 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     }
 
     private void setNow() {
-        findViewById(R.id.imageView20d).setVisibility(View.GONE);
-        findViewById(R.id.imageView20).setVisibility(View.GONE);
+        findViewById(R.id.selected_time_indicator).setVisibility(View.GONE);
+        findViewById(R.id.selected_indicator).setVisibility(View.GONE);
     }
 
     private void setSelectedTime() {
-        findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
-        findViewById(R.id.imageView20d).setVisibility(View.GONE);
+        findViewById(R.id.selected_indicator).setVisibility(View.VISIBLE);
+        findViewById(R.id.selected_time_indicator).setVisibility(View.GONE);
     }
 
     @Override
@@ -239,11 +239,11 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     }
 
     private void okClick(final Dialog dialog, final NumberPicker numberPicker, final String[] values) {
-        findViewById(R.id.imageView20).setVisibility(View.GONE);
-        ((TextView) findViewById(R.id.editText3f)).setText(values[numberPicker.getValue()]);
+        findViewById(R.id.selected_indicator).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.select_time_btn)).setText(values[numberPicker.getValue()]);
         processSelectedTime(numberPicker, values);
         dialog.dismiss();
-        findViewById(R.id.imageView20d).setVisibility(View.VISIBLE);
+        findViewById(R.id.selected_time_indicator).setVisibility(View.VISIBLE);
     }
 
     private void processSelectedTime(final NumberPicker numberPicker, final String[] values) {
@@ -383,6 +383,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         if (MoneyValues.discount == 0) {
             findViewById(R.id.textView65).setVisibility(View.GONE);
         }
+
         if (MoneyValues.balance == 0) {
             findViewById(R.id.textView66).setVisibility(View.GONE);
         }
@@ -391,10 +392,10 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     private void parsePrices() {
         int price = (ProductsActivity.price >= AppConfig.freeDeliveryFrom ? ProductsActivity.price : ProductsActivity.price + AppConfig.deliveryPrice);
 
-        ((TextView) findViewById(R.id.textView64)).setText(getString(R.string.full_price) + price + getString(R.string.ruble_sign));
-        ((TextView) findViewById(R.id.textView65)).setText(getString(R.string.discount) + Math.round(price * (MoneyValues.discount / 100.0)) + getString(R.string.ruble_sign));
-        ((TextView) findViewById(R.id.textView66)).setText(getString(R.string.bonuses) + getBonuses(price) + getString(R.string.ruble_sign));
-        ((TextView) findViewById(R.id.textView26)).setText(getString(R.string.final_price) + calculateFinalPrice(price) + getString(R.string.ruble_sign));
+        ((TextView) findViewById(R.id.final_price)).setText(getString(R.string.full_price) + price + getString(R.string.ruble_sign));
+        ((TextView) findViewById(R.id.discount)).setText(getString(R.string.discount) + Math.round(price * (MoneyValues.discount / 100.0)) + getString(R.string.ruble_sign));
+        ((TextView) findViewById(R.id.bonuses)).setText(getString(R.string.bonuses) + getBonuses(price) + getString(R.string.ruble_sign));
+        ((TextView) findViewById(R.id.price)).setText(getString(R.string.final_price) + calculateFinalPrice(price) + getString(R.string.ruble_sign));
     }
 
     private long getBonuses(int price) {
@@ -526,8 +527,8 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        findViewById(R.id.imageView20).setVisibility(View.GONE);
-        ((TextView) findViewById(R.id.editText3f)).setText((hourOfDay >= 10 ? Integer.toString(hourOfDay) : "0" + Integer.toString(hourOfDay)) + ":" +
+        findViewById(R.id.selected_indicator).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.select_time_btn)).setText((hourOfDay >= 10 ? Integer.toString(hourOfDay) : "0" + Integer.toString(hourOfDay)) + ":" +
                         (minute >= 10 ? Integer.toString(minute) : "0" + Integer.toString(minute)));
         parseCalendar(hourOfDay, minute);
     }

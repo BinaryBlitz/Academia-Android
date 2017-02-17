@@ -44,12 +44,12 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     }
 
     private fun setBackForSelected(holder: NewsViewHolder) {
-        holder.itemView.findViewById(R.id.imageView25).visibility = View.VISIBLE
+        holder.itemView.findViewById(R.id.indicator).visibility = View.VISIBLE
         holder.itemView.setBackgroundColor(Color.argb(128, 0, 0, 0))
     }
 
     private fun setBackForUnSelected(holder: NewsViewHolder) {
-        holder.itemView.findViewById(R.id.imageView25).visibility = View.GONE
+        holder.itemView.findViewById(R.id.indicator).visibility = View.GONE
         holder.itemView.setBackgroundColor(Color.argb(0, 0, 0, 0))
     }
 
@@ -68,6 +68,6 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     }
 
     private inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val date: TextView = itemView.findViewById(R.id.textView63) as TextView
+        val date: TextView = itemView.findViewById(R.id.name) as TextView
     }
 }

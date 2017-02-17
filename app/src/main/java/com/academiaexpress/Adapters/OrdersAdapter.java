@@ -44,8 +44,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
         final ViewHolder holder = (ViewHolder) viewHolder;
 
-        if (collection.get(position) == null) setHeader(holder, position);
-        else setItem(holder, position);
+        if (collection.get(position) == null) {
+            setHeader(holder, position);
+        } else {
+            setItem(holder, position);
+        }
     }
 
     private void setHeader(ViewHolder holder, int position) {
@@ -76,12 +79,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @SuppressWarnings("ConstantConditions")
     private String generateParts(int position) {
-        if (collection.get(position).getParts() == null) return "";
+        if (collection.get(position).getParts() == null) {
+            return "";
+        }
 
         String order = "";
         for (int i = 0; i < collection.get(position).getParts().size(); i++) {
             order += collection.get(position).getParts().get(i).getName();
-            if (i != collection.get(position).getParts().size() - 1) order += ", ";
+            if (i != collection.get(position).getParts().size() - 1) {
+                order += ", ";
+            }
         }
 
         return order;
@@ -90,8 +97,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void openActivity(int position) {
         Intent intent = new Intent(context, OrderDetailsActivity.class);
         OrderDetailsActivity.order = collection.get(position);
-        intent.putExtra(EXTRA_PRICE, context.getString(R.string.order_price_code) +
-                collection.get(position).getPrice() + context.getString(R.string.ruble_sign));
+        intent.putExtra(EXTRA_PRICE, context.getString(R.string.order_price_code) + collection.get(position).getPrice() + context.getString(R.string.ruble_sign));
         context.startActivity(intent);
     }
 
@@ -107,9 +113,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         ViewHolder(final View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.textView20);
-            order = (TextView) itemView.findViewById(R.id.textView24);
-            price = (TextView) itemView.findViewById(R.id.textView25);
+            date = (TextView) itemView.findViewById(R.id.date);
+            order = (TextView) itemView.findViewById(R.id.order);
+            price = (TextView) itemView.findViewById(R.id.price);
         }
     }
 }

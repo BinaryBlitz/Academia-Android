@@ -24,14 +24,14 @@ class HelpActivity : BaseActivity() {
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
         setPhoneText()
     }
 
     private fun setPhoneText() {
         val content = SpannableString(AppConfig.phoneStr)
         content.setSpan(UnderlineSpan(), 0, content.length, 0)
-        (findViewById(R.id.editText3fd) as TextView).text = content
+        (findViewById(R.id.phone) as TextView).text = content
     }
 
     private fun sendEmail() {
@@ -44,16 +44,16 @@ class HelpActivity : BaseActivity() {
     private fun setOnClickListeners() {
         findViewById(R.id.guillotine_hamburger).setOnClickListener { finish() }
 
-        findViewById(R.id.editText3).setOnClickListener { sendEmail() }
+        findViewById(R.id.email).setOnClickListener { sendEmail() }
 
-        findViewById(R.id.textView56).setOnClickListener {
+        findViewById(R.id.terms).setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(AppConfig.termsUrl))
             startActivity(browserIntent)
         }
 
-        findViewById(R.id.editText3fd).setOnClickListener { AndroidUtilities.call(this@HelpActivity, AppConfig.phone) }
+        findViewById(R.id.phone).setOnClickListener { AndroidUtilities.call(this@HelpActivity, AppConfig.phone) }
 
-        findViewById(R.id.textView57).setOnClickListener {
+        findViewById(R.id.serviceInformation).setOnClickListener {
             val intent = Intent(this@HelpActivity, CompanyInformationActivity::class.java)
             startActivity(intent)
         }

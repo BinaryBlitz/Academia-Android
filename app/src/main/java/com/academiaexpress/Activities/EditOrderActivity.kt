@@ -21,7 +21,9 @@ class EditOrderActivity : BaseActivity() {
     }
 
     private fun dec() {
-        if (count == 1) return
+        if (count == 1) {
+            return
+        }
 
         count--
         finalPrice -= price
@@ -35,39 +37,39 @@ class EditOrderActivity : BaseActivity() {
     }
 
     private fun setOnClickListeners() {
-        findViewById(R.id.textView28fd).setOnClickListener {
+        findViewById(R.id.save).setOnClickListener {
             DeliveryFinalActivity.itemToEdit = intent.getIntExtra(EXTRA_INDEX, 0)
             DeliveryFinalActivity.newCount = count
             finish()
         }
 
-        findViewById(R.id.textView28).setOnClickListener {
+        findViewById(R.id.delete).setOnClickListener {
             DeliveryFinalActivity.itemToEdit = intent.getIntExtra(EXTRA_INDEX, 0)
             DeliveryFinalActivity.newCount = DeliveryFinalActivity.REMOVE_ACTION
             finish()
         }
 
-        findViewById(R.id.textView32fdfd).setOnClickListener { inc() }
+        findViewById(R.id.increment).setOnClickListener { inc() }
 
-        findViewById(R.id.textView32).setOnClickListener { dec() }
+        findViewById(R.id.decrement).setOnClickListener { dec() }
     }
 
     private fun initElements() {
-        Image.loadPhoto(R.drawable.back1, findViewById(R.id.imageView21) as ImageView)
+        Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
 
         count = intent.getIntExtra(EXTRA_COUNT, 0)
         price = intent.getIntExtra(EXTRA_PRICE, 0)
 
         finalPrice = price * count
 
-        (findViewById(R.id.textView29) as TextView).text = intent.getStringExtra(EXTRA_NAME)
+        (findViewById(R.id.name) as TextView).text = intent.getStringExtra(EXTRA_NAME)
 
         setText()
     }
 
     fun setText() {
-        (findViewById(R.id.textView31) as TextView).text = getString(R.string.current_price) + finalPrice + getString(R.string.ruble_sign)
-        (findViewById(R.id.textView30) as TextView).text = Integer.toString(count)
+        (findViewById(R.id.price) as TextView).text = getString(R.string.current_price) + finalPrice + getString(R.string.ruble_sign)
+        (findViewById(R.id.count) as TextView).text = Integer.toString(count)
     }
 
     companion object {

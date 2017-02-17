@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/imageView21"
+        android:id="@+id/background"
         android:layout_gravity="center"
         android:scaleType="centerCrop" />
 
@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="44dp"
         android:ems="10"
-        android:id="@+id/editText3"
+        android:id="@+id/pay_btn"
         android:layout_gravity="center_horizontal|bottom"
         android:background="@drawable/black_border"
         android:paddingLeft="8dp"
@@ -44,7 +44,6 @@
     <ImageView
         android:layout_width="56dp"
         android:layout_height="48dp"
-        android:id="@+id/imageView8"
         android:layout_gravity="center_horizontal|top"
         android:background="@drawable/mini_logo"
         android:scaleType="fitCenter" />
@@ -53,7 +52,7 @@
         android:layout_width="fill_parent"
         android:layout_height="44dp"
         android:ems="10"
-        android:id="@+id/editText3f"
+        android:id="@+id/select_time_btn"
         android:layout_gravity="center"
         android:background="@drawable/black_border"
         android:paddingLeft="8dp"
@@ -72,7 +71,7 @@
         android:layout_width="fill_parent"
         android:layout_height="44dp"
         android:ems="10"
-        android:id="@+id/editText3d"
+        android:id="@+id/now_btn"
         android:layout_gravity="center"
         android:background="@drawable/black_border"
         android:paddingLeft="8dp"
@@ -91,7 +90,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/help_delivery_time"
-        android:id="@+id/textView39"
         android:layout_gravity="center"
         android:layout_marginBottom="150dp"
         android:textColor="#212121"
@@ -101,7 +99,7 @@
     <ImageView
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:id="@+id/imageView20"
+        android:id="@+id/selected_indicator"
         android:layout_gravity="center"
         android:layout_marginLeft="60dp"
         android:layout_marginStart="60dp"
@@ -112,7 +110,7 @@
     <ImageView
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:id="@+id/imageView20d"
+        android:id="@+id/selected_time_indicator"
         android:layout_gravity="center"
         android:layout_marginLeft="102dp"
         android:layout_marginStart="102dp"
@@ -140,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView64"
+            android:id="@+id/final_price"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:textColor="#212121" />
@@ -149,7 +147,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView65"
+            android:id="@+id/discount"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:textColor="#212121" />
@@ -158,7 +156,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView66"
+            android:id="@+id/bonuses"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:textColor="#212121" />
@@ -167,7 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/textView26"
+            android:id="@+id/price"
             android:layout_gravity="center_horizontal|bottom"
             android:textColor="#212121"
             android:textSize="18sp"

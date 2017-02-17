@@ -40,6 +40,8 @@ import retrofit2.Response;
 public class DeliveryFinalActivity extends BaseActivity {
     private DeliveryAdapter adapter;
 
+    private static final String EXTRA_PRICE = "price";
+
     private static int NO_ACTION = -1;
     public static int REMOVE_ACTION = -2;
 
@@ -62,7 +64,7 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void initElements() {
-        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.imageView21));
+        Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
 
         RecyclerView view = (RecyclerView) findViewById(R.id.recyclerView);
         view.setItemAnimator(new DefaultItemAnimator());
@@ -76,7 +78,7 @@ public class DeliveryFinalActivity extends BaseActivity {
         newCard = false;
         binding = "";
 
-        ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
+        ((TextView) findViewById(R.id.price)).setText(getPriceText());
     }
 
     private void setOnClickListeners() {
@@ -88,7 +90,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.editText3f).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.map_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DeliveryFinalActivity.this, MapActivity.class);
@@ -96,7 +98,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.editText35).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.next_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DeliveryFinalActivity.this, CreditCardsActivity.class);
@@ -104,7 +106,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.textView41).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.select_another_address_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DeliveryFinalActivity.this, MapActivity.class);
@@ -112,13 +114,15 @@ public class DeliveryFinalActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.editText3).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.make_order).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!check()) return;
+                if (!check()) {
+                    return;
+                }
 
                 Intent intent = new Intent(DeliveryFinalActivity.this, TimeActivity.class);
-                intent.putExtra("price", getPriceText());
+                intent.putExtra(EXTRA_PRICE, getPriceText());
                 startActivity(intent);
             }
         });
@@ -185,11 +189,11 @@ public class DeliveryFinalActivity extends BaseActivity {
 
         if (collection.size() != 0) {
             binding = collection.get(0).getBinding();
-            ((TextView) findViewById(R.id.editText35)).setText(collection.get(0).getNumber());
-            findViewById(R.id.editText35).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.next_btn)).setText(collection.get(0).getNumber());
+            findViewById(R.id.next_btn).setVisibility(View.VISIBLE);
         } else {
             newCard = true;
-            findViewById(R.id.editText35).setVisibility(View.GONE);
+            findViewById(R.id.next_btn).setVisibility(View.GONE);
         }
     }
 
@@ -230,7 +234,7 @@ public class DeliveryFinalActivity extends BaseActivity {
         }
 
         itemToEdit = NO_ACTION;
-        ((TextView) findViewById(R.id.textView26)).setText(getPriceText());
+        ((TextView) findViewById(R.id.price)).setText(getPriceText());
     }
 
     private void removeItem() {
@@ -266,7 +270,7 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void updateUI() {
         if (collection.size() != 0) {
-            ((TextView) findViewById(R.id.editText35)).setText(collection.get(cardIndex).getNumber());
+            ((TextView) findViewById(R.id.next_btn)).setText(collection.get(cardIndex).getNumber());
         }
 
         if (!MapActivity.selectedLocationName.isEmpty()) {
@@ -287,31 +291,31 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void setNewCard() {
-        ((TextView) findViewById(R.id.editText35)).setText(R.string.new_card);
+        ((TextView) findViewById(R.id.next_btn)).setText(R.string.new_card);
         if (collection.size() != 0) {
-            findViewById(R.id.imageView20).setVisibility(View.VISIBLE);
+            findViewById(R.id.checkmark).setVisibility(View.VISIBLE);
         }
     }
 
     private void setSelectedCard() {
-        findViewById(R.id.imageView20).setVisibility(View.GONE);
+        findViewById(R.id.checkmark).setVisibility(View.GONE);
     }
 
     private void setFreeDelivery() {
-        findViewById(R.id.textView18).setVisibility(View.GONE);
-        ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery);
+        findViewById(R.id.delivery_help).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.free_delivery)).setText(R.string.free_delivery);
     }
 
     private void setPriceForDelivery() {
-        findViewById(R.id.textView18).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.textView4)).setText(R.string.free_delivery_from);
+        findViewById(R.id.delivery_help).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.free_delivery)).setText(R.string.free_delivery_from);
     }
 
     private void showLocationButtons() {
-        ((TextView) findViewById(R.id.textView40)).setText(MapActivity.selectedLocationName);
-        findViewById(R.id.textView40).setVisibility(View.VISIBLE);
-        findViewById(R.id.textView41).setVisibility(View.VISIBLE);
-        findViewById(R.id.textView42).setVisibility(View.VISIBLE);
-        findViewById(R.id.editText3f).setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.selected_location)).setText(MapActivity.selectedLocationName);
+        findViewById(R.id.selected_location).setVisibility(View.VISIBLE);
+        findViewById(R.id.select_another_address_btn).setVisibility(View.VISIBLE);
+        findViewById(R.id.address_help_text).setVisibility(View.VISIBLE);
+        findViewById(R.id.map_btn).setVisibility(View.GONE);
     }
 }
