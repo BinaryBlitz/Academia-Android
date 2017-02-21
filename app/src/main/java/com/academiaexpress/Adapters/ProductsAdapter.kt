@@ -41,6 +41,11 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
+
+        if (collection == null) {
+            return
+        }
+
         holder.name.text = collection!![position].name
         holder.description.text = collection!![position].ingridients
         holder.price.text = collection!![position].price.toString() + context.getString(R.string.ruble_sign)
@@ -66,6 +71,10 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     }
 
     private fun addProduct(holder: ViewHolder, position: Int) {
+        if (collection == null) {
+            return
+        }
+
         if (!DishFragment.answer) {
             Answers.getInstance().logCustom(CustomEvent(context.getString(R.string.event_order_added)))
         }
@@ -77,7 +86,12 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
         (context as ProductsActivity).addProduct(partsCollection!![position])
     }
 
-    override fun getItemCount(): Int { return collection!!.size }
+    override fun getItemCount(): Int {
+        if (collection == null) {
+            return 0
+        }
+        return collection!!.size
+    }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name) as TextView

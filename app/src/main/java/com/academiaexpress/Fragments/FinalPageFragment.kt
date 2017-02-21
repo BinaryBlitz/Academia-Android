@@ -33,11 +33,14 @@ class FinalPageFragment : Fragment() {
         return inflater!!.inflate(R.layout.fragment_final_page, container, false)
     }
 
-    val scrollView: NestedScrollView
-        get() = view!!.findViewById(R.id.scroll) as NestedScrollView
+    val scrollView: NestedScrollView?
+        get() = if (view == null) null else view!!.findViewById(R.id.scroll) as NestedScrollView
 
 
     private fun initList() {
+        if (view == null) {
+            return
+        }
         list = view!!.findViewById(R.id.recyclerView) as RecyclerView
         list!!.itemAnimator = DefaultItemAnimator()
         list!!.layoutManager = LinearLayoutManager(activity)
@@ -47,6 +50,10 @@ class FinalPageFragment : Fragment() {
     }
 
     private fun initButtonClick() {
+        if (view == null) {
+            return
+        }
+
         val layout = view!!.findViewById(R.id.main) as FrameLayout
         val params = layout.layoutParams as LinearLayout.LayoutParams
         params.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
@@ -60,17 +67,29 @@ class FinalPageFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        if (view == null) {
+            return
+        }
+
         Image.loadPhoto(R.drawable.back3, view!!.findViewById(R.id.background) as ImageView)
 
         initButtonClick()
         initList()
 
-        if (collection.size == 0) getStuff()
-        else reInitList()
+        if (collection.size == 0) {
+            getStuff()
+        } else {
+            reInitList()
+        }
     }
 
     private fun reInitList() {
         adapter!!.setCollection(collection)
+
+        if (view == null) {
+            return
+        }
+
         view!!.layoutParams.height = AndroidUtilities.dpToPx(context, (adapter!!.itemCount * 100).toFloat())
     }
 
@@ -87,6 +106,10 @@ class FinalPageFragment : Fragment() {
     }
 
     private fun parseStuff(array: JsonArray) {
+        if (adapter == null || view == null) {
+            return
+        }
+
         (0..array.size() - 1)
                 .map { array.get(it).asJsonObject }
                 .map {

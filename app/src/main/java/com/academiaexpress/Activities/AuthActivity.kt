@@ -111,9 +111,13 @@ class AuthActivity : BaseActivity() {
         private var mPressedSpan: TouchableSpan? = null
 
         override fun onTouchEvent(textView: TextView, spannable: Spannable, event: MotionEvent): Boolean {
-            if (event.action == MotionEvent.ACTION_DOWN) processDown(spannable)
-            else if (event.action == MotionEvent.ACTION_MOVE) processMove(textView, spannable, event)
-            else processStandart(textView, spannable, event)
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                processDown(spannable)
+            } else if (event.action == MotionEvent.ACTION_MOVE) {
+                processMove(textView, spannable, event)
+            } else {
+                processStandart(textView, spannable, event)
+            }
 
             return true
         }
@@ -158,7 +162,9 @@ class AuthActivity : BaseActivity() {
             val link = spannable.getSpans(off, off, TouchableSpan::class.java)
             var touchedSpan: TouchableSpan? = null
 
-            if (link.isNotEmpty()) touchedSpan = link[0]
+            if (link.isNotEmpty()) {
+                touchedSpan = link[0]
+            }
 
             return touchedSpan!!
         }
