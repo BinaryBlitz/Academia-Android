@@ -36,37 +36,28 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun smoothScroll(start: Int,  end: Int) {
-        if (view == null) {
-            return
-        }
-
-        (view!!.findViewById(R.id.scroll) as ScrollView).smoothScrollTo(start, end)
+        (view?.findViewById(R.id.scroll) as ScrollView).smoothScrollTo(start, end)
     }
 
     private fun setInfo() {
-        if (view == null || meal == null) {
+        if (meal == null) {
             return
         }
 
-        (view!!.findViewById(R.id.name) as TextView).text = meal!!.mealName
-        (view!!.findViewById(R.id.description) as TextView).text = if (meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
-        (view!!.findViewById(R.id.content) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
+        (view?.findViewById(R.id.name) as TextView).text = meal!!.mealName
+        (view?.findViewById(R.id.description) as TextView).text = if (meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
+        (view?.findViewById(R.id.content) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
 
-        (view!!.findViewById(R.id.price) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
+        (view?.findViewById(R.id.price) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
 
-        Image.loadDishPhoto(meal!!.photoLink, view!!.findViewById(R.id.image) as ImageView)
+        Image.loadDishPhoto(meal!!.photoLink, view?.findViewById(R.id.image) as ImageView)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (view == null) {
-            return
-        }
-
-        val outOfStockIndicator = view.findViewById(R.id.outOfStockIndicator)
-        outOfStockIndicator.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
-        outOfStockIndicator.setOnClickListener(null)
+        val outOfStockIndicator = view?.findViewById(R.id.outOfStockIndicator)
+        outOfStockIndicator?.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator?.setOnClickListener(null)
     }
 
     private fun hideEnergy() {
@@ -86,14 +77,10 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun setEnergy(energy: Array<String>) {
-        if (view == null) {
-            return
-        }
-
-        (view!!.findViewById(R.id.proteins) as TextView).text = energy[0]
-        (view!!.findViewById(R.id.fats) as TextView).text = energy[1]
-        (view!!.findViewById(R.id.carbohydrates) as TextView).text = energy[2]
-        (view!!.findViewById(R.id.nutritional_value) as TextView).text = energy[3]
+        (view?.findViewById(R.id.proteins) as TextView).text = energy[0]
+        (view?.findViewById(R.id.fats) as TextView).text = energy[1]
+        (view?.findViewById(R.id.carbohydrates) as TextView).text = energy[2]
+        (view?.findViewById(R.id.nutritional_value) as TextView).text = energy[3]
     }
 
     private fun processEnergy() {
@@ -168,9 +155,9 @@ class LunchFragment : BaseProductFragment() {
             return
         }
 
-        val layout = view!!.findViewById(R.id.main) as FrameLayout
-        val params = layout.layoutParams as LinearLayout.LayoutParams
-        params.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
+        val layout = view?.findViewById(R.id.main) as FrameLayout?
+        val params = layout?.layoutParams as LinearLayout.LayoutParams?
+        params?.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
 
         view!!.findViewById(R.id.make_order_btn).setOnClickListener {
             if (!DishFragment.answer) {
@@ -226,9 +213,9 @@ class LunchFragment : BaseProductFragment() {
             return
         }
 
-        val gridView = view!!.findViewById(R.id.gridView) as ExpandableHeightGridView
-        gridView.isExpanded = true
-        gridView.adapter = adapter
+        val gridView = view?.findViewById(R.id.gridView) as ExpandableHeightGridView?
+        gridView?.isExpanded = true
+        gridView?.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 

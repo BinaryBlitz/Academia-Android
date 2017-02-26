@@ -34,19 +34,16 @@ class FinalPageFragment : Fragment() {
     }
 
     val scrollView: NestedScrollView?
-        get() = if (view == null) null else view!!.findViewById(R.id.scroll) as NestedScrollView
+        get() = view?.findViewById(R.id.scroll) as NestedScrollView
 
 
     private fun initList() {
-        if (view == null) {
-            return
-        }
-        list = view!!.findViewById(R.id.recyclerView) as RecyclerView
-        list!!.itemAnimator = DefaultItemAnimator()
-        list!!.layoutManager = LinearLayoutManager(activity)
-        list!!.isNestedScrollingEnabled = false
+        list = view?.findViewById(R.id.recyclerView) as RecyclerView
+        list?.itemAnimator = DefaultItemAnimator()
+        list?.layoutManager = LinearLayoutManager(activity)
+        list?.isNestedScrollingEnabled = false
         adapter = ProductsAdapter(activity)
-        list!!.adapter = adapter
+        list?.adapter = adapter
     }
 
     private fun initButtonClick() {
