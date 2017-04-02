@@ -46,7 +46,12 @@ class LunchFragment : BaseProductFragment() {
 
         (view?.findViewById(R.id.name) as TextView).text = meal!!.mealName
         (view?.findViewById(R.id.description) as TextView).text = if (meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
-        (view?.findViewById(R.id.content) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
+
+        if (meal!!.description!!.isEmpty()) {
+            (view?.findViewById(R.id.content) as TextView).text = meal!!.description
+        } else {
+            view?.findViewById(R.id.about)?.visibility = View.GONE
+        }
 
         (view?.findViewById(R.id.price) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
 
