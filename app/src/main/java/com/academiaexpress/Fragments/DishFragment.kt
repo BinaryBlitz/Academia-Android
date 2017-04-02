@@ -151,7 +151,7 @@ class DishFragment : BaseProductFragment() {
             override fun getItemId(position: Int): Long { return position.toLong() }
 
             override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
-                val convertView = inflater.inflate(R.layout.item_ingredient, parent)
+                val convertView = inflater.inflate(R.layout.item_ingredient, null)
 
                 if (meal.ingridientsList == null) {
                     return convertView
