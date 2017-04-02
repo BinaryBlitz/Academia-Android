@@ -19,16 +19,19 @@ import java.util.*
 
 class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var collection: ArrayList<MiniProduct>? = null
-    private var partsCollection: ArrayList<DeliveryOrder.OrderPart>? = null
+    private var collection: ArrayList<MiniProduct>
+    private var partsCollection: ArrayList<DeliveryOrder.OrderPart>
 
-    init { collection = ArrayList<MiniProduct>() }
+    init {
+        collection = ArrayList<MiniProduct>()
+        partsCollection = ArrayList<DeliveryOrder.OrderPart>()
+    }
 
     fun setCollection(collection: ArrayList<MiniProduct>) {
         this.collection = collection
         partsCollection = ArrayList<DeliveryOrder.OrderPart>()
         for (i in collection.indices) {
-            partsCollection!!.add(DeliveryOrder.OrderPart(collection[i].price, collection[i].name!!, collection[i].id))
+            partsCollection.add(DeliveryOrder.OrderPart(collection[i].price, collection[i].name!!, collection[i].id))
         }
 
         notifyDataSetChanged()
@@ -42,17 +45,13 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
 
-        if (collection == null) {
-            return
-        }
+        holder.name.text = collection[position].name
+        holder.description.text = collection[position].ingridients
+        holder.price.text = collection[position].price.toString() + context.getString(R.string.ruble_sign)
 
-        holder.name.text = collection!![position].name
-        holder.description.text = collection!![position].ingridients
-        holder.price.text = collection!![position].price.toString() + context.getString(R.string.ruble_sign)
+        Image.loadPhoto(collection[position].photoLink, holder.avatar)
 
-        Image.loadPhoto(collection!![position].photoLink, holder.avatar)
-
-        if (collection!![position].count == 0) {
+        if (collection[position].count == 0) {
             hideCountTextView(holder)
         } else {
             showCountTextView(holder, position)
@@ -67,13 +66,10 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
 
     private fun showCountTextView(holder: ViewHolder, position: Int) {
         holder.itemView.findViewById(R.id.count_indicator).visibility = View.VISIBLE
-        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection!![position].count)
+        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection[position].count)
     }
 
     private fun addProduct(holder: ViewHolder, position: Int) {
-        if (collection == null) {
-            return
-        }
 
         if (!DishFragment.answer) {
             Answers.getInstance().logCustom(CustomEvent(context.getString(R.string.event_order_added)))
@@ -81,16 +77,13 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
         DishFragment.answer = true
 
         holder.itemView.findViewById(R.id.count_indicator).visibility = View.VISIBLE
-        collection!![position].count = collection!![position].count + 1
-        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection!![position].count)
+        collection[position].count = collection[position].count + 1
+        (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection[position].count)
         (context as ProductsActivity).addProduct(partsCollection!![position])
     }
 
     override fun getItemCount(): Int {
-        if (collection == null) {
-            return 0
-        }
-        return collection!!.size
+        return collection.size
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

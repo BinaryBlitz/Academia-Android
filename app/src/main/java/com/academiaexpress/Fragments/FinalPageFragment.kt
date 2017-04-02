@@ -26,37 +26,33 @@ import retrofit2.Response
 import java.util.*
 
 class FinalPageFragment : Fragment() {
-    private var adapter: ProductsAdapter? = null
-    private var list: RecyclerView? = null
+    private lateinit var adapter: ProductsAdapter
+    private lateinit var list: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_final_page, container, false)
     }
 
     val scrollView: NestedScrollView?
-        get() = view?.findViewById(R.id.scroll) as NestedScrollView
+        get() = view?.findViewById(R.id.scroll) as NestedScrollView?
 
 
     private fun initList() {
         list = view?.findViewById(R.id.recyclerView) as RecyclerView
-        list?.itemAnimator = DefaultItemAnimator()
-        list?.layoutManager = LinearLayoutManager(activity)
-        list?.isNestedScrollingEnabled = false
+        list.itemAnimator = DefaultItemAnimator()
+        list.layoutManager = LinearLayoutManager(activity)
+        list.isNestedScrollingEnabled = false
         adapter = ProductsAdapter(activity)
-        list?.adapter = adapter
+        list.adapter = adapter
     }
 
     private fun initButtonClick() {
-        if (view == null) {
-            return
-        }
+        val layout = view?.findViewById(R.id.main) as FrameLayout?
+        val params = layout?.layoutParams as LinearLayout.LayoutParams?
+        params?.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
 
-        val layout = view!!.findViewById(R.id.main) as FrameLayout
-        val params = layout.layoutParams as LinearLayout.LayoutParams
-        params.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
-
-        view!!.findViewById(R.id.textView).setOnClickListener {
-            (view!!.findViewById(R.id.scroll) as NestedScrollView).smoothScrollTo(0,
+        view?.findViewById(R.id.textView)?.setOnClickListener {
+            (view?.findViewById(R.id.scroll) as NestedScrollView?)?.smoothScrollTo(0,
                     AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context))
         }
     }
@@ -64,11 +60,7 @@ class FinalPageFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        if (view == null) {
-            return
-        }
-
-        Image.loadPhoto(R.drawable.back3, view!!.findViewById(R.id.background) as ImageView)
+        Image.loadPhoto(R.drawable.back3, view?.findViewById(R.id.background) as ImageView?)
 
         initButtonClick()
         initList()
@@ -81,13 +73,9 @@ class FinalPageFragment : Fragment() {
     }
 
     private fun reInitList() {
-        adapter!!.setCollection(collection)
+        adapter.setCollection(collection)
 
-        if (view == null) {
-            return
-        }
-
-        view!!.layoutParams.height = AndroidUtilities.dpToPx(context, (adapter!!.itemCount * 100).toFloat())
+        view?.layoutParams?.height = AndroidUtilities.dpToPx(context, (adapter.itemCount * 100).toFloat())
     }
 
     private fun getStuff() {
@@ -103,10 +91,6 @@ class FinalPageFragment : Fragment() {
     }
 
     private fun parseStuff(array: JsonArray) {
-        if (adapter == null || view == null) {
-            return
-        }
-
         (0..array.size() - 1)
                 .map { array.get(it).asJsonObject }
                 .map {
@@ -119,8 +103,8 @@ class FinalPageFragment : Fragment() {
                 }
                 .forEach { collection.add(it) }
 
-        adapter!!.setCollection(collection)
-        view!!.layoutParams.height = AndroidUtilities.dpToPx(context, (adapter!!.itemCount * 100).toFloat())
+        adapter.setCollection(collection)
+        view?.layoutParams?.height = AndroidUtilities.dpToPx(context, (adapter.itemCount * 100).toFloat())
     }
 
     companion object {
