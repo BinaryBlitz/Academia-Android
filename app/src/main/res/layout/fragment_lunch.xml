@@ -140,7 +140,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/main2"
+            android:id="@+id/about"
             android:orientation="vertical"
             android:layout_marginBottom="16dp">
 

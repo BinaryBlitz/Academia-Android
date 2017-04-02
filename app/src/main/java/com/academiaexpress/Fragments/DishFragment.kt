@@ -50,7 +50,12 @@ class DishFragment : BaseProductFragment() {
     private fun setInfo() {
         (view?.findViewById(R.id.name) as TextView).text = meal!!.mealName
         (view?.findViewById(R.id.description) as TextView).text = if (meal != null && meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
-        (view?.findViewById(R.id.content) as TextView).text = if (meal != null && meal!!.description!!.isEmpty()) "" else meal!!.description
+
+        if (meal!!.description!!.isEmpty()) {
+            (view?.findViewById(R.id.content) as TextView).text = meal!!.description
+        } else {
+            view?.findViewById(R.id.about)?.visibility = View.GONE
+        }
 
         if (meal == null) {
             return
