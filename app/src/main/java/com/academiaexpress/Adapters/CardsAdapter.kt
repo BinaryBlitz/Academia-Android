@@ -35,10 +35,17 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as NewsViewHolder
 
+        if (collection == null) {
+            return
+        }
+
         holder.date.text = collection!![position].number
 
-        if (collection!![position].selected) setBackForSelected(holder)
-        else setBackForUnSelected(holder)
+        if (collection!![position].selected) {
+            setBackForSelected(holder)
+        } else {
+            setBackForUnSelected(holder)
+        }
 
         holder.itemView.setOnClickListener { selectCard(holder.adapterPosition) }
     }
@@ -54,7 +61,13 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     }
 
     private fun selectCard(position: Int) {
-        for (i in collection!!.indices) collection!![i].selected = false
+        if (collection == null) {
+            return
+        }
+
+        for (i in collection!!.indices) {
+            collection!![i].selected = false
+        }
 
         collection!![position].selected = true
 
@@ -64,6 +77,9 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     }
 
     override fun getItemCount(): Int {
+        if (collection == null) {
+            return 0
+        }
         return collection!!.size
     }
 

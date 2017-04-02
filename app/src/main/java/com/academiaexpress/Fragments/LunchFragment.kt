@@ -17,6 +17,7 @@ import com.academiaexpress.Utils.Image
 import com.academiaexpress.Utils.LogUtil
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
+import java.util.*
 
 class LunchFragment : BaseProductFragment() {
     private val ANIMATION_DURATION = 400L
@@ -35,47 +36,58 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun smoothScroll(start: Int,  end: Int) {
-        (view!!.findViewById(R.id.scroll) as ScrollView).smoothScrollTo(start, end)
+        (view?.findViewById(R.id.scroll) as ScrollView).smoothScrollTo(start, end)
     }
 
     private fun setInfo() {
-        (view!!.findViewById(R.id.name) as TextView).text = meal!!.mealName
-        (view!!.findViewById(R.id.description) as TextView).text = if (meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
-        (view!!.findViewById(R.id.content) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
+        if (meal == null) {
+            return
+        }
 
-        (view!!.findViewById(R.id.price) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
+        (view?.findViewById(R.id.name) as TextView).text = meal!!.mealName
+        (view?.findViewById(R.id.description) as TextView).text = if (meal!!.ingridients!!.isEmpty()) "" else meal!!.ingridients
+        (view?.findViewById(R.id.content) as TextView).text = if (meal!!.description!!.isEmpty()) "" else meal!!.description
 
-        Image.loadDishPhoto(meal!!.photoLink, view!!.findViewById(R.id.image) as ImageView)
+        (view?.findViewById(R.id.price) as TextView).text = Integer.toString(meal!!.price) + getString(R.string.ruble_sign)
+
+        Image.loadDishPhoto(meal!!.photoLink, view?.findViewById(R.id.image) as ImageView)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val outOfStockIndicator = view?.findViewById(R.id.outOfStockIndicator)
+        outOfStockIndicator?.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator?.setOnClickListener(null)
+    }
 
+    private fun hideEnergy() {
         if (view == null) {
             return
         }
 
-        val outOfStockIndicator = view.findViewById(R.id.outOfStockIndicator)
-        outOfStockIndicator.visibility = if (meal!!.isCanBuy) View.VISIBLE else View.GONE
-        outOfStockIndicator.setOnClickListener(null)
-    }
-
-    private fun hideEnergy() {
         view!!.findViewById(R.id.en_content).visibility = View.GONE
     }
 
     private fun showEnergy() {
+        if (view == null) {
+            return
+        }
+
         view!!.findViewById(R.id.en_content).visibility = View.VISIBLE
     }
 
     private fun setEnergy(energy: Array<String>) {
-        (view!!.findViewById(R.id.proteins) as TextView).text = energy[0]
-        (view!!.findViewById(R.id.fats) as TextView).text = energy[1]
-        (view!!.findViewById(R.id.carbohydrates) as TextView).text = energy[2]
-        (view!!.findViewById(R.id.nutritional_value) as TextView).text = energy[3]
+        (view?.findViewById(R.id.proteins) as TextView).text = energy[0]
+        (view?.findViewById(R.id.fats) as TextView).text = energy[1]
+        (view?.findViewById(R.id.carbohydrates) as TextView).text = energy[2]
+        (view?.findViewById(R.id.nutritional_value) as TextView).text = energy[3]
     }
 
     private fun processEnergy() {
+        if (meal == null || meal!!.energy == null) {
+            return
+        }
+
         val energy = meal!!.energy!!.split("energy".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
 
         try {
@@ -87,6 +99,10 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun parseEnergy() {
+        if (meal == null) {
+            return
+        }
+
         if (meal!!.energy == null) {
             hideEnergy()
         } else {
@@ -106,6 +122,10 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun initIngredientsView() {
+        if (view == null || meal == null || meal!!.ingridientsList == null) {
+            return
+        }
+
         (view!!.findViewById(R.id.ingr) as LinearLayout).removeAllViews()
         if (meal!!.ingridientsList!!.size == 0) {
             view!!.findViewById(R.id.ingr).visibility = View.GONE
@@ -115,6 +135,10 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun showIngredientsView() {
+        if (view == null || meal == null || meal!!.ingridientsList == null) {
+            return
+        }
+
         view!!.findViewById(R.id.ingr).visibility = View.VISIBLE
         for (i in 0..meal!!.ingridientsList!!.size - 1) {
             val v = LayoutInflater.from(context).inflate(R.layout.item_lunch_part, null)
@@ -127,9 +151,13 @@ class LunchFragment : BaseProductFragment() {
     }
 
     private fun initMainView() {
-        val layout = view!!.findViewById(R.id.main) as FrameLayout
-        val params = layout.layoutParams as LinearLayout.LayoutParams
-        params.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
+        if (view == null) {
+            return
+        }
+
+        val layout = view?.findViewById(R.id.main) as FrameLayout?
+        val params = layout?.layoutParams as LinearLayout.LayoutParams?
+        params?.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
 
         view!!.findViewById(R.id.make_order_btn).setOnClickListener {
             if (!DishFragment.answer) {
@@ -143,15 +171,30 @@ class LunchFragment : BaseProductFragment() {
 
     private fun setupAdapter() {
         val adapter = object : BaseAdapter() {
-            override fun getCount(): Int { return meal!!.badges!!.size }
+            override fun getCount(): Int {
+                if (meal == null || meal!!.badges == null) {
+                    return 0
+                }
+                return meal!!.badges!!.size
+            }
 
-            override fun getItem(position: Int): Any { return meal!!.badges!! }
+            override fun getItem(position: Int): Any {
+                if (meal == null || meal!!.badges == null) {
+                    return ArrayList<String>()
+                }
+                return meal!!.badges!!
+            }
 
             override fun getItemId(position: Int): Long { return position.toLong() }
 
             override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
                 var convertView = convertView
                 convertView = LayoutInflater.from(context).inflate(R.layout.item_ingredient, null)
+
+                if (meal == null || meal!!.badges == null) {
+                    return convertView
+                }
+
                 val name = convertView.findViewById(R.id.name) as TextView
                 name.text = meal!!.badges!![position].second
 
@@ -166,13 +209,21 @@ class LunchFragment : BaseProductFragment() {
             }
         }
 
-        val gridView = view!!.findViewById(R.id.gridView) as ExpandableHeightGridView
-        gridView.isExpanded = true
-        gridView.adapter = adapter
+        if (view == null) {
+            return
+        }
+
+        val gridView = view?.findViewById(R.id.gridView) as ExpandableHeightGridView?
+        gridView?.isExpanded = true
+        gridView?.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
-    override fun getScrollView(): ScrollView {
+    override fun getScrollView(): ScrollView? {
+        if (view == null) {
+            return null
+        }
+
         return view!!.findViewById(R.id.scroll) as ScrollView
     }
 
