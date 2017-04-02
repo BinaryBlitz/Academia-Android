@@ -136,7 +136,7 @@ class CodeActivity : BaseActivity() {
     private fun activateSendAgainButton() {
         val content = SpannableString(getString(R.string.send_code_again))
         content.setSpan(UnderlineSpan(), 0, content.length, 0)
-        helperTextView!!.text = content
+        helperTextView?.text = content
     }
 
     private fun authResponse(obj: JsonObject) {
