@@ -325,17 +325,17 @@ public class ProductsActivity extends BaseActivity {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void addDishFragment(JsonArray array, int i) {
-        if (products.get(array.size() + i) == null || products.get(array.size() + i).getId() == null) {
+    private void addDishFragment(int lunchesQuantity, int i) {
+        if (products.get(lunchesQuantity + i) == null || products.get(lunchesQuantity + i).getId() == null) {
             return;
         }
 
         final BaseProductFragment fragment = new DishFragment();
-        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array.size() + i).getPrice(),
-                products.get(array.size() + i).getMealName(), products.get(array.size() + i).getId());
+        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(lunchesQuantity + i).getPrice(),
+                products.get(lunchesQuantity + i).getMealName(), products.get(lunchesQuantity + i).getId());
         part.setCount(0);
         fragment.setPart(part);
-        fragment.setInfo(products.get(array.size() + i));
+        fragment.setInfo(products.get(lunchesQuantity + i));
 
         runOnUiThread(new Runnable() {
             @Override
@@ -368,11 +368,11 @@ public class ProductsActivity extends BaseActivity {
         });
     }
 
-    private void parseDishes(JsonArray array) {
+    private void parseDishes(int lunchesQuantity, JsonArray array) {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
             products.add(parseDish(object));
-            addDishFragment(array, i);
+            addDishFragment(lunchesQuantity, i);
         }
     }
 
@@ -428,8 +428,9 @@ public class ProductsActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int size = object.get("lunches").getAsJsonArray().size();
                 parseLunches(object.get("lunches").getAsJsonArray());
-                parseDishes(object.get("dishes").getAsJsonArray());
+                parseDishes(size, object.get("dishes").getAsJsonArray());
                 setupPages();
             }
         }).start();
