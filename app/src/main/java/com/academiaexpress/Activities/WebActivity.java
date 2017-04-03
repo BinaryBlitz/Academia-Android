@@ -1,7 +1,6 @@
 package com.academiaexpress.Activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,10 +24,7 @@ public class WebActivity extends BaseActivity {
 
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setBuiltInZoomControls(true);
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            webView.getSettings().setDisplayZoomControls(false);
-        }
+        webView.getSettings().setDisplayZoomControls(false);
 
         webView.loadUrl(getIntent().getStringExtra(EXTRA_URL));
 
@@ -36,16 +32,17 @@ public class WebActivity extends BaseActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 TimeActivity.errors = !url.contains(SUCCESS);
 
-                if(url.contains(SUCCESS) || url.contains(FAILURE)) {
-                    processResult();
-                }
+//                if (url.contains(SUCCESS) || url.contains(FAILURE)) {
+//                    processResult();
+//                }
+
                 return false;
             }
         });
     }
 
     private void processResult() {
-        if(getIntent().getBooleanExtra(EXTRA_NEW_CARD, false)) {
+        if (getIntent().getBooleanExtra(EXTRA_NEW_CARD, false)) {
             openProcessActivity();
         } else {
             finish();
