@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities;
 
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.google.gson.JsonObject;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
@@ -45,6 +47,8 @@ public class StartActivity extends BaseActivity {
         setOnClickListeners();
 
         findViewById(R.id.menu_layout).setVisibility(View.GONE);
+
+        CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
     }
 
     private void parseUser(JsonObject object) {

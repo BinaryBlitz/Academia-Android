@@ -30,51 +30,75 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="112dp"
-        android:layout_marginBottom="188dp">
+        android:layout_marginTop="92dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:id="@+id/menu_list"
+            android:layout_height="match_parent"
+            >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/profile"
-            android:id="@+id/menu_profile"
-            android:layout_gravity="center_horizontal|top"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_weight="1.0"
-            android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/additional_menu"
+                android:layout_marginTop="32dp"
+                android:id="@+id/additional_menu"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/orders"
-            android:id="@+id/menu_orders"
-            android:layout_gravity="center_horizontal|top"
-            android:textColor="#ffffff"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:background="#ffffff"
+                android:layout_margin="32dp"
+                android:layout_height="1dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/help"
-            android:id="@+id/menu_help"
-            android:layout_gravity="center_horizontal|top"
-            android:textColor="#ffffff"
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="18sp" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/profile"
+                android:id="@+id/menu_profile"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/orders"
+                android:id="@+id/menu_orders"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/help"
+                android:layout_marginTop="32dp"
+                android:id="@+id/menu_help"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 </FrameLayout>

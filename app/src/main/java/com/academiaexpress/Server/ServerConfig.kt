@@ -1,7 +1,7 @@
 package com.academiaexpress.Server
 
 object ServerConfig {
-    val baseUrl = "http://academia-delivery.herokuapp.com"
+    val baseUrl = "http://academia-delivery-staging.herokuapp.com"
     val apiURL = baseUrl + "/"
 
     val imageUrl: String

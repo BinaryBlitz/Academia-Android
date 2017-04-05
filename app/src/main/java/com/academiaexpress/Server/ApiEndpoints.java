@@ -30,6 +30,9 @@ public interface ApiEndpoints {
     @GET("day")
     Call<JsonObject> getDay(@Query("api_token") String token);
 
+    @GET("categories")
+    Call<JsonArray> getCategories(@Query("api_token") String token);
+
     @GET("user")
     Call<JsonObject> getUser(@Query("api_token") String token);
 
