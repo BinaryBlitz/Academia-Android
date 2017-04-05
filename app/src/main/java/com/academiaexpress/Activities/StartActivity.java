@@ -31,6 +31,7 @@ import retrofit2.Response;
 public class StartActivity extends BaseActivity {
 
     private static final String EXTRA_FIRST = "first";
+    private static final String EXTRA_ADDITIONAL = "additional";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +170,15 @@ public class StartActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, OrdersActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.additional_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartActivity.this, ProductsActivity.class);
+                intent.putExtra(EXTRA_ADDITIONAL, true);
                 startActivity(intent);
             }
         });

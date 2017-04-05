@@ -27,7 +27,6 @@
             android:padding="10dp"
             android:background="@drawable/white_circle_back" />
 
-
     </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.NestedScrollView

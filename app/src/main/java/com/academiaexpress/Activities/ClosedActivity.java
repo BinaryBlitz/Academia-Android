@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities;
 
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.google.gson.JsonObject;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
@@ -38,6 +40,7 @@ public class ClosedActivity extends BaseActivity {
 
     private static final String EXTRA_CLOSED = "closed";
     private static final String EXTRA_FIRST = "first";
+    private static final String EXTRA_ADDITIONAL = "additional";
     private static final String EXTRA_PREORDER = "preorder";
     private static final int EARLY_HOUR = 6;
 
@@ -53,6 +56,8 @@ public class ClosedActivity extends BaseActivity {
         setOnClickListeners();
         getUser();
         setTexts();
+
+        CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
     }
 
     private void parseUser(JsonObject object) {
@@ -230,6 +235,15 @@ public class ClosedActivity extends BaseActivity {
                     return;
                 }
                 openProductsActivity();
+            }
+        });
+
+        findViewById(R.id.additional_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ClosedActivity.this, ProductsActivity.class);
+                intent.putExtra(EXTRA_ADDITIONAL, true);
+                startActivity(intent);
             }
         });
 

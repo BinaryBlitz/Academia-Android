@@ -250,10 +250,11 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void openActivity(JsonObject object, boolean flag) {
+        LogUtil.logError(object.toString());
         if (flag) {
             Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
             intent.putExtra("open_time", object.get("opens_at").isJsonNull() ? "" : object.get("opens_at").getAsString());
-//            intent.putExtra("preorder", !object.get("lunches").isJsonNull());
+            intent.putExtra("preorder", !object.get("is_open").getAsBoolean());
             startActivity(intent);
             finish();
         } else {
