@@ -245,7 +245,6 @@ public class ProductsActivity extends BaseActivity {
                     parseDishes(response.body());
                 } else {
                     findViewById(R.id.loading_indicator).setVisibility(View.GONE);
-                    onInternetConnectionError();
                 }
             }
 

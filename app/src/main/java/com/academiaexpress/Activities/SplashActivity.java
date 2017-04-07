@@ -250,11 +250,10 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void openActivity(JsonObject object, boolean flag) {
-        LogUtil.logError(object.toString());
         if (flag) {
             Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
             intent.putExtra("open_time", object.get("opens_at").isJsonNull() ? "" : object.get("opens_at").getAsString());
-            intent.putExtra("preorder", !object.get("is_open").getAsBoolean());
+            intent.putExtra("preorder", object.get("dishes") != null && !object.get("dishes").isJsonNull());
             startActivity(intent);
             finish();
         } else {
@@ -268,8 +267,13 @@ public class SplashActivity extends BaseActivity {
         Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
         intent.putExtra("closed", true);
 
-        try { intent.putExtra("open_time", object.get("opens_at").getAsString()); }
-        catch (Exception e) { e.printStackTrace(); }
+        try {
+            intent.putExtra("preorder", object.get("dishes") != null && !object.get("dishes").isJsonNull());
+            intent.putExtra("open_time", object.get("opens_at").getAsString());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         startActivity(intent);
         finish();
@@ -300,7 +304,7 @@ public class SplashActivity extends BaseActivity {
                     object.get("welcome_screen_image_url").getAsString();
             Calendar now = Calendar.getInstance();
 
-            boolean flag = checkTimes(now, times);
+            boolean flag = checkTimes(now, times) || !object.get("is_open").getAsBoolean();
 
             getCategories(object, flag);
         } catch (Exception e) {
