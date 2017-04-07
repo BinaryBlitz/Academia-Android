@@ -51,13 +51,13 @@ public class SplashActivity extends BaseActivity {
         getOrders();
     }
 
-    private void getCategories(final JsonObject object, final boolean flag) {
+    private void getCategories(final JsonObject workingHours, final boolean isOpened) {
         ServerApi.get(this).api().getCategories(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful()) {
                     CategoriesUtility.INSTANCE.saveCategories(response.body());
-                    openActivity(object, flag);
+                    openActivity(workingHours, isOpened);
                 } else {
                     onInternetConnectionError();
                 }
@@ -276,36 +276,35 @@ public class SplashActivity extends BaseActivity {
         finish();
     }
 
-    private boolean checkTimes(Calendar now, ArrayList<Pair<Calendar, Calendar>> times) {
-        boolean flag = true;
-        for (int i = 0; i < times.size(); i++) {
-            if (i == 0) {
-                Calendar calendar1 = times.get(i).first;
-                calendar1.add(Calendar.MINUTE, -60);
-                if (now.after(calendar1) && now.before(times.get(i).second)) {
-                    flag = false;
-                }
-            } else {
-                if (now.after(times.get(i).first) && now.before(times.get(i).second)) {
-                    flag = false;
-                }
-            }
+    private boolean checkTimes(ArrayList<Pair<Calendar, Calendar>> times) {
+        boolean isOpened = checkTime(initStartCalendar(Calendar.getInstance()), times.get(0).second);
+        for (int i = 1; i < times.size(); i++) {
+            isOpened = checkTime(times.get(i).first, times.get(i).second);
         }
 
-        return flag;
+        return isOpened;
     }
 
-    private void parseOpenTime(JsonObject object, ArrayList<Pair<Calendar, Calendar>> times) {
+    private Calendar initStartCalendar(Calendar defaultTime) {
+        defaultTime.add(Calendar.MINUTE, -60);
+        return defaultTime;
+    }
+
+    private boolean checkTime(Calendar startTime, Calendar endTime) {
+        Calendar now = Calendar.getInstance();
+        return !(now.after(startTime) && now.before(endTime));
+    }
+
+    private void parseOpenTime(JsonObject workingHours, ArrayList<Pair<Calendar, Calendar>> times) {
         try {
-            ClosedActivity.imageUrl = object.get("welcome_screen_image_url").isJsonNull() ? "" :
-                    object.get("welcome_screen_image_url").getAsString();
-            Calendar now = Calendar.getInstance();
+            ClosedActivity.imageUrl = workingHours.get("welcome_screen_image_url").isJsonNull() ? "" :
+                    workingHours.get("welcome_screen_image_url").getAsString();
 
-            boolean flag = checkTimes(now, times) || !object.get("is_open").getAsBoolean();
+            boolean isOpened = checkTimes(times) || !workingHours.get("is_open").getAsBoolean();
 
-            getCategories(object, flag);
+            getCategories(workingHours, isOpened);
         } catch (Exception e) {
-            finishActivity(object);
+            finishActivity(workingHours);
         }
     }
 
