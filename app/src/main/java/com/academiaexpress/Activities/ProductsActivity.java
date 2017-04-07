@@ -47,8 +47,8 @@ public class ProductsActivity extends BaseActivity {
     private static final String EXTRA_ID = "id";
     private static final String EXTRA_ADDITIONAL = "additional";
     private boolean isStuff = false;
-    private ArrayList<DeliveryMeal> products;
-    private ArrayList<Fragment> fragments;
+    private static ArrayList<DeliveryMeal> products = new ArrayList<>();
+    private static ArrayList<Fragment> fragments = new ArrayList<>();
     public static int product_count = 0;
     public static int price = 0;
     static boolean canceled = false;
@@ -85,20 +85,8 @@ public class ProductsActivity extends BaseActivity {
         showMenu();
     }
 
-    private void showStuff() {
-        initFinalPage();
-
-    }
-
     private void iniFields() {
-        products = new ArrayList<>();
         fragments = new ArrayList<>();
-        collection = new ArrayList<>();
-
-        collection.clear();
-        product_count = 0;
-        price = 0;
-
         canceled = false;
     }
 
@@ -224,13 +212,6 @@ public class ProductsActivity extends BaseActivity {
     private void getDay() {
         isStuff = getIntent().getBooleanExtra(EXTRA_ADDITIONAL, false);
 
-        if (isStuff) {
-            defaultPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
-            defaultViewpager.setAdapter(defaultPagerAdapter);
-            fragments.add(initFinalPage());
-            setupPages(true);
-        }
-
         ServerApi.get(this).api().getDishes(getIntent().getIntExtra(EXTRA_ID, 0), DeviceInfoStore.getToken(this))
                 .enqueue(new Callback<JsonArray>() {
             @Override
@@ -296,7 +277,6 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private DeliveryMeal parseDish(JsonObject object) {
-        LogUtil.logError(object.toString());
         return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
@@ -336,26 +316,31 @@ public class ProductsActivity extends BaseActivity {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
             products.add(parseDish(object));
-            addDishFragment(i);
+            if (!isStuff) {
+                addDishFragment(i);
+            }
         }
 
         if (isStuff) {
             StuffFragment.Companion.setCollection(products);
+            fragments.add(initFinalPage());
         }
 
-        setupPages(false);
+        setupPages();
     }
 
-    private void setupPages(final boolean additional) {
+    private void setupPages() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 defaultPagerAdapter.notifyDataSetChanged();
                 defaultViewpager.setOffscreenPageLimit(fragments.size());
-                defaultIndicator.setViewPager(defaultViewpager);
-                if (!additional) {
-                    initScrolls();
+                if (isStuff) {
+                    return;
                 }
+
+                defaultIndicator.setViewPager(defaultViewpager);
+                initScrolls();
             }
         });
     }

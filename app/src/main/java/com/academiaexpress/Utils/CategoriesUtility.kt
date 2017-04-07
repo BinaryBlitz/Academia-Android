@@ -17,18 +17,20 @@ object CategoriesUtility {
     val list: ArrayList<Category> = ArrayList()
 
     fun saveCategories(array: JsonArray) {
+        LogUtil.logError(array.toString())
         (0..array.size() - 1)
                 .map { array.get(it).asJsonObject }
                 .mapTo(list) {
                     Category(
                             AndroidUtilities.getIntFieldFromJson(it.get("id")),
                             AndroidUtilities.getStringFieldFromJson(it.get("name")),
-                            AndroidUtilities.getBooleanFieldFromJson(it.get("stuff"))
+                            AndroidUtilities.getBooleanFieldFromJson(it.get("complementary"))
                     )
                 }
     }
 
     fun showCategoriesList(layout: LinearLayout, context: Activity) {
+        var i = 0
         for ((id, name, isStuff) in list) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_category, null)
 
@@ -41,7 +43,7 @@ object CategoriesUtility {
                 context.finish()
             }
 
-            layout.addView(view, 0)
+            layout.addView(view, i++)
         }
     }
 }
