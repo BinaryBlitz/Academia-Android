@@ -36,6 +36,14 @@ public class SplashActivity extends BaseActivity {
     public static ArrayList<String> hours;
     public static ArrayList<Calendar> calendars;
 
+    private static final String EXTRA_PREORDER = "preorder";
+    private static final String EXTRA_OPEN_TIME = "open_time";
+    private static final String EXTRA_CLOSED = "closed";
+
+    private boolean isOpened = true;
+    private boolean isPreorder = false;
+    private String openTime = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +59,13 @@ public class SplashActivity extends BaseActivity {
         getOrders();
     }
 
-    private void getCategories(final JsonObject workingHours, final boolean isOpened) {
+    private void getCategories() {
         ServerApi.get(this).api().getCategories(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful()) {
                     CategoriesUtility.INSTANCE.saveCategories(response.body());
-                    openActivity(workingHours, isOpened);
+                    openActivity();
                 } else {
                     onInternetConnectionError();
                 }
@@ -246,29 +254,36 @@ public class SplashActivity extends BaseActivity {
         checkOpenTime(times);
     }
 
-    private void openActivity(JsonObject object, boolean flag) {
-        if (flag) {
-            Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
-            intent.putExtra("open_time", object.get("opens_at").isJsonNull() ? "" : object.get("opens_at").getAsString());
-            intent.putExtra("preorder", object.get("dishes") != null && !object.get("dishes").isJsonNull());
-            startActivity(intent);
-            finish();
+    private void openActivity() {
+        if (isOpened) {
+            openStartActivity();
         } else {
-            Intent intent = new Intent(SplashActivity.this, StartActivity.class);
-            startActivity(intent);
-            finish();
+            openClosedActivity();
         }
     }
 
-    private void finishActivity(JsonObject object) {
+    private void openClosedActivity() {
         Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
-        intent.putExtra("closed", true);
+        intent.putExtra(EXTRA_OPEN_TIME, openTime);
+        intent.putExtra(EXTRA_PREORDER, isPreorder);
+        startActivity(intent);
+        finish();
+    }
+
+    private void openStartActivity() {
+        Intent intent = new Intent(SplashActivity.this, StartActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void finishActivity() {
+        Intent intent = new Intent(SplashActivity.this, ClosedActivity.class);
+        intent.putExtra(EXTRA_CLOSED, true);
 
         try {
-            intent.putExtra("preorder", object.get("dishes") != null && !object.get("dishes").isJsonNull());
-            intent.putExtra("open_time", object.get("opens_at").getAsString());
-        }
-        catch (Exception e) {
+            intent.putExtra(EXTRA_PREORDER, isPreorder);
+            intent.putExtra(EXTRA_OPEN_TIME, openTime);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -297,19 +312,20 @@ public class SplashActivity extends BaseActivity {
 
     private void parseOpenTime(JsonObject workingHours, ArrayList<Pair<Calendar, Calendar>> times) {
         try {
+            openTime = workingHours.get("opens_at").isJsonNull() ? "" : workingHours.get("opens_at").getAsString();
+            isPreorder = workingHours.get("dishes") != null && !workingHours.get("dishes").isJsonNull();
+            isOpened = checkTimes(times) || !workingHours.get("is_open").getAsBoolean();
+
             ClosedActivity.imageUrl = workingHours.get("welcome_screen_image_url").isJsonNull() ? "" :
                     workingHours.get("welcome_screen_image_url").getAsString();
 
-            boolean isOpened = checkTimes(times) || !workingHours.get("is_open").getAsBoolean();
-
-            getCategories(workingHours, isOpened);
+            getCategories();
         } catch (Exception e) {
-            finishActivity(workingHours);
+            finishActivity();
         }
     }
 
     private void checkOpenTime(final ArrayList<Pair<Calendar, Calendar>> times) {
-
         ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
