@@ -43,8 +43,8 @@ class DishFragment : BaseProductFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val outOfStockIndicator = view?.findViewById(R.id.outOfStockIndicator)
-        //outOfStockIndicator?.visibility = if (meal.isCanBuy) View.VISIBLE else View.GONE
-        //outOfStockIndicator?.setOnClickListener(null)
+        outOfStockIndicator?.visibility = if (meal.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator?.setOnClickListener(null)
     }
 
     private fun setInfo() {
