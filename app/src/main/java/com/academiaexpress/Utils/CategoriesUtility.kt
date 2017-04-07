@@ -12,6 +12,8 @@ import com.google.gson.JsonArray
 
 object CategoriesUtility {
     val EXTRA_ID = "id"
+    private val EXTRA_ADDITIONAL = "additional"
+
     val list: ArrayList<Category> = ArrayList()
 
     fun saveCategories(array: JsonArray) {
@@ -20,19 +22,21 @@ object CategoriesUtility {
                 .mapTo(list) {
                     Category(
                             AndroidUtilities.getIntFieldFromJson(it.get("id")),
-                            AndroidUtilities.getStringFieldFromJson(it.get("name"))
+                            AndroidUtilities.getStringFieldFromJson(it.get("name")),
+                            AndroidUtilities.getBooleanFieldFromJson(it.get("stuff"))
                     )
                 }
     }
 
     fun showCategoriesList(layout: LinearLayout, context: Activity) {
-        for ((id, name) in list) {
+        for ((id, name, isStuff) in list) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_category, null)
 
             (view.findViewById(R.id.name) as TextView).text = name
             view.setOnClickListener {
                 val intent = Intent(context, ProductsActivity::class.java)
                 intent.putExtra(EXTRA_ID, id)
+                intent.putExtra(EXTRA_ADDITIONAL, isStuff)
                 context.startActivity(intent)
                 context.finish()
             }

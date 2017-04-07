@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.academiaexpress.Activities.ProductsActivity
+import com.academiaexpress.Data.DeliveryMeal
 import com.academiaexpress.Data.DeliveryOrder
-import com.academiaexpress.Data.MiniProduct
 import com.academiaexpress.Fragments.DishFragment
 import com.academiaexpress.R
 import com.academiaexpress.Utils.Image
@@ -19,19 +19,19 @@ import java.util.*
 
 class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var collection: ArrayList<MiniProduct>
+    private var collection: ArrayList<DeliveryMeal>
     private var partsCollection: ArrayList<DeliveryOrder.OrderPart>
 
     init {
-        collection = ArrayList<MiniProduct>()
+        collection = ArrayList<DeliveryMeal>()
         partsCollection = ArrayList<DeliveryOrder.OrderPart>()
     }
 
-    fun setCollection(collection: ArrayList<MiniProduct>) {
+    fun setCollection(collection: ArrayList<DeliveryMeal>) {
         this.collection = collection
         partsCollection = ArrayList<DeliveryOrder.OrderPart>()
         for (i in collection.indices) {
-            partsCollection.add(DeliveryOrder.OrderPart(collection[i].price, collection[i].name!!, collection[i].id))
+            partsCollection.add(DeliveryOrder.OrderPart(collection[i].price, collection[i].mealName!!, collection[i].id!!))
         }
 
         notifyDataSetChanged()
@@ -45,7 +45,7 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
 
-        holder.name.text = collection[position].name
+        holder.name.text = collection[position].mealName
         holder.description.text = collection[position].ingridients
         holder.price.text = collection[position].price.toString() + context.getString(R.string.ruble_sign)
 
@@ -79,7 +79,7 @@ class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<Recy
         holder.itemView.findViewById(R.id.count_indicator).visibility = View.VISIBLE
         collection[position].count = collection[position].count + 1
         (holder.itemView.findViewById(R.id.count_indicator) as TextView).text = Integer.toString(collection[position].count)
-        (context as ProductsActivity).addProduct(partsCollection!![position])
+        (context as ProductsActivity).addProduct(partsCollection[position])
     }
 
     override fun getItemCount(): Int {

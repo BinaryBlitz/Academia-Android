@@ -40,7 +40,6 @@ public class ClosedActivity extends BaseActivity {
 
     private static final String EXTRA_CLOSED = "closed";
     private static final String EXTRA_FIRST = "first";
-    private static final String EXTRA_ADDITIONAL = "additional";
     private static final String EXTRA_PREORDER = "preorder";
     private static final int EARLY_HOUR = 6;
 
@@ -105,8 +104,11 @@ public class ClosedActivity extends BaseActivity {
         ServerApi.get(this).api().getUser(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseUser(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseUser(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -136,8 +138,11 @@ public class ClosedActivity extends BaseActivity {
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
 
-        if (hour < EARLY_HOUR) setTextToUpperText(getString(R.string.hello_late));
-        else setTextToUpperText(getString(R.string.hello_early));
+        if (hour < EARLY_HOUR) {
+            setTextToUpperText(getString(R.string.hello_late));
+        } else {
+            setTextToUpperText(getString(R.string.hello_early));
+        }
     }
 
     private void setTextToUpperText(String text) {
@@ -235,15 +240,6 @@ public class ClosedActivity extends BaseActivity {
                     return;
                 }
                 openProductsActivity();
-            }
-        });
-
-        findViewById(R.id.additional_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ClosedActivity.this, ProductsActivity.class);
-                intent.putExtra(EXTRA_ADDITIONAL, true);
-                startActivity(intent);
             }
         });
 

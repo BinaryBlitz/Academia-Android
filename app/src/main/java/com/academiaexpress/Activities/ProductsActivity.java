@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -47,7 +46,7 @@ public class ProductsActivity extends BaseActivity {
     private static final String EXTRA_FIRST = "first";
     private static final String EXTRA_ID = "id";
     private static final String EXTRA_ADDITIONAL = "additional";
-
+    private boolean isStuff = false;
     private ArrayList<DeliveryMeal> products;
     private ArrayList<Fragment> fragments;
     public static int product_count = 0;
@@ -86,6 +85,11 @@ public class ProductsActivity extends BaseActivity {
         showMenu();
     }
 
+    private void showStuff() {
+        initFinalPage();
+
+    }
+
     private void iniFields() {
         products = new ArrayList<>();
         fragments = new ArrayList<>();
@@ -122,15 +126,6 @@ public class ProductsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductsActivity.this, HelpActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        findViewById(R.id.additional_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProductsActivity.this, ProductsActivity.class);
-                intent.putExtra(EXTRA_ADDITIONAL, true);
                 startActivity(intent);
             }
         });
@@ -182,9 +177,7 @@ public class ProductsActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == products.size()) {
-                    setScrollListener(((FinalPageFragment) fragments.get(products.size())).getScrollView());
-                } else {
+                if (!isStuff) {
                     setScrollListener(((BaseProductFragment) fragments.get(position)).getScrollView());
                 }
             }
@@ -229,8 +222,9 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void getDay() {
-        if (getIntent().getBooleanExtra(EXTRA_ADDITIONAL, false)) {
-            initFinalPage();
+        isStuff = getIntent().getBooleanExtra(EXTRA_ADDITIONAL, false);
+
+        if (isStuff) {
             defaultPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
             defaultViewpager.setAdapter(defaultPagerAdapter);
             fragments.add(initFinalPage());
@@ -302,6 +296,7 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private DeliveryMeal parseDish(JsonObject object) {
+        LogUtil.logError(object.toString());
         return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
@@ -312,7 +307,8 @@ public class ProductsActivity extends BaseActivity {
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")),
                 object.get("proteins") == null || object.get("proteins").isJsonNull() ? null : parseEnergy(object),
                 (object.get("out_of_stock") == null || object.get("out_of_stock").isJsonNull()) ||
-                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")));
+                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")),
+                0);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -341,6 +337,10 @@ public class ProductsActivity extends BaseActivity {
             JsonObject object = array.get(i).getAsJsonObject();
             products.add(parseDish(object));
             addDishFragment(i);
+        }
+
+        if (isStuff) {
+            FinalPageFragment.Companion.setCollection(products);
         }
 
         setupPages(false);
@@ -375,6 +375,11 @@ public class ProductsActivity extends BaseActivity {
 
     private void listenToScroll() {
         findViewById(R.id.loading_indicator).setVisibility(View.GONE);
+
+        if (!isStuff) {
+            return;
+        }
+
         ((BaseProductFragment) fragments.get(0)).animateScroll();
 
         new Handler().postDelayed(new Runnable() {
@@ -408,16 +413,6 @@ public class ProductsActivity extends BaseActivity {
         } else {
             showMenu();
         }
-    }
-
-    public void setScrollListener(final NestedScrollView scrollView) {
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY();
-                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, BUTTON_HIDE_OFFSET)));
-            }
-        });
     }
 
     public void setScrollListener(final ScrollView scrollView) {

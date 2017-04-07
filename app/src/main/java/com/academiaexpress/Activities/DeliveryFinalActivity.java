@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.academiaexpress.Adapters.DeliveryAdapter;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.CreditCard;
+import com.academiaexpress.Data.DeliveryMeal;
 import com.academiaexpress.Data.DeliveryOrder;
-import com.academiaexpress.Data.MiniProduct;
 import com.academiaexpress.Fragments.FinalPageFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -248,8 +248,8 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void removeMiniProducts() {
         for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
-            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+            DeliveryMeal product = FinalPageFragment.Companion.getCollection().get(i);
+            if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 FinalPageFragment.Companion.getCollection().get(i).setCount(0);
                 break;
             }
@@ -258,8 +258,8 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void editItemCount() {
         for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
-            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+            DeliveryMeal product = FinalPageFragment.Companion.getCollection().get(i);
+            if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 FinalPageFragment.Companion.getCollection().get(i).setCount(newCount);
                 break;
             }
