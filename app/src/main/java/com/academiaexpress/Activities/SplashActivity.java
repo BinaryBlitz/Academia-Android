@@ -1,9 +1,5 @@
 package com.academiaexpress.Activities;
 
-import com.academiaexpress.Utils.CategoriesUtility;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,12 +14,13 @@ import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
 import com.academiaexpress.Utils.AndroidUtilities;
-import com.academiaexpress.Utils.LogUtil;
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.academiaexpress.Utils.MoneyValues;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
