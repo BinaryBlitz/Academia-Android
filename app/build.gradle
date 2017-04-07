@@ -24,7 +24,7 @@ android {
         applicationId "com.academiaexpress"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 2
+        versionCode 3
         versionName "1.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
