@@ -19,7 +19,7 @@ import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.Image
 import java.util.*
 
-class FinalPageFragment : Fragment() {
+class StuffFragment : Fragment() {
     private lateinit var adapter: ProductsAdapter
     private lateinit var list: RecyclerView
 

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.DeliveryUser;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -119,7 +119,7 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void initScreen() {
-        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception e) { LogUtil.logException(e); }
+        try { StuffFragment.Companion.getCollection().clear(); } catch (Exception e) { LogUtil.logException(e); }
 
         closed = true;
         Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));
@@ -239,7 +239,12 @@ public class ClosedActivity extends BaseActivity {
                 if (!AndroidUtilities.INSTANCE.isConnected(ClosedActivity.this)) {
                     return;
                 }
-                openProductsActivity();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animations.animateRevealShow(findViewById(R.id.menu_layout), ClosedActivity.this);
+                    }
+                });
             }
         });
 

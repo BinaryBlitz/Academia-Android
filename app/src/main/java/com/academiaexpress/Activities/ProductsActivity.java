@@ -19,7 +19,7 @@ import com.academiaexpress.Base.SmartFragmentStatePagerAdapter;
 import com.academiaexpress.Data.DeliveryMeal;
 import com.academiaexpress.Data.DeliveryOrder;
 import com.academiaexpress.Fragments.DishFragment;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -340,7 +340,7 @@ public class ProductsActivity extends BaseActivity {
         }
 
         if (isStuff) {
-            FinalPageFragment.Companion.setCollection(products);
+            StuffFragment.Companion.setCollection(products);
         }
 
         setupPages(false);
@@ -390,8 +390,8 @@ public class ProductsActivity extends BaseActivity {
         }, ANIMATION_DURATION);
     }
 
-    private FinalPageFragment initFinalPage() {
-        return new FinalPageFragment();
+    private StuffFragment initFinalPage() {
+        return new StuffFragment();
     }
 
     private void hideMenu() {

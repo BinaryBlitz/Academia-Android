@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.DeliveryUser;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -39,7 +39,7 @@ public class StartActivity extends BaseActivity {
 
         ClosedActivity.closed = false;
 
-        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
+        try { StuffFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
 
         Image.loadPhoto(R.drawable.back_final_page, (ImageView) findViewById(R.id.background));
 
@@ -119,10 +119,15 @@ public class StartActivity extends BaseActivity {
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AndroidUtilities.INSTANCE.isConnected(StartActivity.this)) return;
-                Intent intent = new Intent(StartActivity.this, ProductsActivity.class);
-                startActivity(intent);
-                finish();
+                if (!AndroidUtilities.INSTANCE.isConnected(StartActivity.this)) {
+                    return;
+                }
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animations.animateRevealShow(findViewById(R.id.menu_layout), StartActivity.this);
+                    }
+                });
             }
         });
 
