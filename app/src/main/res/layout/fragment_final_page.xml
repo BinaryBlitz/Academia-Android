@@ -1,85 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll">
-    <LinearLayout
+<FrameLayout android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/main"
-            android:background="#212121">
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/background"
-                android:scaleType="centerCrop"
-                android:background="#212121"/>
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/imageView11"
-                android:src="@drawable/gradient"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/final_page_description"
-                android:id="@+id/textView10"
-                android:textAllCaps="true"
-                android:layout_gravity="center_horizontal|top"
-                android:textColor="#ffffff"
-                android:textSize="12sp"
-                android:layout_marginTop="166dp"
-                android:textStyle="bold" />
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/final_page_title"
-                    android:id="@+id/textView9"
-                    android:textAllCaps="true"
-                    android:layout_gravity="center_horizontal|top"
-                    android:textSize="20sp"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold"
-                    android:layout_marginTop="126dp"
-                    android:layout_marginBottom="8dp" />
-
-            <View
-                    android:layout_width="310dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="156dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="#ffffff"/>
-
-            <TextView
-                android:layout_width="250dp"
-                android:layout_height="42dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/view"
-                android:id="@+id/textView"
-                android:layout_gravity="center_horizontal|bottom"
-                android:textColor="#ffffff"
-                android:background="@drawable/top_border"
-                android:layout_marginBottom="56dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="18sp" />
-        </FrameLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+        android:layout_marginTop="56dp"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+</FrameLayout>

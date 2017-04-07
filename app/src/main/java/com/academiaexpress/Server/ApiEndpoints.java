@@ -21,7 +21,7 @@ public interface ApiEndpoints {
     @GET("payment_cards")
     Call<JsonArray> getCards(@Query("api_token") String token);
 
-    @GET("dishes/stuff")
+    @GET("stuff")
     Call<JsonArray> getStuff(@Query("api_token") String token);
 
     @GET("edge_points")
@@ -29,6 +29,12 @@ public interface ApiEndpoints {
 
     @GET("day")
     Call<JsonObject> getDay(@Query("api_token") String token);
+
+    @GET("categories/{id}/dishes")
+    Call<JsonArray> getDishes(@Path("id") int id, @Query("api_token") String token);
+
+    @GET("categories")
+    Call<JsonArray> getCategories(@Query("api_token") String token);
 
     @GET("user")
     Call<JsonObject> getUser(@Query("api_token") String token);

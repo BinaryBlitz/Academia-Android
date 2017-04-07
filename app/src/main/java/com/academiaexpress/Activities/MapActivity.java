@@ -81,7 +81,9 @@ public class MapActivity extends BaseActivity
     }
 
     private void initGoogleApiClient() {
-        if (mGoogleApiClient != null) return;
+        if (mGoogleApiClient != null) {
+            return;
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

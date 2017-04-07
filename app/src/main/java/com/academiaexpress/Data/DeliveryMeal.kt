@@ -13,4 +13,5 @@ class DeliveryMeal(var mealName: String?,
                    var badges: ArrayList<Pair<String, String>>?,
                    var id: Int?,
                    var energy: String?,
-                   var isCanBuy: Boolean)
+                   var isCanBuy: Boolean,
+                   var count: Int)

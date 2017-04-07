@@ -138,6 +138,7 @@
     <string name="nutritional_value">Ккал.</string>
     <string name="content">Состав</string>
     <string name="energy">Энергетическая ценность</string>
+    <string name="additional_menu">Дополнительное меню</string>
     <string name="error">Ошибка</string>
     <string name="error_helper">Ошибка оплаты, попробуйте еще раз.</string>
 </resources>

@@ -303,6 +303,9 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             array.add(part);
         }
 
+        LogUtil.logError(MapActivity.selectedLocation.latitude);
+        LogUtil.logError(MapActivity.selectedLocation.longitude);
+
         object.add("line_items_attributes", array);
         object.addProperty("address", MapActivity.selectedLocationName);
         object.addProperty("latitude", MapActivity.selectedLocation.latitude);
