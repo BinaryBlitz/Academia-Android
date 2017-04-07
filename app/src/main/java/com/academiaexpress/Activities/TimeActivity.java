@@ -170,8 +170,10 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     @Override
     protected void onResume() {
         super.onResume();
+        errors = true;
 
         if (id.isEmpty() || errors) {
+            showErrorDialog();
             return;
         }
 
@@ -180,6 +182,18 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         } else {
             openProcessActivity();
         }
+    }
+
+    private void showErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.error)
+                .setMessage(R.string.error_helper)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void openProcessActivity() {
