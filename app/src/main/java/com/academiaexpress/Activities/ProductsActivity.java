@@ -87,6 +87,7 @@ public class ProductsActivity extends BaseActivity {
 
     private void iniFields() {
         fragments = new ArrayList<>();
+        products.clear();
         canceled = false;
     }
 
