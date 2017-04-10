@@ -87,6 +87,7 @@ public class ProductsActivity extends BaseActivity {
 
     private void iniFields() {
         fragments = new ArrayList<>();
+        products.clear();
         canceled = false;
     }
 
@@ -277,6 +278,7 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private DeliveryMeal parseDish(JsonObject object) {
+        LogUtil.logError(object.toString());
         return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),

@@ -114,7 +114,7 @@ class DishFragment : BaseProductFragment() {
 
         val inflater = LayoutInflater.from(context)
 
-        initFirstAdapter(inflater)
+        showIngredientsView()
         initSecondAdapter(inflater)
 
         initButton()
@@ -131,10 +131,25 @@ class DishFragment : BaseProductFragment() {
         }
     }
 
-    private fun initFirstAdapter(inflater: LayoutInflater) {
+    private fun showIngredientsView() {
         val layout = view?.findViewById(R.id.main) as FrameLayout?
         val params = layout?.layoutParams as LinearLayout.LayoutParams?
         params?.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
+
+        if (meal.ingridientsList == null) {
+            return
+        }
+
+        (view?.findViewById(R.id.list) as LinearLayout?)?.removeAllViews()
+        view?.findViewById(R.id.list)?.visibility = View.VISIBLE
+        for (i in 0..meal.ingridientsList!!.size - 1) {
+            val textView = LayoutInflater.from(context).inflate(R.layout.item_lunch_part, null)
+            (textView.findViewById(R.id.name) as TextView).text = meal.ingridientsList!![i].second
+            (view?.findViewById(R.id.list) as LinearLayout?)?.addView(textView)
+        }
+    }
+
+    private fun initFirstAdapter(inflater: LayoutInflater) {
 
         val adapter = object : BaseAdapter() {
             override fun getCount(): Int {

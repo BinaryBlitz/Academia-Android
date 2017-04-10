@@ -17,7 +17,6 @@ object CategoriesUtility {
     val list: ArrayList<Category> = ArrayList()
 
     fun saveCategories(array: JsonArray) {
-        LogUtil.logError(array.toString())
         (0..array.size() - 1)
                 .map { array.get(it).asJsonObject }
                 .mapTo(list) {
@@ -30,6 +29,8 @@ object CategoriesUtility {
     }
 
     fun showCategoriesList(layout: LinearLayout, context: Activity) {
+        layout.removeAllViews()
+
         var i = 0
         for ((id, name, isStuff) in list) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_category, null)

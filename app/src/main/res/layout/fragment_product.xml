@@ -117,6 +117,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/about"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/about_dish"
+                android:id="@+id/textView15"
+                android:textAllCaps="false"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal|top"
+                android:textSize="20sp"
+                android:textColor="#212121"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp" />
+
+            <FrameLayout
+                android:layout_width="310dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#212121" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="#212121" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
                     android:layout_width="wrap_content"
@@ -138,60 +179,15 @@
                     android:layout_gravity="center_horizontal"
                     android:background="#212121"/>
 
-            <com.academiaexpress.Custom.ExpandableHeightGridView
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/gridView"
-                android:layout_gravity="center_horizontal|top"
-                android:numColumns="3"
-                android:stretchMode="columnWidth"
-                android:gravity="center"
+                android:orientation="vertical"
+                android:id="@+id/list"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:verticalSpacing="2dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/about"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_dish"
-                    android:id="@+id/textView15"
-                    android:textAllCaps="false"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:textSize="20sp"
-                    android:textColor="#212121"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="20dp" />
-
-            <FrameLayout
-                    android:layout_width="310dp"
-                    android:layout_height="2dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="#212121" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="12dp"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textColor="#212121" />
-
+                android:layout_marginBottom="16dp" />
         </LinearLayout>
 
         <LinearLayout
