@@ -436,14 +436,12 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                 if (response.isSuccessful()) {
                     parseUser(response.body());
                 } else {
-                    LogUtil.logError("1");
                     onInternetConnectionError();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                LogUtil.logError("2");
                 onInternetConnectionError();
             }
         });
@@ -512,7 +510,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                 if (response.isSuccessful()) {
                     parseCards(response.body());
                 } else {
-                    LogUtil.logError("3");
                     onInternetConnectionError();
                 }
             }
@@ -520,7 +517,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 dialog.dismiss();
-                LogUtil.logError("4");
                 onInternetConnectionError();
             }
         });
@@ -536,22 +532,15 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         ServerApi.get(this).api().pay(generatePayJson(binding), id, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                try {
-                    LogUtil.logError(response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 if (response.isSuccessful()) {
                     parsePayment();
                 } else {
-                    LogUtil.logError("5");
                     onInternetConnectionError();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                LogUtil.logError("6");
                 onInternetConnectionError();
             }
         });
