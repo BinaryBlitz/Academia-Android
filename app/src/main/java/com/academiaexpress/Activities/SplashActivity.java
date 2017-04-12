@@ -256,9 +256,9 @@ public class SplashActivity extends BaseActivity {
 
     private void openActivity() {
         if (isOpened) {
-            openStartActivity();
-        } else {
             openClosedActivity();
+        } else {
+            openStartActivity();
         }
     }
 
