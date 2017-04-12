@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +47,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     public static String selected = "";
     public static boolean errors = false;
     static String id = "";
+    static boolean isPaymentStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
     private void initElements() {
         now = true;
-        errors = true;
+        errors = false;
 
         Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
 
@@ -119,6 +121,8 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                     return;
                 }
 
+                isPaymentStarted = true;
+
                 if (DeliveryFinalActivity.newCard) {
                     addOrder();
                 } else {
@@ -170,10 +174,14 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     @Override
     protected void onResume() {
         super.onResume();
-        errors = true;
+
+        if (isPaymentStarted) {
+            showErrorDialog();
+            isPaymentStarted = false;
+            return;
+        }
 
         if (id.isEmpty() || errors) {
-            showErrorDialog();
             return;
         }
 
@@ -303,9 +311,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             array.add(part);
         }
 
-        LogUtil.logError(MapActivity.selectedLocation.latitude);
-        LogUtil.logError(MapActivity.selectedLocation.longitude);
-
         object.add("line_items_attributes", array);
         object.addProperty("address", MapActivity.selectedLocationName);
         object.addProperty("latitude", MapActivity.selectedLocation.latitude);
@@ -336,7 +341,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             intent.putExtra("url", object.get("url").getAsString());
             startActivity(intent);
         } catch (Exception e) {
-            onInternetConnectionError();
             LogUtil.logException(e);
         }
     }
@@ -432,12 +436,14 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                 if (response.isSuccessful()) {
                     parseUser(response.body());
                 } else {
+                    LogUtil.logError("1");
                     onInternetConnectionError();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                LogUtil.logError("2");
                 onInternetConnectionError();
             }
         });
@@ -506,6 +512,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                 if (response.isSuccessful()) {
                     parseCards(response.body());
                 } else {
+                    LogUtil.logError("3");
                     onInternetConnectionError();
                 }
             }
@@ -513,6 +520,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 dialog.dismiss();
+                LogUtil.logError("4");
                 onInternetConnectionError();
             }
         });
@@ -528,15 +536,22 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         ServerApi.get(this).api().pay(generatePayJson(binding), id, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                try {
+                    LogUtil.logError(response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 if (response.isSuccessful()) {
                     parsePayment();
                 } else {
+                    LogUtil.logError("5");
                     onInternetConnectionError();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                LogUtil.logError("6");
                 onInternetConnectionError();
             }
         });

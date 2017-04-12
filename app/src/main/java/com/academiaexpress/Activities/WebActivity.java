@@ -31,22 +31,16 @@ public class WebActivity extends BaseActivity {
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 TimeActivity.errors = !url.contains(SUCCESS);
-
-//                if (url.contains(SUCCESS) || url.contains(FAILURE)) {
-//                    processResult();
-//                }
+                TimeActivity.isPaymentStarted = true;
+                if (url.contains(SUCCESS)) {
+                    openProcessActivity();
+                } else {
+                    finish();
+                }
 
                 return false;
             }
         });
-    }
-
-    private void processResult() {
-        if (getIntent().getBooleanExtra(EXTRA_NEW_CARD, false)) {
-            openProcessActivity();
-        } else {
-            finish();
-        }
     }
 
     private void openProcessActivity() {
@@ -59,5 +53,6 @@ public class WebActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         TimeActivity.errors = true;
+        TimeActivity.isPaymentStarted = true;
     }
 }

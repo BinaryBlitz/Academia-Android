@@ -15,6 +15,7 @@ import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
 import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.CategoriesUtility;
+import com.academiaexpress.Utils.LogUtil;
 import com.academiaexpress.Utils.MoneyValues;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;

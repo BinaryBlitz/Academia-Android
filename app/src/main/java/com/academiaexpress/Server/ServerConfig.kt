@@ -1,7 +1,7 @@
 package com.academiaexpress.Server
 
 object ServerConfig {
-    val baseUrl = "http://academia-delivery-staging.herokuapp.com"
+    val baseUrl = "http://academia-delivery.herokuapp.com"
     val apiURL = baseUrl + "/"
 
     val imageUrl: String
@@ -9,7 +9,7 @@ object ServerConfig {
             return ""
         }
 
-    val prefsName = "ChistoPrefs"
+    val prefsName = "AcademiaPrefs"
     val tokenEntity = "auth_token"
     val userEntity = "auth_info"
 }
