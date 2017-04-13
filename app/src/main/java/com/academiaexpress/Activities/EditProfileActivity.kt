@@ -75,19 +75,13 @@ class EditProfileActivity : BaseActivity() {
         if (flag) {
             openStartActivity()
         } else {
-            openProductsActivity()
+            finish()
         }
     }
 
     private fun openStartActivity() {
         val intent = Intent(this@EditProfileActivity, StartActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun openProductsActivity() {
-        val intent = Intent(this@EditProfileActivity, ProductsActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -147,7 +141,7 @@ class EditProfileActivity : BaseActivity() {
             return
         }
 
-        val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this))
+        val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this)) ?: return
 
         (findViewById(R.id.firstName) as EditText).setText(myProfile.firstName)
         (findViewById(R.id.lastName) as EditText).setText(myProfile.lastName)

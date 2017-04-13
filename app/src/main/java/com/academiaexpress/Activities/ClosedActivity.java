@@ -59,6 +59,12 @@ public class ClosedActivity extends BaseActivity {
         CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+    }
+
     private void parseUser(JsonObject object) {
         saveMoneyValues(object);
         setupUIForMoneyValues();
@@ -138,10 +144,12 @@ public class ClosedActivity extends BaseActivity {
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
 
-        if (hour < EARLY_HOUR) {
-            setTextToUpperText(getString(R.string.hello_late));
-        } else {
+        if (hour > 5 && hour < 11) {
             setTextToUpperText(getString(R.string.hello_early));
+        } else if (hour > 11 && hour < 18) {
+            setTextToUpperText(getString(R.string.hello_day));
+        } else {
+            setTextToUpperText(getString(R.string.hello_late));
         }
     }
 
@@ -156,9 +164,14 @@ public class ClosedActivity extends BaseActivity {
 
     private void setBottomText() {
         try {
-            if (isValidDate()) setClosedTextToBottomTextView();
-            else setValidDateToBottomTextView();
-        } catch (Exception e) { setClosedTextToBottomTextView(); }
+            if (isValidDate()) {
+                setClosedTextToBottomTextView();
+            } else {
+                setValidDateToBottomTextView();
+            }
+        } catch (Exception e) {
+            setClosedTextToBottomTextView();
+        }
     }
 
     private void setValidDateToBottomTextView() {

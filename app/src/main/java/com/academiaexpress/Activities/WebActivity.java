@@ -12,7 +12,6 @@ public class WebActivity extends BaseActivity {
     private static final String SUCCESS = "sakses";
     private static final String FAILURE = "feylur";
     private static final String EXTRA_URL = "url";
-    private static final String EXTRA_NEW_CARD = "newCard";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +30,41 @@ public class WebActivity extends BaseActivity {
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 TimeActivity.errors = !url.contains(SUCCESS);
-                TimeActivity.isPaymentStarted = true;
                 if (url.contains(SUCCESS)) {
-                    openProcessActivity();
-                } else {
+                    if (DeliveryFinalActivity.newCard) {
+                        TimeActivity.isPaymentStarted = false;
+                        finish();
+                    } else {
+                        openProcessActivity();
+                    }
+                } else if (url.contains(FAILURE)) {
+                    TimeActivity.isPaymentStarted = true;
                     finish();
                 }
 
                 return false;
             }
         });
+    }
+
+    private void parseUrl(String url) {
+        TimeActivity.errors = !url.contains(SUCCESS);
+
+        if (url.contains(SUCCESS)) {
+            parseSuccess();
+        } else if (url.contains(FAILURE)) {
+            TimeActivity.isPaymentStarted = true;
+            finish();
+        }
+    }
+
+    private void parseSuccess() {
+        TimeActivity.isPaymentStarted = false;
+        if (DeliveryFinalActivity.newCard) {
+            finish();
+        } else {
+            openProcessActivity();
+        }
     }
 
     private void openProcessActivity() {
