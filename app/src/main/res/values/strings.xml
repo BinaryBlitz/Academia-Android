@@ -46,6 +46,7 @@
     <string name="in_code">" в "</string>
     <string name="hello_late">Доброй ночи</string>
     <string name="hello_early">Доброе утро</string>
+    <string name="hello_day">Добрый день</string>
     <string name="send_code_again">Выслать код повторно</string>
     <string name="send_code_again_after">"Выслать код повторно через "</string>
     <string name="event_order_paid">Заказ оплачен</string>
