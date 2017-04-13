@@ -43,6 +43,7 @@ class CreateAccountActivity : BaseActivity() {
             if (!AndroidUtilities.isConnected(this@CreateAccountActivity)) {
                 return@OnClickListener
             }
+
             if (check()) {
                 createUser()
             }
