@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.academiaexpress.Adapters.ProductsAdapter
-import com.academiaexpress.Data.DeliveryMeal
+import com.academiaexpress.Data.Dish
 import com.academiaexpress.R
 import java.util.*
 
@@ -42,6 +42,6 @@ class StuffFragment : Fragment() {
     }
 
     companion object {
-        var collection = ArrayList<DeliveryMeal>()
+        var collection = ArrayList<Dish>()
     }
 }

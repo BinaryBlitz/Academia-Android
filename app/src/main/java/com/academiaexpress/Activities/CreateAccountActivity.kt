@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Data.DeliveryUser
+import com.academiaexpress.Data.User
 import com.academiaexpress.R
 import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Server.ServerApi
@@ -106,7 +106,7 @@ class CreateAccountActivity : BaseActivity() {
             user.addProperty("device_token", FirebaseInstanceId.getInstance().token)
             user.addProperty("platform", "android")
 
-            val deliveryUser = DeliveryUser(
+            val deliveryUser = User(
                     (findViewById(R.id.firstName) as EditText).text.toString(),
                     (findViewById(R.id.lastName) as EditText).text.toString(),
                     (findViewById(R.id.email) as EditText).text.toString(),

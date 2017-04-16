@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.academiaexpress.Adapters.DeliveryAdapter;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.CreditCard;
-import com.academiaexpress.Data.DeliveryMeal;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Dish;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -238,7 +238,7 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void removeItem() {
-        DeliveryOrder.OrderPart part = ProductsActivity.collection.get(itemToEdit);
+        Order.OrderPart part = ProductsActivity.collection.get(itemToEdit);
         ProductsActivity.product_count -= part.getCount();
         ProductsActivity.price -= part.getPrice() * part.getCount();
 
@@ -248,7 +248,7 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void removeMiniProducts() {
         for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
-            DeliveryMeal product = StuffFragment.Companion.getCollection().get(i);
+            Dish product = StuffFragment.Companion.getCollection().get(i);
             if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 StuffFragment.Companion.getCollection().get(i).setCount(0);
                 break;
@@ -258,7 +258,7 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void editItemCount() {
         for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
-            DeliveryMeal product = StuffFragment.Companion.getCollection().get(i);
+            Dish product = StuffFragment.Companion.getCollection().get(i);
             if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 StuffFragment.Companion.getCollection().get(i).setCount(newCount);
                 break;

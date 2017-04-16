@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.academiaexpress.Activities.OrderDetailsActivity;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.R;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Activity context;
-    private ArrayList<DeliveryOrder> collection;
+    private ArrayList<Order> collection;
 
     private static final String EXTRA_PRICE = "price";
 
@@ -26,7 +26,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         collection = new ArrayList<>();
     }
 
-    public void setCollection(ArrayList<DeliveryOrder> collection) {
+    public void setCollection(ArrayList<Order> collection) {
         this.collection = collection;
         notifyDataSetChanged();
     }
