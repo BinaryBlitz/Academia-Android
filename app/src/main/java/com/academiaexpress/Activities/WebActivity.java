@@ -30,17 +30,30 @@ public class WebActivity extends BaseActivity {
 
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                TimeActivity.errors = !url.contains(SUCCESS);
-                TimeActivity.isPaymentStarted = true;
-                if (url.contains(SUCCESS)) {
-                    openProcessActivity();
-                } else {
-                    finish();
-                }
-
+                parseUrl(url);
                 return false;
             }
         });
+    }
+
+    private void parseUrl(String url) {
+        TimeActivity.errors = !url.contains(SUCCESS);
+
+        if (url.contains(SUCCESS)) {
+            parseSuccess();
+        } else if (url.contains(FAILURE)) {
+            TimeActivity.isPaymentStarted = true;
+            finish();
+        }
+    }
+
+    private void parseSuccess() {
+        TimeActivity.isPaymentStarted = false;
+        if (DeliveryFinalActivity.newCard) {
+            finish();
+        } else {
+            openProcessActivity();
+        }
     }
 
     private void openProcessActivity() {
