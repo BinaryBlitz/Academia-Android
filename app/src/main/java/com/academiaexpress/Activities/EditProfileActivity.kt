@@ -75,7 +75,7 @@ class EditProfileActivity : BaseActivity() {
         if (flag) {
             openStartActivity()
         } else {
-            openProductsActivity()
+            finish()
         }
     }
 
