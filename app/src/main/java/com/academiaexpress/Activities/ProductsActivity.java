@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Base.BaseProductFragment;
 import com.academiaexpress.Base.SmartFragmentStatePagerAdapter;
-import com.academiaexpress.Data.Meal;
+import com.academiaexpress.Data.Dish;
 import com.academiaexpress.Data.Order;
 import com.academiaexpress.Fragments.DishFragment;
 import com.academiaexpress.Fragments.StuffFragment;
@@ -47,7 +47,7 @@ public class ProductsActivity extends BaseActivity {
     private static final String EXTRA_ID = "id";
     private static final String EXTRA_ADDITIONAL = "additional";
     private boolean isStuff = false;
-    private static ArrayList<Meal> products = new ArrayList<>();
+    private static ArrayList<Dish> products = new ArrayList<>();
     private static ArrayList<Fragment> fragments = new ArrayList<>();
     public static int product_count = 0;
     public static int price = 0;
@@ -277,9 +277,9 @@ public class ProductsActivity extends BaseActivity {
         return badges;
     }
 
-    private Meal parseDish(JsonObject object) {
+    private Dish parseDish(JsonObject object) {
         LogUtil.logError(object.toString());
-        return new Meal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
+        return new Dish(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
                 getIngredientsForDish(object),

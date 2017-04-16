@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.academiaexpress.Adapters.DeliveryAdapter;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.CreditCard;
-import com.academiaexpress.Data.Meal;
+import com.academiaexpress.Data.Dish;
 import com.academiaexpress.Data.Order;
 import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
@@ -248,7 +248,7 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void removeMiniProducts() {
         for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
-            Meal product = StuffFragment.Companion.getCollection().get(i);
+            Dish product = StuffFragment.Companion.getCollection().get(i);
             if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 StuffFragment.Companion.getCollection().get(i).setCount(0);
                 break;
@@ -258,7 +258,7 @@ public class DeliveryFinalActivity extends BaseActivity {
 
     private void editItemCount() {
         for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
-            Meal product = StuffFragment.Companion.getCollection().get(i);
+            Dish product = StuffFragment.Companion.getCollection().get(i);
             if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
                 StuffFragment.Companion.getCollection().get(i).setCount(newCount);
                 break;

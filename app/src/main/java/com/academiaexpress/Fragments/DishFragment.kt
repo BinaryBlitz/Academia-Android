@@ -9,7 +9,7 @@ import android.widget.*
 import com.academiaexpress.Activities.ProductsActivity
 import com.academiaexpress.Base.BaseProductFragment
 import com.academiaexpress.Custom.ExpandableHeightGridView
-import com.academiaexpress.Data.Meal
+import com.academiaexpress.Data.Dish
 import com.academiaexpress.Data.Order
 import com.academiaexpress.R
 import com.academiaexpress.Utils.AndroidUtilities
@@ -22,7 +22,7 @@ import java.util.*
 class DishFragment : BaseProductFragment() {
     private val ANIMATION_DURATION = 400L
 
-    private lateinit var meal: Meal
+    private lateinit var dish: Dish
     private lateinit var part: Order.OrderPart
 
     override fun animateScroll() {
@@ -43,22 +43,22 @@ class DishFragment : BaseProductFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val outOfStockIndicator = view?.findViewById(R.id.outOfStockIndicator)
-        outOfStockIndicator?.visibility = if (meal.isCanBuy) View.VISIBLE else View.GONE
+        outOfStockIndicator?.visibility = if (dish.isOutOfStock) View.VISIBLE else View.GONE
         outOfStockIndicator?.setOnClickListener(null)
     }
 
     private fun setInfo() {
-        (view?.findViewById(R.id.name) as TextView).text = meal.mealName
-        (view?.findViewById(R.id.description) as TextView).text = if (meal.ingridients!!.isEmpty()) "" else meal.ingridients
+        (view?.findViewById(R.id.name) as TextView).text = dish.mealName
+        (view?.findViewById(R.id.description) as TextView).text = if (dish.ingredients!!.isEmpty()) "" else dish.ingredients
 
-        if (meal.description!!.isEmpty()) {
-            (view?.findViewById(R.id.content) as TextView).text = meal.description
+        if (dish.description!!.isEmpty()) {
+            (view?.findViewById(R.id.content) as TextView).text = dish.description
         } else {
             view?.findViewById(R.id.about)?.visibility = View.GONE
         }
 
-        (view?.findViewById(R.id.price) as TextView).text = Integer.toString(meal.price) + getString(R.string.ruble_sign)
-        Image.loadDishPhoto(meal.photoLink, view?.findViewById(R.id.image) as ImageView)
+        (view?.findViewById(R.id.price) as TextView).text = Integer.toString(dish.price) + getString(R.string.ruble_sign)
+        Image.loadDishPhoto(dish.photoLink, view?.findViewById(R.id.image) as ImageView)
     }
 
     private fun hideEnergy() {
@@ -83,11 +83,11 @@ class DishFragment : BaseProductFragment() {
     }
 
     private fun processEnergy() {
-        if (meal.energy == null) {
+        if (dish.energy == null) {
             return
         }
 
-        val energy = meal.energy!!.split("energy".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+        val energy = dish.energy!!.split("energy".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
 
         try {
             setEnergy(energy)
@@ -98,7 +98,7 @@ class DishFragment : BaseProductFragment() {
     }
 
     private fun parseEnergy() {
-        if (meal.energy == null) {
+        if (dish.energy == null) {
             hideEnergy()
         } else {
             showEnergy()
@@ -136,15 +136,15 @@ class DishFragment : BaseProductFragment() {
         val params = layout?.layoutParams as LinearLayout.LayoutParams?
         params?.height = AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)
 
-        if (meal.ingridientsList == null) {
+        if (dish.ingredientsList == null) {
             return
         }
 
         (view?.findViewById(R.id.list) as LinearLayout?)?.removeAllViews()
         view?.findViewById(R.id.list)?.visibility = View.VISIBLE
-        for (i in 0..meal.ingridientsList!!.size - 1) {
+        for (i in 0..dish.ingredientsList!!.size - 1) {
             val textView = LayoutInflater.from(context).inflate(R.layout.item_lunch_part, null)
-            (textView.findViewById(R.id.name) as TextView).text = meal.ingridientsList!![i].second
+            (textView.findViewById(R.id.name) as TextView).text = dish.ingredientsList!![i].second
             (view?.findViewById(R.id.list) as LinearLayout?)?.addView(textView)
         }
     }
@@ -153,14 +153,14 @@ class DishFragment : BaseProductFragment() {
 
         val adapter = object : BaseAdapter() {
             override fun getCount(): Int {
-                return if (meal.ingridientsList == null) 0 else meal.ingridientsList!!.size
+                return if (dish.ingredientsList == null) 0 else dish.ingredientsList!!.size
             }
 
             override fun getItem(position: Int): Any {
-                if (meal.ingridients == null) {
+                if (dish.ingredients == null) {
                     return ArrayList<String>()
                 }
-                return meal.ingridients!!
+                return dish.ingredients!!
             }
 
             override fun getItemId(position: Int): Long { return position.toLong() }
@@ -169,15 +169,15 @@ class DishFragment : BaseProductFragment() {
                 var convertView = convertView
                 convertView = inflater.inflate(R.layout.item_ingredient, null)
 
-                if (meal.ingridientsList == null) {
+                if (dish.ingredientsList == null) {
                     return convertView
                 }
 
                 val name = convertView.findViewById(R.id.name) as TextView
-                name.text = meal.ingridientsList!![position].second
+                name.text = dish.ingredientsList!![position].second
 
                 val icon = convertView.findViewById(R.id.icon) as ImageView
-                Image.loadPhoto(meal.ingridientsList!![position].first, icon)
+                Image.loadPhoto(dish.ingredientsList!![position].first, icon)
 
                 return convertView
             }
@@ -191,13 +191,13 @@ class DishFragment : BaseProductFragment() {
 
     private fun initSecondAdapter(inflater: LayoutInflater) {
         val adapter = object : BaseAdapter() {
-            override fun getCount(): Int { return meal.badges!!.size }
+            override fun getCount(): Int { return dish.badges!!.size }
 
             override fun getItem(position: Int): Any {
-                if (meal.badges == null) {
+                if (dish.badges == null) {
                     return ArrayList<Any>()
                 } else {
-                    return meal.badges!!
+                    return dish.badges!!
                 }
             }
 
@@ -207,17 +207,17 @@ class DishFragment : BaseProductFragment() {
                 var convertView = convertView
                 convertView = inflater.inflate(R.layout.item_ingredient, null)
 
-                if (meal.badges == null) {
+                if (dish.badges == null) {
                     return convertView
                 }
 
                 val name = convertView.findViewById(R.id.name) as TextView
-                name.text = meal.badges!![position].second
+                name.text = dish.badges!![position].second
                 val padding = AndroidUtilities.dpToPx(name.context, 25f)
                 val icon = convertView.findViewById(R.id.icon) as ImageView
                 icon.setPadding(padding, padding, padding, padding)
 
-                Image.loadPhoto(meal.badges!![position].first, icon)
+                Image.loadPhoto(dish.badges!![position].first, icon)
 
                 return convertView
 
@@ -238,8 +238,8 @@ class DishFragment : BaseProductFragment() {
         this.part = part
     }
 
-    override fun setInfo(meal: Meal) {
-        this.meal = meal
+    override fun setInfo(dish: Dish) {
+        this.dish = dish
     }
 
     companion object {
