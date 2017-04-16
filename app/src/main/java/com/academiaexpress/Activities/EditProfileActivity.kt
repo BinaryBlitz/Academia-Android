@@ -147,7 +147,7 @@ class EditProfileActivity : BaseActivity() {
             return
         }
 
-        val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this))
+        val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this)) ?: return
 
         (findViewById(R.id.firstName) as EditText).setText(myProfile.firstName)
         (findViewById(R.id.lastName) as EditText).setText(myProfile.lastName)

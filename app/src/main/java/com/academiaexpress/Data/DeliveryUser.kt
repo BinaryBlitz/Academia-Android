@@ -9,9 +9,13 @@ class DeliveryUser(var firstName: String?, var lastName: String?, var email: Str
     companion object {
         val splitter = "DeliveryUser"
 
-        fun fromString(string: String): DeliveryUser {
-            val arr = string.split(splitter.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
-            return DeliveryUser(arr[0], arr[1], arr[2], arr[3])
+        fun fromString(string: String): DeliveryUser? {
+            try {
+                val arr = string.split(splitter.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+                return DeliveryUser(arr[0], arr[1], arr[2], arr[3])
+            } catch (e: Exception) {
+                return  null
+            }
         }
     }
 }
