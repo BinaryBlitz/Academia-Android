@@ -17,6 +17,7 @@ object CategoriesUtility {
     val list: ArrayList<Category> = ArrayList()
 
     fun saveCategories(array: JsonArray) {
+        list.clear()
         (0..array.size() - 1)
                 .map { array.get(it).asJsonObject }
                 .mapTo(list) {
