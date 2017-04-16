@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Base.BaseProductFragment;
 import com.academiaexpress.Base.SmartFragmentStatePagerAdapter;
-import com.academiaexpress.Data.DeliveryMeal;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Meal;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.Fragments.DishFragment;
 import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
@@ -47,7 +47,7 @@ public class ProductsActivity extends BaseActivity {
     private static final String EXTRA_ID = "id";
     private static final String EXTRA_ADDITIONAL = "additional";
     private boolean isStuff = false;
-    private static ArrayList<DeliveryMeal> products = new ArrayList<>();
+    private static ArrayList<Meal> products = new ArrayList<>();
     private static ArrayList<Fragment> fragments = new ArrayList<>();
     public static int product_count = 0;
     public static int price = 0;
@@ -57,23 +57,23 @@ public class ProductsActivity extends BaseActivity {
     private CircleIndicator defaultIndicator;
     private MyPagerAdapter defaultPagerAdapter;
 
-    public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
+    public static ArrayList<Order.OrderPart> collection = new ArrayList<>();
 
-    public void addPart(DeliveryOrder.OrderPart part) {
+    public void addPart(Order.OrderPart part) {
         part.setCount(1);
         collection.add(part);
     }
 
-    private void recalculatePrice(DeliveryOrder.OrderPart part) {
+    private void recalculatePrice(Order.OrderPart part) {
         price += part.getPrice();
         product_count++;
     }
 
-    private void incrementPart(DeliveryOrder.OrderPart part) {
+    private void incrementPart(Order.OrderPart part) {
         collection.get(collection.indexOf(part)).incCount();
     }
 
-    public void addProduct(DeliveryOrder.OrderPart part) {
+    public void addProduct(Order.OrderPart part) {
         if (collection.indexOf(part) != -1) {
             incrementPart(part);
         } else {
@@ -277,9 +277,9 @@ public class ProductsActivity extends BaseActivity {
         return badges;
     }
 
-    private DeliveryMeal parseDish(JsonObject object) {
+    private Meal parseDish(JsonObject object) {
         LogUtil.logError(object.toString());
-        return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
+        return new Meal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
                 getIngredientsForDish(object),
@@ -296,7 +296,7 @@ public class ProductsActivity extends BaseActivity {
     @SuppressWarnings("ConstantConditions")
     private void addDishFragment(int i) {
         final BaseProductFragment fragment = new DishFragment();
-        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
+        Order.OrderPart part = new Order.OrderPart(products.get(i).getPrice(),
                 products.get(i).getMealName(), products.get(i).getId());
         part.setCount(0);
         fragment.setPart(part);

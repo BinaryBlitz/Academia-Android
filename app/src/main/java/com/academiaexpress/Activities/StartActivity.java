@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryUser;
+import com.academiaexpress.Data.User;
 import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -72,14 +72,14 @@ public class StartActivity extends BaseActivity {
                     getString(R.string.orders_upcase_code) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
         }
 
-        DeliveryUser deliveryUser = new DeliveryUser(
+        User user = new User(
                 object.get("first_name").getAsString(),
                 object.get("last_name").getAsString(),
                 object.get("email").getAsString(),
                 object.get("phone_number").getAsString()
         );
 
-        DeviceInfoStore.saveUser(this, deliveryUser);
+        DeviceInfoStore.saveUser(this, user);
     }
 
     private void getUser() {

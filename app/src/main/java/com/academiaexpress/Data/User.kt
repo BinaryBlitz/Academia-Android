@@ -3,7 +3,7 @@ package com.academiaexpress.Data
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
-class DeliveryUser(var firstName: String?, var lastName: String?, var email: String?, var phoneNumber: String?) {
+class User(var firstName: String?, var lastName: String?, var email: String?, var phoneNumber: String?) {
     fun asString(): String {
         val userObject = JsonObject()
         userObject.addProperty("firstName", firstName)
@@ -14,12 +14,12 @@ class DeliveryUser(var firstName: String?, var lastName: String?, var email: Str
     }
 
     companion object {
-        fun fromString(string: String): DeliveryUser? {
+        fun fromString(string: String): User? {
             try {
                 val jsonReader = JsonParser()
                 val userObject = jsonReader.parse(string) as JsonObject
 
-                return DeliveryUser(userObject.get("firstName").asString,
+                return User(userObject.get("firstName").asString,
                         userObject.get("lastName").asString,
                         userObject.get("email").asString,
                         userObject.get("phoneNumber").asString)

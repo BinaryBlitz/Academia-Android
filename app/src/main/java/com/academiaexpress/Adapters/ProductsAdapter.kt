@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.academiaexpress.Activities.ProductsActivity
-import com.academiaexpress.Data.DeliveryMeal
-import com.academiaexpress.Data.DeliveryOrder
+import com.academiaexpress.Data.Meal
+import com.academiaexpress.Data.Order
 import com.academiaexpress.Fragments.DishFragment
 import com.academiaexpress.R
 import com.academiaexpress.Utils.Image
@@ -19,19 +19,19 @@ import java.util.*
 
 class ProductsAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var collection: ArrayList<DeliveryMeal>
-    private var partsCollection: ArrayList<DeliveryOrder.OrderPart>
+    private var collection: ArrayList<Meal>
+    private var partsCollection: ArrayList<Order.OrderPart>
 
     init {
-        collection = ArrayList<DeliveryMeal>()
-        partsCollection = ArrayList<DeliveryOrder.OrderPart>()
+        collection = ArrayList<Meal>()
+        partsCollection = ArrayList<Order.OrderPart>()
     }
 
-    fun setCollection(collection: ArrayList<DeliveryMeal>) {
+    fun setCollection(collection: ArrayList<Meal>) {
         this.collection = collection
-        partsCollection = ArrayList<DeliveryOrder.OrderPart>()
+        partsCollection = ArrayList<Order.OrderPart>()
         for (i in collection.indices) {
-            partsCollection.add(DeliveryOrder.OrderPart(collection[i].price, collection[i].mealName!!, collection[i].id!!))
+            partsCollection.add(Order.OrderPart(collection[i].price, collection[i].mealName!!, collection[i].id!!))
         }
 
         notifyDataSetChanged()

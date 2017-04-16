@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Data.DeliveryUser
+import com.academiaexpress.Data.User
 import com.academiaexpress.R
 import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Server.ServerApi
@@ -134,7 +134,7 @@ class EditProfileActivity : BaseActivity() {
             user.addProperty("email", (findViewById(R.id.email) as EditText).text.toString())
             obj.add("user", user)
 
-            DeviceInfoStore.saveUser(this, DeliveryUser(
+            DeviceInfoStore.saveUser(this, User(
                     (findViewById(R.id.firstName) as EditText).text.toString(),
                     (findViewById(R.id.lastName) as EditText).text.toString(),
                     (findViewById(R.id.email) as EditText).text.toString(), ""))
@@ -147,7 +147,7 @@ class EditProfileActivity : BaseActivity() {
             return
         }
 
-        val myProfile = DeliveryUser.fromString(DeviceInfoStore.getUser(this)) ?: return
+        val myProfile = User.fromString(DeviceInfoStore.getUser(this)) ?: return
 
         (findViewById(R.id.firstName) as EditText).setText(myProfile.firstName)
         (findViewById(R.id.lastName) as EditText).setText(myProfile.lastName)

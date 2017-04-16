@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryUser;
+import com.academiaexpress.Data.User;
 import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
@@ -97,13 +97,13 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void saveUser(JsonObject object) {
-        DeliveryUser deliveryUser = new DeliveryUser(
+        User user = new User(
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("first_name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("last_name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("email")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("phone_number")));
 
-        DeviceInfoStore.saveUser(this, deliveryUser);
+        DeviceInfoStore.saveUser(this, user);
     }
 
     private void getUser() {
@@ -156,7 +156,7 @@ public class ClosedActivity extends BaseActivity {
     private void setTextToUpperText(String text) {
         try {
             ((TextView) findViewById(R.id.help_text)).setText(text + ", " +
-                    DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
+                    User.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
         } catch (Exception e) {
             ((TextView) findViewById(R.id.help_text)).setText(text);
         }

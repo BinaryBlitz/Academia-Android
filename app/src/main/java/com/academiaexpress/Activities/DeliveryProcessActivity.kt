@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Data.DeliveryOrder
+import com.academiaexpress.Data.Order
 import com.academiaexpress.R
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.AppConfig
@@ -35,7 +35,7 @@ class DeliveryProcessActivity : BaseActivity() {
 
     private fun openDetails() {
         val intent = Intent(this@DeliveryProcessActivity, OrderDetailsActivity::class.java)
-        OrderDetailsActivity.order = DeliveryOrder(null, ProductsActivity.price, ProductsActivity.collection, TimeActivity.id.toInt())
+        OrderDetailsActivity.order = Order(null, ProductsActivity.price, ProductsActivity.collection, TimeActivity.id.toInt())
         OrderDetailsActivity.order.isOnTheWay = true
         intent.putExtra(EXTRA_PRICE, getString(R.string.order_by_sum) + ProductsActivity.price + getString(R.string.ruble_sign))
         startActivity(intent)

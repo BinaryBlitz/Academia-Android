@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.academiaexpress.Adapters.DeliveryPastAdapter;
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -28,7 +28,7 @@ import retrofit2.Response;
 
 public class OrderDetailsActivity extends BaseActivity {
 
-    public static DeliveryOrder order;
+    public static Order order;
     private RatingBar ratingBar;
 
     private static final String EXTRA_PRICE = "price";

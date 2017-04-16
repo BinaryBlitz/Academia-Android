@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.academiaexpress.Adapters.OrdersAdapter;
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -107,8 +107,8 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         });
     }
 
-    private DeliveryOrder parseOrder(JsonObject object, ArrayList<DeliveryOrder.OrderPart> parts) {
-        DeliveryOrder order = new DeliveryOrder(parseDate(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("created_at"))),
+    private Order parseOrder(JsonObject object, ArrayList<Order.OrderPart> parts) {
+        Order order = new Order(parseDate(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("created_at"))),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("total_price")), parts,
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")));
 
@@ -120,16 +120,16 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         return order;
     }
 
-    private void parseCollection(ArrayList<DeliveryOrder> collection, JsonArray array) {
+    private void parseCollection(ArrayList<Order> collection, JsonArray array) {
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject().get("order").getAsJsonObject();
             JsonArray items = object.get("line_items").getAsJsonArray();
-            ArrayList<DeliveryOrder.OrderPart> parts = new ArrayList<>();
+            ArrayList<Order.OrderPart> parts = new ArrayList<>();
             for (int j = 0; j < items.size(); j++) {
                 parts.add(parsePart(items.get(j).getAsJsonObject()));
             }
 
-            DeliveryOrder order = parseOrder(object, parts);
+            Order order = parseOrder(object, parts);
             if (!order.isOnTheWay()) {
                 collection.add(order);
             } else {
@@ -139,7 +139,7 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
     }
 
     private void parseOrders(JsonArray array) {
-        ArrayList<DeliveryOrder> collection = new ArrayList<>();
+        ArrayList<Order> collection = new ArrayList<>();
         try {
             parseCollection(collection, array);
             addHeaderElements(collection);
@@ -149,7 +149,7 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         }
     }
 
-    private void addHeaderElements(ArrayList<DeliveryOrder> collection) {
+    private void addHeaderElements(ArrayList<Order> collection) {
         if (collection.size() != 0) {
             for (int i = 0; i < collection.size(); i++) {
                 if (!collection.get(i).isOnTheWay()) {
@@ -164,8 +164,8 @@ public class OrdersActivity extends BaseActivity implements SwipeRefreshLayout.O
         }
     }
 
-    private DeliveryOrder.OrderPart parsePart(JsonObject object) {
-        return new DeliveryOrder.OrderPart(
+    private Order.OrderPart parsePart(JsonObject object) {
+        return new Order.OrderPart(
                         AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("dish").getAsJsonObject().get("name")),
                         AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("dish").getAsJsonObject().get("price")),
                         AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("quantity")));

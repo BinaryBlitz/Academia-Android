@@ -2,7 +2,7 @@ package com.academiaexpress.Data
 
 import java.util.*
 
-class DeliveryOrder(var date: Date?, var price: Int, var parts: ArrayList<DeliveryOrder.OrderPart>?, var id: Int) {
+class Order(var date: Date?, var price: Int, var parts: ArrayList<Order.OrderPart>?, var id: Int) {
 
     class OrderPart {
         var name: String? = null

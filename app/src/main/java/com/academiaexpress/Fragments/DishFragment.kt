@@ -9,8 +9,8 @@ import android.widget.*
 import com.academiaexpress.Activities.ProductsActivity
 import com.academiaexpress.Base.BaseProductFragment
 import com.academiaexpress.Custom.ExpandableHeightGridView
-import com.academiaexpress.Data.DeliveryMeal
-import com.academiaexpress.Data.DeliveryOrder
+import com.academiaexpress.Data.Meal
+import com.academiaexpress.Data.Order
 import com.academiaexpress.R
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.Image
@@ -22,8 +22,8 @@ import java.util.*
 class DishFragment : BaseProductFragment() {
     private val ANIMATION_DURATION = 400L
 
-    private lateinit var meal: DeliveryMeal
-    private lateinit var part: DeliveryOrder.OrderPart
+    private lateinit var meal: Meal
+    private lateinit var part: Order.OrderPart
 
     override fun animateScroll() {
         val coordinate = (AndroidUtilities.getScreenHeight(activity) - AndroidUtilities.getStatusBarHeight(context)) / 5
@@ -234,11 +234,11 @@ class DishFragment : BaseProductFragment() {
         return view?.findViewById(R.id.scroll) as ScrollView?
     }
 
-    override fun setPart(part: DeliveryOrder.OrderPart) {
+    override fun setPart(part: Order.OrderPart) {
         this.part = part
     }
 
-    override fun setInfo(meal: DeliveryMeal) {
+    override fun setInfo(meal: Meal) {
         this.meal = meal
     }
 
