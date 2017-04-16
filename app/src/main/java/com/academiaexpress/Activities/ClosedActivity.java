@@ -59,6 +59,12 @@ public class ClosedActivity extends BaseActivity {
         CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+    }
+
     private void parseUser(JsonObject object) {
         saveMoneyValues(object);
         setupUIForMoneyValues();

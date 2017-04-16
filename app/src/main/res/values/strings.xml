@@ -142,4 +142,5 @@
     <string name="error">Ошибка</string>
     <string name="error_helper">Ошибка оплаты, попробуйте еще раз.</string>
     <string name="hello_day">Добрый день</string>
+    <string name="wrong_code">Вы ввели неверный код</string>
 </resources>

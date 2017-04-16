@@ -395,6 +395,8 @@ public class ProductsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+
         if (product_count == 0) {
             hideMenu();
         } else {
