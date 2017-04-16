@@ -1,17 +1,31 @@
 package com.academiaexpress.Data
 
-class DeliveryUser(var firstName: String?, var lastName: String?, var email: String?, var phoneNumber: String?) {
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 
+class DeliveryUser(var firstName: String?, var lastName: String?, var email: String?, var phoneNumber: String?) {
     fun asString(): String {
-        return firstName + splitter + lastName + splitter + email + splitter + phoneNumber
+        val userObject = JsonObject()
+        userObject.addProperty("firstName", firstName)
+        userObject.addProperty("lastName", lastName)
+        userObject.addProperty("email", email)
+        userObject.addProperty("phoneNumber", phoneNumber)
+        return userObject.toString()
     }
 
     companion object {
-        val splitter = "DeliveryUser"
+        fun fromString(string: String): DeliveryUser? {
+            try {
+                val jsonReader = JsonParser()
+                val userObject = jsonReader.parse(string) as JsonObject
 
-        fun fromString(string: String): DeliveryUser {
-            val arr = string.split(splitter.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
-            return DeliveryUser(arr[0], arr[1], arr[2], arr[3])
+                return DeliveryUser(userObject.get("firstName").asString,
+                        userObject.get("lastName").asString,
+                        userObject.get("email").asString,
+                        userObject.get("phoneNumber").asString)
+            } catch (e: Exception) {
+                return  null
+            }
         }
     }
 }
