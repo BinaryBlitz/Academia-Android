@@ -11,8 +11,9 @@ class DeliveryUser(var firstName: String?, var lastName: String?, var email: Str
 
         fun fromString(string: String): DeliveryUser? {
             try {
-                val arr = string.split(splitter.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
-                return DeliveryUser(arr[0], arr[1], arr[2], arr[3])
+                // get string array from preferences
+                val fields = string.split(splitter.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+                return DeliveryUser(fields[0], fields[1], fields[2], fields[3])
             } catch (e: Exception) {
                 return  null
             }
