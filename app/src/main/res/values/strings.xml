@@ -141,4 +141,5 @@
     <string name="additional_menu">Дополнительное меню</string>
     <string name="error">Ошибка</string>
     <string name="error_helper">Ошибка оплаты, попробуйте еще раз.</string>
+    <string name="wrong_code">Вы ввели неверный код</string>
 </resources>
