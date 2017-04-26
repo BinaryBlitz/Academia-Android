@@ -34,11 +34,7 @@ class DeliveryProcessActivity : BaseActivity() {
     }
 
     private fun openDetails() {
-        val intent = Intent(this@DeliveryProcessActivity, OrderDetailsActivity::class.java)
-        OrderDetailsActivity.order = Order(null, ProductsActivity.price, ProductsActivity.collection, TimeActivity.id.toInt())
-        OrderDetailsActivity.order.isOnTheWay = true
-        intent.putExtra(EXTRA_PRICE, getString(R.string.order_by_sum) + ProductsActivity.price + getString(R.string.ruble_sign))
-        startActivity(intent)
+        onBackPressed()
     }
 
     private fun setOnClickListeners() {
@@ -55,7 +51,10 @@ class DeliveryProcessActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        ProductsActivity.collection = ArrayList()
+        ProductsActivity.price = 0
+        ProductsActivity.product_count = 0
+
         if (ClosedActivity.closed) {
             finishActivity(ClosedActivity::class.java)
         } else {
