@@ -97,9 +97,9 @@ public class MapActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        initGoogleApiClient();
         initFields();
         initMap();
-        initGoogleApiClient();
         setOnClickListeners();
 
         new Handler().post(new Runnable() {
@@ -292,7 +292,7 @@ public class MapActivity extends BaseActivity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
+        
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (lastLocation != null) {
@@ -301,6 +301,7 @@ public class MapActivity extends BaseActivity
     }
 
     private void processGoogleLocation(Location lastLocation) {
+        LogUtil.logError(lastLocation.toString());
         selectedLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
         ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
@@ -339,7 +340,7 @@ public class MapActivity extends BaseActivity
         switch (requestCode) {
             case LOCATION_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
+                    getLocationFromGoogle();
                 } else {
                     onLocationError();
                 }
