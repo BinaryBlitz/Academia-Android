@@ -61,6 +61,7 @@ public class MapActivity extends BaseActivity
 
     private ArrayList<LatLng> coordinates;
     private ProgressDialog dialog;
+    private boolean isLocationPreviouslySelected = false;
 
     @Override
     public void onLowMemory() {
@@ -118,6 +119,9 @@ public class MapActivity extends BaseActivity
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isLocationPreviouslySelected) {
+                    selectedLocationName = "";
+                }
                 finish();
             }
         });
@@ -163,6 +167,7 @@ public class MapActivity extends BaseActivity
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         if (selectedLocation != null) {
+            isLocationPreviouslySelected = true;
             processPreviouslySelectedLocation();
         } else {
             getLocationFromGoogle();
@@ -292,7 +297,7 @@ public class MapActivity extends BaseActivity
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        
+
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (lastLocation != null) {
@@ -301,7 +306,6 @@ public class MapActivity extends BaseActivity
     }
 
     private void processGoogleLocation(Location lastLocation) {
-        LogUtil.logError(lastLocation.toString());
         selectedLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
         ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
