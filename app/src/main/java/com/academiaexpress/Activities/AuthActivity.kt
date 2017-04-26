@@ -22,6 +22,7 @@ import com.academiaexpress.R
 import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.AppConfig
+import com.academiaexpress.Utils.CustomPhoneNumberTextWatcher
 import com.academiaexpress.Utils.Image
 
 class AuthActivity : BaseActivity() {
@@ -60,7 +61,7 @@ class AuthActivity : BaseActivity() {
 
     private fun initElements() {
         Image.loadPhoto(R.drawable.back1, findViewById(R.id.background) as ImageView)
-        (findViewById(R.id.phone) as EditText).addTextChangedListener(PhoneNumberFormattingTextWatcher())
+        (findViewById(R.id.phone) as EditText).addTextChangedListener(CustomPhoneNumberTextWatcher())
 
         initSpan()
     }
