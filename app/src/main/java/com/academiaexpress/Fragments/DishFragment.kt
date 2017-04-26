@@ -203,7 +203,7 @@ class DishFragment : BaseProductFragment() {
 
             override fun getItemId(position: Int): Long { return position.toLong() }
 
-            override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 var convertView = convertView
                 convertView = inflater.inflate(R.layout.item_ingredient, null)
 
