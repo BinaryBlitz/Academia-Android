@@ -57,6 +57,9 @@ public class MapActivity extends BaseActivity
     public static LatLng selectedLocation = null;
     public static String selectedLocationName = "";
 
+    public static LatLng previouslySelectedLocation = null;
+    public static String previouslySelectedLocationName = "";
+
     private GoogleApiClient mGoogleApiClient;
 
     private ArrayList<LatLng> coordinates;
@@ -79,6 +82,17 @@ public class MapActivity extends BaseActivity
                 mMap.getMapAsync(MapActivity.this);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isLocationPreviouslySelected) {
+            selectedLocationName = "";
+        } else {
+            selectedLocation = previouslySelectedLocation;
+            selectedLocationName = previouslySelectedLocationName;
+        }
+        super.onBackPressed();
     }
 
     private void initGoogleApiClient() {
@@ -121,6 +135,9 @@ public class MapActivity extends BaseActivity
             public void onClick(View v) {
                 if (!isLocationPreviouslySelected) {
                     selectedLocationName = "";
+                } else {
+                    selectedLocation = previouslySelectedLocation;
+                    selectedLocationName = previouslySelectedLocationName;
                 }
                 finish();
             }
@@ -175,6 +192,8 @@ public class MapActivity extends BaseActivity
     }
 
     private void processPreviouslySelectedLocation() {
+        previouslySelectedLocation = selectedLocation;
+        previouslySelectedLocationName = selectedLocationName;
         getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
         ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
         moveCamera(true);
@@ -205,7 +224,6 @@ public class MapActivity extends BaseActivity
             }
         } catch (Exception e) {
             dialog.dismiss();
-            LogUtil.logException(e);
         }
     }
 
