@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Data.Order
 import com.academiaexpress.R
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.AppConfig
@@ -51,15 +50,20 @@ class DeliveryProcessActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        ProductsActivity.collection = ArrayList()
-        ProductsActivity.price = 0
-        ProductsActivity.product_count = 0
+        reset()
 
         if (ClosedActivity.closed) {
             finishActivity(ClosedActivity::class.java)
         } else {
             finishActivity(StartActivity::class.java)
         }
+    }
+
+    private fun reset() {
+        ProductsActivity.collection = ArrayList()
+        ProductsActivity.price = 0
+        ProductsActivity.product_count = 0
+        TimeActivity.id = ""
     }
 
     companion object {
