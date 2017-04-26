@@ -37,9 +37,9 @@ class DeliveryPastAdapter(private var context: Activity) : RecyclerView.Adapter<
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
 
-        holder.count.text = ProductsActivity.collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
+        holder.count.text = collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
         setOrderText(position, holder)
-        holder.price.text = ProductsActivity.collection[position].price.toString() + context.getString(R.string.ruble_sign)
+        holder.price.text = collection[position].price.toString() + context.getString(R.string.ruble_sign)
 
         if (isInc) {
             holder.itemView.setOnClickListener { openActivity(holder.adapterPosition) }
