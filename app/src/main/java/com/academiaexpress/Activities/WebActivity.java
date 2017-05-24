@@ -1,7 +1,6 @@
 package com.academiaexpress.Activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,30 +24,35 @@ public class WebActivity extends BaseActivity {
 
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setBuiltInZoomControls(true);
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            webView.getSettings().setDisplayZoomControls(false);
-        }
+        webView.getSettings().setDisplayZoomControls(false);
 
         webView.loadUrl(getIntent().getStringExtra(EXTRA_URL));
 
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                TimeActivity.errors = !url.contains(SUCCESS);
-
-                if(url.contains(SUCCESS) || url.contains(FAILURE)) {
-                    processResult();
-                }
+                parseUrl(url);
                 return false;
             }
         });
     }
 
-    private void processResult() {
-        if(getIntent().getBooleanExtra(EXTRA_NEW_CARD, false)) {
-            openProcessActivity();
-        } else {
+    private void parseUrl(String url) {
+        TimeActivity.errors = !url.contains(SUCCESS);
+
+        if (url.contains(SUCCESS)) {
+            parseSuccess();
+        } else if (url.contains(FAILURE)) {
+            TimeActivity.isPaymentStarted = true;
             finish();
+        }
+    }
+
+    private void parseSuccess() {
+        TimeActivity.isPaymentStarted = false;
+        if (DeliveryFinalActivity.newCard) {
+            finish();
+        } else {
+            openProcessActivity();
         }
     }
 
@@ -62,5 +66,6 @@ public class WebActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         TimeActivity.errors = true;
+        TimeActivity.isPaymentStarted = true;
     }
 }

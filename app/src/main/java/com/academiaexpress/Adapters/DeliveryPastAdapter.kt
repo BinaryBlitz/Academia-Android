@@ -11,13 +11,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.academiaexpress.Activities.EditOrderActivity
 import com.academiaexpress.Activities.ProductsActivity
-import com.academiaexpress.Data.DeliveryOrder
+import com.academiaexpress.Data.Order
 import com.academiaexpress.R
 import java.util.*
 
 class DeliveryPastAdapter(private var context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    internal var collection: ArrayList<DeliveryOrder.OrderPart> = ArrayList()
+    internal var collection: ArrayList<Order.OrderPart> = ArrayList()
     var isInc = false
 
     private val EXTRA_PRICE = "price"
@@ -25,7 +25,7 @@ class DeliveryPastAdapter(private var context: Activity) : RecyclerView.Adapter<
     private val EXTRA_NAME = "name"
     private val EXTRA_INDEX = "index"
 
-    fun setCollection(collection: ArrayList<DeliveryOrder.OrderPart>) {
+    fun setCollection(collection: ArrayList<Order.OrderPart>) {
         this.collection = collection
     }
 
@@ -37,9 +37,9 @@ class DeliveryPastAdapter(private var context: Activity) : RecyclerView.Adapter<
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as ViewHolder
 
-        holder.count.text = ProductsActivity.collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
+        holder.count.text = collection[position].count.toString() + context.getString(R.string.delivery_adapter_postfix)
         setOrderText(position, holder)
-        holder.price.text = ProductsActivity.collection[position].price.toString() + context.getString(R.string.ruble_sign)
+        holder.price.text = collection[position].price.toString() + context.getString(R.string.ruble_sign)
 
         if (isInc) {
             holder.itemView.setOnClickListener { openActivity(holder.adapterPosition) }

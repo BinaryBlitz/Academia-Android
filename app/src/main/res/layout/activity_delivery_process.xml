@@ -53,7 +53,7 @@
         android:layout_width="250dp"
         android:layout_height="42dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/look_order"
+        android:text="@string/continue_to_start"
         android:id="@+id/show_order"
         android:layout_gravity="center_horizontal|bottom"
         android:textColor="#ffffff"

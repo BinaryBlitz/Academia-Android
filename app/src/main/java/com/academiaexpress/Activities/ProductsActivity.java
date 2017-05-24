@@ -6,26 +6,26 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Base.BaseProductFragment;
 import com.academiaexpress.Base.SmartFragmentStatePagerAdapter;
-import com.academiaexpress.Data.DeliveryMeal;
-import com.academiaexpress.Data.DeliveryOrder;
+import com.academiaexpress.Data.Dish;
+import com.academiaexpress.Data.Order;
 import com.academiaexpress.Fragments.DishFragment;
-import com.academiaexpress.Fragments.FinalPageFragment;
-import com.academiaexpress.Fragments.LunchFragment;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
 import com.academiaexpress.Utils.AndroidUtilities;
 import com.academiaexpress.Utils.Animations;
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.academiaexpress.Utils.LogUtil;
 import com.academiaexpress.Utils.MoneyValues;
 import com.google.gson.JsonArray;
@@ -44,9 +44,11 @@ public class ProductsActivity extends BaseActivity {
     private static final float BUTTON_HIDE_OFFSET = 36f;
 
     private static final String EXTRA_FIRST = "first";
-
-    private ArrayList<DeliveryMeal> products;
-    private ArrayList<Fragment> fragments;
+    private static final String EXTRA_ID = "id";
+    private static final String EXTRA_ADDITIONAL = "additional";
+    private boolean isStuff = false;
+    private static ArrayList<Dish> products = new ArrayList<>();
+    private static ArrayList<Fragment> fragments = new ArrayList<>();
     public static int product_count = 0;
     public static int price = 0;
     static boolean canceled = false;
@@ -55,23 +57,23 @@ public class ProductsActivity extends BaseActivity {
     private CircleIndicator defaultIndicator;
     private MyPagerAdapter defaultPagerAdapter;
 
-    public static ArrayList<DeliveryOrder.OrderPart> collection = new ArrayList<>();
+    public static ArrayList<Order.OrderPart> collection = new ArrayList<>();
 
-    public void addPart(DeliveryOrder.OrderPart part) {
+    public void addPart(Order.OrderPart part) {
         part.setCount(1);
         collection.add(part);
     }
 
-    private void recalculatePrice(DeliveryOrder.OrderPart part) {
+    private void recalculatePrice(Order.OrderPart part) {
         price += part.getPrice();
         product_count++;
     }
 
-    private void incrementPart(DeliveryOrder.OrderPart part) {
+    private void incrementPart(Order.OrderPart part) {
         collection.get(collection.indexOf(part)).incCount();
     }
 
-    public void addProduct(DeliveryOrder.OrderPart part) {
+    public void addProduct(Order.OrderPart part) {
         if (collection.indexOf(part) != -1) {
             incrementPart(part);
         } else {
@@ -84,14 +86,8 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void iniFields() {
-        products = new ArrayList<>();
         fragments = new ArrayList<>();
-        collection = new ArrayList<>();
-
-        collection.clear();
-        product_count = 0;
-        price = 0;
-
+        products.clear();
         canceled = false;
     }
 
@@ -170,9 +166,7 @@ public class ProductsActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == products.size()) {
-                    setScrollListener(((FinalPageFragment) fragments.get(products.size())).getScrollView());
-                } else {
+                if (!isStuff) {
                     setScrollListener(((BaseProductFragment) fragments.get(position)).getScrollView());
                 }
             }
@@ -212,22 +206,26 @@ public class ProductsActivity extends BaseActivity {
         setOnClickListeners();
         setupUIForMoneyValues();
         getDay();
+
+        CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
     }
 
     private void getDay() {
-        ServerApi.get(this).api().getDay(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
+        isStuff = getIntent().getBooleanExtra(EXTRA_ADDITIONAL, false);
+
+        ServerApi.get(this).api().getDishes(getIntent().getIntExtra(EXTRA_ID, 0), DeviceInfoStore.getToken(this))
+                .enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful()) {
-                    parseDay(response.body());
+                    parseDishes(response.body());
                 } else {
                     findViewById(R.id.loading_indicator).setVisibility(View.GONE);
-                    onInternetConnectionError();
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<JsonArray> call, Throwable t) {
                 findViewById(R.id.loading_indicator).setVisibility(View.GONE);
                 onInternetConnectionError();
             }
@@ -262,23 +260,6 @@ public class ProductsActivity extends BaseActivity {
         return ingredients;
     }
 
-    private ArrayList<Pair<String, String>> getIngredientsForLunch(JsonObject object) {
-        ArrayList<Pair<String, String>> ingredients = new ArrayList<>();
-
-        if (object.get("ingredients") != null && !object.get("ingredients").isJsonNull()) {
-            JsonArray ingredientsJson = object.get("ingredients").getAsJsonArray();
-
-            for (int j = 0; j < ingredientsJson.size(); j++) {
-                JsonObject ingredient = ingredientsJson.get(j).getAsJsonObject();
-                ingredients.add(new Pair<>(
-                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("name")),
-                        AndroidUtilities.INSTANCE.getStringFieldFromJson(ingredient.get("weight"))));
-            }
-        }
-
-        return ingredients;
-    }
-
     private ArrayList<Pair<String, String>> getBadges(JsonObject object) {
         ArrayList<Pair<String, String>> badges = new ArrayList<>();
 
@@ -296,8 +277,9 @@ public class ProductsActivity extends BaseActivity {
         return badges;
     }
 
-    private DeliveryMeal parseDish(JsonObject object) {
-        return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
+    private Dish parseDish(JsonObject object) {
+        LogUtil.logError(object.toString());
+        return new Dish(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
                 getIngredientsForDish(object),
@@ -307,53 +289,14 @@ public class ProductsActivity extends BaseActivity {
                 AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")),
                 object.get("proteins") == null || object.get("proteins").isJsonNull() ? null : parseEnergy(object),
                 (object.get("out_of_stock") == null || object.get("out_of_stock").isJsonNull()) ||
-                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")));
-    }
-
-    private DeliveryMeal parseLunch(JsonObject object) {
-        return new DeliveryMeal(AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("name")),
-                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("subtitle")),
-                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("price")),
-                getIngredientsForLunch(object),
-                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("image_url")),
-                AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("description")),
-                getBadges(object),
-                AndroidUtilities.INSTANCE.getIntFieldFromJson(object.get("id")),
-                object.get("proteins") == null || object.get("proteins").isJsonNull() ? null : parseEnergy(object),
-                (object.get("out_of_stock") == null || object.get("out_of_stock").isJsonNull()) ||
-                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")));
+                        AndroidUtilities.INSTANCE.getBooleanFieldFromJson(object.get("out_of_stock")),
+                0);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void addDishFragment(JsonArray array, int i) {
-        if (products.get(array.size() + i) == null || products.get(array.size() + i).getId() == null) {
-            return;
-        }
-
+    private void addDishFragment(int i) {
         final BaseProductFragment fragment = new DishFragment();
-        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(array.size() + i).getPrice(),
-                products.get(array.size() + i).getMealName(), products.get(array.size() + i).getId());
-        part.setCount(0);
-        fragment.setPart(part);
-        fragment.setInfo(products.get(array.size() + i));
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                fragments.add(fragment);
-                defaultPagerAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void addLunchFragment(int i) {
-        if (products.get(i) == null || products.get(i).getId() == null) {
-            return;
-        }
-
-        final BaseProductFragment fragment = new LunchFragment();
-        DeliveryOrder.OrderPart part = new DeliveryOrder.OrderPart(products.get(i).getPrice(),
+        Order.OrderPart part = new Order.OrderPart(products.get(i).getPrice(),
                 products.get(i).getMealName(), products.get(i).getId());
         part.setCount(0);
         fragment.setPart(part);
@@ -369,28 +312,35 @@ public class ProductsActivity extends BaseActivity {
     }
 
     private void parseDishes(JsonArray array) {
+        defaultPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        defaultViewpager.setAdapter(defaultPagerAdapter);
+
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject();
             products.add(parseDish(object));
-            addDishFragment(array, i);
+            if (!isStuff) {
+                addDishFragment(i);
+            }
         }
-    }
 
-    private void parseLunches(JsonArray array) {
-        for (int i = 0; i < array.size(); i++) {
-            JsonObject object = array.get(i).getAsJsonObject();
-            products.add(parseLunch(object));
-            addLunchFragment(i);
+        if (isStuff) {
+            StuffFragment.Companion.setCollection(products);
+            fragments.add(initFinalPage());
         }
+
+        setupPages();
     }
 
     private void setupPages() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                fragments.add(initFinalPage());
                 defaultPagerAdapter.notifyDataSetChanged();
                 defaultViewpager.setOffscreenPageLimit(fragments.size());
+                if (isStuff) {
+                    return;
+                }
+
                 defaultIndicator.setViewPager(defaultViewpager);
                 initScrolls();
             }
@@ -412,6 +362,11 @@ public class ProductsActivity extends BaseActivity {
 
     private void listenToScroll() {
         findViewById(R.id.loading_indicator).setVisibility(View.GONE);
+
+        if (!isStuff) {
+            return;
+        }
+
         ((BaseProductFragment) fragments.get(0)).animateScroll();
 
         new Handler().postDelayed(new Runnable() {
@@ -422,21 +377,8 @@ public class ProductsActivity extends BaseActivity {
         }, ANIMATION_DURATION);
     }
 
-    private void parseDay(final JsonObject object) {
-        defaultPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
-        defaultViewpager.setAdapter(defaultPagerAdapter);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                parseLunches(object.get("lunches").getAsJsonArray());
-                parseDishes(object.get("dishes").getAsJsonArray());
-                setupPages();
-            }
-        }).start();
-    }
-
-    private FinalPageFragment initFinalPage() {
-        return new FinalPageFragment();
+    private StuffFragment initFinalPage() {
+        return new StuffFragment();
     }
 
     private void hideMenu() {
@@ -453,21 +395,13 @@ public class ProductsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+
         if (product_count == 0) {
             hideMenu();
         } else {
             showMenu();
         }
-    }
-
-    public void setScrollListener(final NestedScrollView scrollView) {
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY();
-                setOpacityOfElements(1 - (scrollY / AndroidUtilities.INSTANCE.dpToPx(ProductsActivity.this, BUTTON_HIDE_OFFSET)));
-            }
-        });
     }
 
     public void setScrollListener(final ScrollView scrollView) {

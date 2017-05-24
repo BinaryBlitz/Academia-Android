@@ -16,7 +16,7 @@ import java.util.ArrayList
 
 class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var collection: ArrayList<CreditCard>? = null
+    private var collection: ArrayList<CreditCard>
 
     init {
         collection = ArrayList<CreditCard>()
@@ -35,13 +35,9 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as NewsViewHolder
 
-        if (collection == null) {
-            return
-        }
+        holder.date.text = collection[position].number
 
-        holder.date.text = collection!![position].number
-
-        if (collection!![position].selected) {
+        if (collection[position].selected) {
             setBackForSelected(holder)
         } else {
             setBackForUnSelected(holder)
@@ -61,26 +57,19 @@ class CardsAdapter(private var context: Activity?) : RecyclerView.Adapter<Recycl
     }
 
     private fun selectCard(position: Int) {
-        if (collection == null) {
-            return
+        for (i in collection.indices) {
+            collection[i].selected = false
         }
 
-        for (i in collection!!.indices) {
-            collection!![i].selected = false
-        }
+        collection[position].selected = true
 
-        collection!![position].selected = true
-
-        DeliveryFinalActivity.binding = collection!![position].binding
+        DeliveryFinalActivity.binding = collection[position].binding
         DeliveryFinalActivity.cardIndex = position
         notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
-        if (collection == null) {
-            return 0
-        }
-        return collection!!.size
+        return collection.size
     }
 
     private inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

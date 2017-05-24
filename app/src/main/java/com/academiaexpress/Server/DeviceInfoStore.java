@@ -3,11 +3,11 @@ package com.academiaexpress.Server;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.academiaexpress.Data.DeliveryUser;
+import com.academiaexpress.Data.User;
 
 @SuppressWarnings("unused")
 public class DeviceInfoStore {
-    public static void saveUser(Context context, DeliveryUser user) {
+    public static void saveUser(Context context, User user) {
         SharedPreferences prefs = context.getSharedPreferences(
                 ServerConfig.INSTANCE.getPrefsName(), Context.MODE_PRIVATE);
         prefs.edit().putString(ServerConfig.INSTANCE.getUserEntity(), user.asString()).apply();

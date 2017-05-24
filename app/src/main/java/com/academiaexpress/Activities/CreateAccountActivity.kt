@@ -12,12 +12,13 @@ import android.widget.EditText
 import android.widget.ImageView
 
 import com.academiaexpress.Base.BaseActivity
-import com.academiaexpress.Data.DeliveryUser
+import com.academiaexpress.Data.User
 import com.academiaexpress.R
 import com.academiaexpress.Server.DeviceInfoStore
 import com.academiaexpress.Server.ServerApi
 import com.academiaexpress.Utils.AndroidUtilities
 import com.academiaexpress.Utils.Image
+import com.academiaexpress.Utils.LogUtil
 import com.google.firebase.iid.FirebaseInstanceId
 
 import retrofit2.Call
@@ -103,9 +104,9 @@ class CreateAccountActivity : BaseActivity() {
             user.addProperty("phone_number", intent.getStringExtra("phone"))
             user.addProperty("verification_token", intent.getStringExtra("token"))
             user.addProperty("device_token", FirebaseInstanceId.getInstance().token)
-            user.addProperty("platform", intent.getStringExtra("token"))
+            user.addProperty("platform", "android")
 
-            val deliveryUser = DeliveryUser(
+            val deliveryUser = User(
                     (findViewById(R.id.firstName) as EditText).text.toString(),
                     (findViewById(R.id.lastName) as EditText).text.toString(),
                     (findViewById(R.id.email) as EditText).text.toString(),

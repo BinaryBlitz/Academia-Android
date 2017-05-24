@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities;
 
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.google.gson.JsonObject;
 
 import android.content.Intent;
@@ -7,11 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryUser;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Data.User;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -53,6 +55,14 @@ public class ClosedActivity extends BaseActivity {
         setOnClickListeners();
         getUser();
         setTexts();
+
+        CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
     }
 
     private void parseUser(JsonObject object) {
@@ -87,21 +97,24 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void saveUser(JsonObject object) {
-        DeliveryUser deliveryUser = new DeliveryUser(
+        User user = new User(
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("first_name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("last_name")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("email")),
                 AndroidUtilities.INSTANCE.getStringFieldFromJson(object.get("phone_number")));
 
-        DeviceInfoStore.saveUser(this, deliveryUser);
+        DeviceInfoStore.saveUser(this, user);
     }
 
     private void getUser() {
         ServerApi.get(this).api().getUser(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) parseUser(response.body());
-                else onInternetConnectionError();
+                if (response.isSuccessful()) {
+                    parseUser(response.body());
+                } else {
+                    onInternetConnectionError();
+                }
             }
 
             @Override
@@ -112,7 +125,7 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void initScreen() {
-        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception e) { LogUtil.logException(e); }
+        try { StuffFragment.Companion.getCollection().clear(); } catch (Exception e) { LogUtil.logException(e); }
 
         closed = true;
         Answers.getInstance().logCustom(new CustomEvent(getString(R.string.event_sign_in)));
@@ -131,14 +144,19 @@ public class ClosedActivity extends BaseActivity {
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
 
-        if (hour < EARLY_HOUR) setTextToUpperText(getString(R.string.hello_late));
-        else setTextToUpperText(getString(R.string.hello_early));
+        if (hour > 5 && hour < 11) {
+            setTextToUpperText(getString(R.string.hello_early));
+        } else if (hour > 11 && hour < 18) {
+            setTextToUpperText(getString(R.string.hello_day));
+        } else {
+            setTextToUpperText(getString(R.string.hello_late));
+        }
     }
 
     private void setTextToUpperText(String text) {
         try {
             ((TextView) findViewById(R.id.help_text)).setText(text + ", " +
-                    DeliveryUser.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
+                    User.Companion.fromString(DeviceInfoStore.getUser(this)).getFirstName());
         } catch (Exception e) {
             ((TextView) findViewById(R.id.help_text)).setText(text);
         }
@@ -146,9 +164,14 @@ public class ClosedActivity extends BaseActivity {
 
     private void setBottomText() {
         try {
-            if (isValidDate()) setClosedTextToBottomTextView();
-            else setValidDateToBottomTextView();
-        } catch (Exception e) { setClosedTextToBottomTextView(); }
+            if (isValidDate()) {
+                setClosedTextToBottomTextView();
+            } else {
+                setValidDateToBottomTextView();
+            }
+        } catch (Exception e) {
+            setClosedTextToBottomTextView();
+        }
     }
 
     private void setValidDateToBottomTextView() {
@@ -229,7 +252,12 @@ public class ClosedActivity extends BaseActivity {
                 if (!AndroidUtilities.INSTANCE.isConnected(ClosedActivity.this)) {
                     return;
                 }
-                openProductsActivity();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animations.animateRevealShow(findViewById(R.id.menu_layout), ClosedActivity.this);
+                    }
+                });
             }
         });
 

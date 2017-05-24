@@ -57,10 +57,14 @@ public class MapActivity extends BaseActivity
     public static LatLng selectedLocation = null;
     public static String selectedLocationName = "";
 
+    public static LatLng previouslySelectedLocation = null;
+    public static String previouslySelectedLocationName = "";
+
     private GoogleApiClient mGoogleApiClient;
 
     private ArrayList<LatLng> coordinates;
     private ProgressDialog dialog;
+    private boolean isLocationPreviouslySelected = false;
 
     @Override
     public void onLowMemory() {
@@ -80,8 +84,21 @@ public class MapActivity extends BaseActivity
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!isLocationPreviouslySelected) {
+            selectedLocationName = "";
+        } else {
+            selectedLocation = previouslySelectedLocation;
+            selectedLocationName = previouslySelectedLocationName;
+        }
+        super.onBackPressed();
+    }
+
     private void initGoogleApiClient() {
-        if (mGoogleApiClient != null) return;
+        if (mGoogleApiClient != null) {
+            return;
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -95,9 +112,9 @@ public class MapActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        initGoogleApiClient();
         initFields();
         initMap();
-        initGoogleApiClient();
         setOnClickListeners();
 
         new Handler().post(new Runnable() {
@@ -116,6 +133,12 @@ public class MapActivity extends BaseActivity
         findViewById(R.id.guillotine_hamburger).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isLocationPreviouslySelected) {
+                    selectedLocationName = "";
+                } else {
+                    selectedLocation = previouslySelectedLocation;
+                    selectedLocationName = previouslySelectedLocationName;
+                }
                 finish();
             }
         });
@@ -161,6 +184,7 @@ public class MapActivity extends BaseActivity
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         if (selectedLocation != null) {
+            isLocationPreviouslySelected = true;
             processPreviouslySelectedLocation();
         } else {
             getLocationFromGoogle();
@@ -168,6 +192,8 @@ public class MapActivity extends BaseActivity
     }
 
     private void processPreviouslySelectedLocation() {
+        previouslySelectedLocation = selectedLocation;
+        previouslySelectedLocationName = selectedLocationName;
         getCompleteAddressString(selectedLocation.latitude, selectedLocation.longitude);
         ((TextView) findViewById(R.id.editText3)).setText(selectedLocationName);
         moveCamera(true);
@@ -198,7 +224,6 @@ public class MapActivity extends BaseActivity
             }
         } catch (Exception e) {
             dialog.dismiss();
-            LogUtil.logException(e);
         }
     }
 
@@ -337,7 +362,7 @@ public class MapActivity extends BaseActivity
         switch (requestCode) {
             case LOCATION_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
+                    getLocationFromGoogle();
                 } else {
                     onLocationError();
                 }

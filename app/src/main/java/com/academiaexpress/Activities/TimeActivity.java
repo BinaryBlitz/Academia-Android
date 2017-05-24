@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +47,9 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     public static String selected = "";
     public static boolean errors = false;
     static String id = "";
+    static boolean isPaymentStarted = false;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,8 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
         initElements();
         setOnClickListeners();
+
+        progressDialog = new ProgressDialog(this);
 
         new Handler().post(new Runnable() {
             @Override
@@ -65,7 +71,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
     private void initElements() {
         now = true;
-        errors = true;
+        errors = false;
 
         Image.loadPhoto(R.drawable.back1, (ImageView) findViewById(R.id.background));
 
@@ -119,6 +125,8 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
                     return;
                 }
 
+                isPaymentStarted = true;
+
                 if (DeliveryFinalActivity.newCard) {
                     addOrder();
                 } else {
@@ -171,15 +179,39 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     protected void onResume() {
         super.onResume();
 
+        if (isPaymentStarted) {
+            showErrorDialog();
+            isPaymentStarted = false;
+            return;
+        }
+
         if (id.isEmpty() || errors) {
             return;
         }
 
         if (DeliveryFinalActivity.newCard) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    progressDialog.show();
+                }
+            });
             processCards();
         } else {
             openProcessActivity();
         }
+    }
+
+    private void showErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.error)
+                .setMessage(R.string.error_helper)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void openProcessActivity() {
@@ -319,7 +351,6 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
             intent.putExtra("url", object.get("url").getAsString());
             startActivity(intent);
         } catch (Exception e) {
-            onInternetConnectionError();
             LogUtil.logException(e);
         }
     }
@@ -479,13 +510,10 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     }
 
     private void getCards() {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.show();
-
         ServerApi.get(this).api().getCards(DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                dialog.dismiss();
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     parseCards(response.body());
                 } else {
@@ -495,7 +523,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
-                dialog.dismiss();
+                progressDialog.dismiss();
                 onInternetConnectionError();
             }
         });
@@ -508,9 +536,12 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     }
 
     private void sendPayment(String id, String binding) {
+        progressDialog.show();
+
         ServerApi.get(this).api().pay(generatePayJson(binding), id, DeviceInfoStore.getToken(this)).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     parsePayment();
                 } else {
@@ -520,6 +551,7 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
+                progressDialog.dismiss();
                 onInternetConnectionError();
             }
         });

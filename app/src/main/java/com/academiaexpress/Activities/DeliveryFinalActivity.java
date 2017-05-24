@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.academiaexpress.Adapters.DeliveryAdapter;
 import com.academiaexpress.Base.BaseActivity;
 import com.academiaexpress.Data.CreditCard;
-import com.academiaexpress.Data.DeliveryOrder;
-import com.academiaexpress.Data.MiniProduct;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Data.Dish;
+import com.academiaexpress.Data.Order;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -238,7 +238,7 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void removeItem() {
-        DeliveryOrder.OrderPart part = ProductsActivity.collection.get(itemToEdit);
+        Order.OrderPart part = ProductsActivity.collection.get(itemToEdit);
         ProductsActivity.product_count -= part.getCount();
         ProductsActivity.price -= part.getPrice() * part.getCount();
 
@@ -247,20 +247,20 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void removeMiniProducts() {
-        for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
-            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
-                FinalPageFragment.Companion.getCollection().get(i).setCount(0);
+        for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
+            Dish product = StuffFragment.Companion.getCollection().get(i);
+            if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+                StuffFragment.Companion.getCollection().get(i).setCount(0);
                 break;
             }
         }
     }
 
     private void editItemCount() {
-        for (int i = 0; i < FinalPageFragment.Companion.getCollection().size(); i++) {
-            MiniProduct product = FinalPageFragment.Companion.getCollection().get(i);
-            if (product.getName() != null && product.getName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
-                FinalPageFragment.Companion.getCollection().get(i).setCount(newCount);
+        for (int i = 0; i < StuffFragment.Companion.getCollection().size(); i++) {
+            Dish product = StuffFragment.Companion.getCollection().get(i);
+            if (product.getMealName() != null && product.getMealName().equals(ProductsActivity.collection.get(itemToEdit).getName())) {
+                StuffFragment.Companion.getCollection().get(i).setCount(newCount);
                 break;
             }
         }

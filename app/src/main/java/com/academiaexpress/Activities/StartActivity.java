@@ -1,5 +1,6 @@
 package com.academiaexpress.Activities;
 
+import com.academiaexpress.Utils.CategoriesUtility;
 import com.google.gson.JsonObject;
 
 import android.content.Intent;
@@ -7,11 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.academiaexpress.Base.BaseActivity;
-import com.academiaexpress.Data.DeliveryUser;
-import com.academiaexpress.Fragments.FinalPageFragment;
+import com.academiaexpress.Data.User;
+import com.academiaexpress.Fragments.StuffFragment;
 import com.academiaexpress.R;
 import com.academiaexpress.Server.DeviceInfoStore;
 import com.academiaexpress.Server.ServerApi;
@@ -37,13 +39,21 @@ public class StartActivity extends BaseActivity {
 
         ClosedActivity.closed = false;
 
-        try { FinalPageFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
+        try { StuffFragment.Companion.getCollection().clear(); } catch (Exception ignored) { }
 
         Image.loadPhoto(R.drawable.back_final_page, (ImageView) findViewById(R.id.background));
 
         initScreen();
         setOnClickListeners();
 
+        findViewById(R.id.menu_layout).setVisibility(View.GONE);
+
+        CategoriesUtility.INSTANCE.showCategoriesList(((LinearLayout) findViewById(R.id.menu_list)), this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         findViewById(R.id.menu_layout).setVisibility(View.GONE);
     }
 
@@ -62,14 +72,14 @@ public class StartActivity extends BaseActivity {
                     getString(R.string.orders_upcase_code) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
         }
 
-        DeliveryUser deliveryUser = new DeliveryUser(
+        User user = new User(
                 object.get("first_name").getAsString(),
                 object.get("last_name").getAsString(),
                 object.get("email").getAsString(),
                 object.get("phone_number").getAsString()
         );
 
-        DeviceInfoStore.saveUser(this, deliveryUser);
+        DeviceInfoStore.saveUser(this, user);
     }
 
     private void getUser() {
@@ -115,10 +125,15 @@ public class StartActivity extends BaseActivity {
         findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AndroidUtilities.INSTANCE.isConnected(StartActivity.this)) return;
-                Intent intent = new Intent(StartActivity.this, ProductsActivity.class);
-                startActivity(intent);
-                finish();
+                if (!AndroidUtilities.INSTANCE.isConnected(StartActivity.this)) {
+                    return;
+                }
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animations.animateRevealShow(findViewById(R.id.menu_layout), StartActivity.this);
+                    }
+                });
             }
         });
 
