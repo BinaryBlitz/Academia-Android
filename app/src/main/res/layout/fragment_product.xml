@@ -334,7 +334,7 @@
                     android:layout_gravity="bottom|center_horizontal"
                     android:background="#212121"/>
 
-            <com.academiaexpress.Custom.ExpandableHeightGridView
+            <com.academiaexpress.ui.views.customViews.ExpandableHeightGridView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/gridView2"

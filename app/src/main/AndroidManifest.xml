@@ -20,7 +20,7 @@
                  android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
-        <receiver android:name=".Utils.ConnectionReceiver" >
+        <receiver android:name=".utils.ConnectionReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -31,7 +31,7 @@
         android:value="AIzaSyCMjChYhBT-MVpGR9VCTk29F1GeRUmeKAI"/>
 
         <activity
-                android:name=".Activities.ProductsActivity"
+                android:name=".ui.main.ProductsActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -40,7 +40,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.AuthActivity"
+                android:name=".ui.auth.AuthActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -49,7 +49,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.FirstDeliveryScreen"
+                android:name=".ui.order.FirstDeliveryScreen"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.CreateAccountActivity"
+                android:name=".ui.auth.CreateAccountActivity"
                 android:windowSoftInputMode="stateVisible|adjustPan"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -68,7 +68,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.EditProfileActivity"
+                android:name=".ui.main.EditProfileActivity"
                 android:windowSoftInputMode="stateVisible|adjustPan"
                 android:screenOrientation="portrait">
             <intent-filter>
@@ -78,7 +78,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.DeliveryFinalActivity"
+                android:name=".ui.order.DeliveryFinalActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -87,7 +87,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.HelpActivity"
+                android:name=".ui.help.HelpActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -96,7 +96,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.StartActivity"
+                android:name=".ui.main.StartActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -105,7 +105,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.OrdersActivity"
+                android:name=".ui.order.OrdersActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -114,7 +114,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.EditOrderActivity"
+                android:name=".ui.order.EditOrderActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -123,7 +123,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.MapActivity"
+                android:name=".ui.order.MapActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -132,7 +132,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.OrderDetailsActivity"
+                android:name=".ui.order.OrderDetailsActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -141,7 +141,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.CreditCardsActivity"
+                android:name=".ui.order.CreditCardsActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -150,7 +150,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.ClosedActivity"
+                android:name=".ui.main.ClosedActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -159,7 +159,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.LostInternetConnectionActivity"
+                android:name=".ui.main.LostInternetConnectionActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -168,7 +168,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.DeliveryProcessActivity"
+                android:name=".ui.order.DeliveryProcessActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -177,7 +177,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.CodeActivity"
+                android:name=".ui.auth.CodeActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -186,7 +186,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.TimeActivity"
+                android:name=".ui.order.TimeActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -195,7 +195,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.WebActivity"
+                android:name=".ui.order.WebActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -204,7 +204,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.CompanyInformationActivity"
+                android:name=".ui.main.CompanyInformationActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -213,7 +213,7 @@
         </activity>
 
         <activity
-                android:name=".Activities.SplashActivity"
+                android:name=".ui.main.SplashActivity"
                 android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -222,14 +222,14 @@
         </activity>
 
         <service
-            android:name=".Push.MyGcmListenerService" android:exported="false" android:priority="500">
+            android:name=".push.MyGcmListenerService" android:exported="false" android:priority="500">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".Push.MyInstanceIDListenerService" android:exported="false">
+            android:name=".push.MyInstanceIDListenerService" android:exported="false">
             <intent-filter android:priority="1000">
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

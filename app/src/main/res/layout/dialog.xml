@@ -3,7 +3,7 @@
     android:layout_height="250dp"
     android:background="#ffffff">
 
-    <com.academiaexpress.Custom.NumberPicker
+    <com.academiaexpress.ui.views.customViews.NumberPicker
         android:id="@+id/numberPicker1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -85,8 +85,9 @@ public class ClosedActivity extends BaseActivity {
     }
 
     private void setupIfNotEmptyOrders() {
-        findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
+        // Remove orderIndicator changing visibility logic. But left it here for future
+        // findViewById(R.id.orders_indicator).setVisibility(View.VISIBLE);
+        // ((TextView) findViewById(R.id.orders_indicator)).setText(Integer.toString(MoneyValues.countOfOrders));
         ((TextView) findViewById(R.id.menu_orders)).setText(getString(R.string.orders_upcase) + " (" + Integer.toString(MoneyValues.countOfOrders) + ")");
     }
 
