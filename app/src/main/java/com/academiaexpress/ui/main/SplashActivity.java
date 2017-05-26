@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.academiaexpress.ui.BaseActivity;
 import com.academiaexpress.R;
 import com.academiaexpress.network.DeviceInfoStore;
 import com.academiaexpress.network.ServerApi;
+import com.academiaexpress.ui.BaseActivity;
 import com.academiaexpress.utils.AndroidUtilities;
 import com.academiaexpress.utils.CategoriesUtility;
 import com.academiaexpress.utils.MoneyValues;
@@ -32,13 +32,11 @@ import retrofit2.Response;
 
 public class SplashActivity extends BaseActivity {
 
-    public static ArrayList<String> hours;
-    public static ArrayList<Calendar> calendars;
-
     private static final String EXTRA_PREORDER = "preorder";
     private static final String EXTRA_OPEN_TIME = "open_time";
     private static final String EXTRA_CLOSED = "closed";
-
+    public static ArrayList<String> hours;
+    public static ArrayList<Calendar> calendars;
     private boolean isOpened = true;
     private boolean isPreorder = false;
     private String openTime = "";
@@ -91,7 +89,8 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
 
         new Handler().post(new Runnable() {
@@ -336,7 +335,8 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) { }
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+            }
         });
     }
 
@@ -358,7 +358,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
-                int a = 5;
+                onInternetConnectionError();
             }
         });
     }
@@ -374,7 +374,7 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
-                int a = 5;
+                onInternetConnectionError();
             }
         });
     }
@@ -383,7 +383,8 @@ public class SplashActivity extends BaseActivity {
         MoneyValues.countOfOrders = 0;
         for (int i = 0; i < array.size(); i++) {
             JsonObject object = array.get(i).getAsJsonObject().get("order").getAsJsonObject();
-            if (object.get("status").getAsString().equals("on_the_way")) MoneyValues.countOfOrders++;
+            if (object.get("status").getAsString().equals("on_the_way"))
+                MoneyValues.countOfOrders++;
         }
     }
 }
