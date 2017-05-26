@@ -7,7 +7,7 @@
         android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.academiaexpress.Custom.MyMapFragment$MySupportMapFragment"/>
+        android:name="com.academiaexpress.ui.views.customViews.MyMapFragment$MySupportMapFragment"/>
 
     <ImageView
         android:layout_height="36dp"
