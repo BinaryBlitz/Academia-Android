@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.academiaexpress.extras.Extras;
 import com.academiaexpress.ui.BaseActivity;
 import com.academiaexpress.ui.main.ClosedActivity;
 import com.academiaexpress.ui.main.ProductsActivity;
@@ -26,6 +27,7 @@ import com.academiaexpress.utils.AppConfig;
 import com.academiaexpress.utils.Image;
 import com.academiaexpress.utils.LogUtil;
 import com.academiaexpress.utils.MoneyValues;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -51,12 +53,18 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
     static String id = "";
     static boolean isPaymentStarted = false;
 
+    private String selectedLocationName = "";
+    private LatLng selectedLocation = null;
+
     private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time);
+
+        selectedLocationName = getIntent().getStringExtra(Extras.EXTRA_LOCATION_NAME);
+        selectedLocation = getIntent().getParcelableExtra(Extras.EXTRA_LOCATION_LATLNG);
 
         initElements();
         setOnClickListeners();
@@ -324,9 +332,9 @@ public class TimeActivity extends BaseActivity implements TimePickerDialog.OnTim
         }
 
         object.add("line_items_attributes", array);
-        object.addProperty("address", MapActivity.selectedLocationName);
-        object.addProperty("latitude", MapActivity.selectedLocation.latitude);
-        object.addProperty("longitude", MapActivity.selectedLocation.longitude);
+        object.addProperty("address", selectedLocationName);
+        object.addProperty("latitude", selectedLocation.latitude);
+        object.addProperty("longitude", selectedLocation.longitude);
         if (!now) {
             object.addProperty("scheduled_for", selected);
         }

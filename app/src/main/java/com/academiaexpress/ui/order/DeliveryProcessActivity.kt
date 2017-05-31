@@ -28,9 +28,6 @@ class DeliveryProcessActivity : BaseActivity() {
     private fun initElements() {
         Image.loadPhoto(R.drawable.load_pic, findViewById(R.id.background) as ImageView)
         Answers.getInstance().logCustom(CustomEvent(getString(R.string.event_order_paid)))
-        MapActivity.selectedLocationName = ""
-        MapActivity.selectedLocation = null
-
         val animation = AnimationUtils.loadAnimation(this, R.anim.rotate_anim)
         findViewById(R.id.indicator).startAnimation(animation)
     }

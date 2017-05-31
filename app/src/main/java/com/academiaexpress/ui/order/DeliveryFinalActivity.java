@@ -1,5 +1,6 @@
 package com.academiaexpress.ui.order;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,19 +11,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.academiaexpress.ui.main.ProductsActivity;
-import com.academiaexpress.ui.main.adapters.DeliveryAdapter;
-import com.academiaexpress.ui.BaseActivity;
+import com.academiaexpress.R;
 import com.academiaexpress.data.CreditCard;
 import com.academiaexpress.data.Dish;
 import com.academiaexpress.data.Order;
-import com.academiaexpress.R;
+import com.academiaexpress.extras.Extras;
+import com.academiaexpress.extras.RequestCodes;
 import com.academiaexpress.network.DeviceInfoStore;
 import com.academiaexpress.network.ServerApi;
+import com.academiaexpress.ui.BaseActivity;
+import com.academiaexpress.ui.main.ProductsActivity;
+import com.academiaexpress.ui.main.adapters.DeliveryAdapter;
 import com.academiaexpress.utils.AndroidUtilities;
 import com.academiaexpress.utils.AppConfig;
 import com.academiaexpress.utils.Image;
 import com.academiaexpress.utils.LogUtil;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -41,6 +45,10 @@ public class DeliveryFinalActivity extends BaseActivity {
     private DeliveryAdapter adapter;
 
     private static final String EXTRA_PRICE = "price";
+
+    private int REQUEST_MAP_CODE = 1001;
+    private String selectedLocationName = "";
+    private LatLng selectedLocation;
 
     private static int NO_ACTION = -1;
     public static int REMOVE_ACTION = -2;
@@ -94,7 +102,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DeliveryFinalActivity.this, MapActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_MAP_CODE);
             }
         });
 
@@ -110,7 +118,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DeliveryFinalActivity.this, MapActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_MAP_CODE);
             }
         });
 
@@ -123,6 +131,8 @@ public class DeliveryFinalActivity extends BaseActivity {
 
                 Intent intent = new Intent(DeliveryFinalActivity.this, TimeActivity.class);
                 intent.putExtra(EXTRA_PRICE, getPriceText());
+                intent.putExtra(Extras.EXTRA_LOCATION_NAME, selectedLocationName);
+                intent.putExtra(Extras.EXTRA_LOCATION_LATLNG, selectedLocation);
                 startActivity(intent);
             }
         });
@@ -135,7 +145,7 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private boolean check() {
-        if (MapActivity.selectedLocationName == null || MapActivity.selectedLocationName.isEmpty()) {
+        if (selectedLocationName == null || selectedLocationName.isEmpty()) {
             Snackbar.make(findViewById(R.id.main), R.string.select_delivery_place, Snackbar.LENGTH_SHORT).show();
             return false;
         }
@@ -273,7 +283,7 @@ public class DeliveryFinalActivity extends BaseActivity {
             ((TextView) findViewById(R.id.next_btn)).setText(collection.get(cardIndex).getNumber());
         }
 
-        if (!MapActivity.selectedLocationName.isEmpty()) {
+        if (!selectedLocationName.isEmpty()) {
             showLocationButtons();
         }
 
@@ -312,10 +322,20 @@ public class DeliveryFinalActivity extends BaseActivity {
     }
 
     private void showLocationButtons() {
-        ((TextView) findViewById(R.id.selected_location)).setText(MapActivity.selectedLocationName);
+        ((TextView) findViewById(R.id.selected_location)).setText(selectedLocationName);
         findViewById(R.id.selected_location).setVisibility(View.VISIBLE);
         findViewById(R.id.select_another_address_btn).setVisibility(View.VISIBLE);
         findViewById(R.id.address_help_text).setVisibility(View.VISIBLE);
         findViewById(R.id.map_btn).setVisibility(View.GONE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ((resultCode == Activity.RESULT_OK) && (requestCode == RequestCodes.REQUEST_MAP_CODE)) {
+            selectedLocationName = data.getStringExtra(Extras.EXTRA_LOCATION_NAME);
+            selectedLocation = data.getParcelableExtra(Extras.EXTRA_LOCATION_LATLNG);
+        }
+
+        }
 }
