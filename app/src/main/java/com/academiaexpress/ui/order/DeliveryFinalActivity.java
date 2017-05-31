@@ -42,24 +42,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DeliveryFinalActivity extends BaseActivity {
-    private DeliveryAdapter adapter;
-
     private static final String EXTRA_PRICE = "price";
-
-    private int REQUEST_MAP_CODE = 1001;
-    private String selectedLocationName = "";
-    private LatLng selectedLocation;
-
-    private static int NO_ACTION = -1;
     public static int REMOVE_ACTION = -2;
-
-    public static int itemToEdit = NO_ACTION;
-    public static int newCount = NO_ACTION;
     public static int cardIndex = 0;
-
     public static ArrayList<CreditCard> collection;
     public static String binding = "";
     public static boolean newCard = false;
+    private static int NO_ACTION = -1;
+    public static int itemToEdit = NO_ACTION;
+    public static int newCount = NO_ACTION;
+    private DeliveryAdapter adapter;
+    private int REQUEST_MAP_CODE = 1001;
+    private String selectedLocationName = "";
+    private LatLng selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -336,6 +331,5 @@ public class DeliveryFinalActivity extends BaseActivity {
             selectedLocationName = data.getStringExtra(Extras.EXTRA_LOCATION_NAME);
             selectedLocation = data.getParcelableExtra(Extras.EXTRA_LOCATION_LATLNG);
         }
-
-        }
+    }
 }

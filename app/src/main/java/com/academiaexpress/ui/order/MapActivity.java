@@ -137,7 +137,7 @@ public class MapActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (!AndroidUtilities.INSTANCE.isConnected(MapActivity.this)) {
-                    Snackbar.make(findViewById(R.id.main), "Нет подключения к интернету!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main), R.string.lost_connection_str, Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 try {
@@ -298,6 +298,37 @@ public class MapActivity extends BaseActivity
     }
 
     private void checkLocationInSettings() {
+        PendingResult result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, getLocationSettingsBuilder().build());
+
+        if (result == null) return;
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        if (status.hasResolution()) {
+                            try {
+                                status.startResolutionForResult(MapActivity.this, 1000);
+                            } catch (IntentSender.SendIntentException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        break;
+                }
+            }
+        });
+
+    }
+
+    private LocationSettingsRequest.Builder getLocationSettingsBuilder() {
         final LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(30 * 1000);
@@ -307,31 +338,7 @@ public class MapActivity extends BaseActivity
                 .addLocationRequest(locationRequest);
 
         builder.setAlwaysShow(true);
-        PendingResult result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
-
-        if (result != null) {
-            result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-                @Override
-                public void onResult(LocationSettingsResult locationSettingsResult) {
-                    final Status status = locationSettingsResult.getStatus();
-
-                    switch (status.getStatusCode()) {
-                        case LocationSettingsStatusCodes.SUCCESS:
-                            break;
-                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                            try {
-                                if (status.hasResolution()) {
-                                    status.startResolutionForResult(MapActivity.this, 1000);
-                                }
-                            } catch (IntentSender.SendIntentException e) {
-                            }
-                            break;
-                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            break;
-                    }
-                }
-            });
-        }
+        return builder;
     }
 
     private void getLocation() {
@@ -346,14 +353,14 @@ public class MapActivity extends BaseActivity
         String bestProvider = String.valueOf(manager.getBestProvider(mCriteria, true));
         lastLocation = manager.getLastKnownLocation(bestProvider);
 
-        if (lastLocation != null) {
-            final double currentLatitude = lastLocation.getLatitude();
-            final double currentLongitude = lastLocation.getLongitude();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        if (lastLocation == null) return;
 
-            processGoogleLocation(lastLocation);
-        }
+        final double currentLatitude = lastLocation.getLatitude();
+        final double currentLongitude = lastLocation.getLongitude();
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        processGoogleLocation(lastLocation);
+
     }
 
     private void processGoogleLocation(Location lastLocation) {
@@ -415,22 +422,29 @@ public class MapActivity extends BaseActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location != null) {
-            selectedLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-        }
+        if (location == null) return;
+
+        selectedLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((resultCode == Activity.RESULT_OK) && (requestCode == 1000)) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-            }
+        if (resultCode != Activity.RESULT_OK && requestCode != 1000) return;
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)
+                return;
         }
+
+        getLocation();
     }
 
 
