@@ -69,22 +69,23 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/orders_indicator"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/orders_indicator"
         android:layout_gravity="top"
-        android:textColor="#ffffff"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/red_circle"
         android:gravity="center"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ffffff"
+        android:visibility="gone" />
 
-    <com.academiaexpress.CircularReveal.widget.RevealFrameLayout
+    <com.academiaexpress.ui.views.circularReveal.widget.RevealFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible">
         <include layout="@layout/fragment_menu" />
-    </com.academiaexpress.CircularReveal.widget.RevealFrameLayout>
+    </com.academiaexpress.ui.views.circularReveal.widget.RevealFrameLayout>
 </FrameLayout>

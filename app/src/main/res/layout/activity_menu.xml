@@ -1,95 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/no_dishes_view"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_no_dishes" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="К сожалению в этой категории\nнет продуктов!"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
         android:id="@+id/loading_indicator"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.github.rahatarmanahmed.cpv.CircularProgressView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:cpv_color="#212121"
             android:layout_gravity="center"
-            app:cpv_animAutostart="true"
             android:layout_marginBottom="32dp"
+            app:cpv_animAutostart="true"
+            app:cpv_color="#212121"
             app:cpv_indeterminate="true" />
 
         <TextView
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/loading_menu"
-            android:textSize="18sp"
             android:layout_marginTop="16dp"
+            android:text="@string/loading_menu"
             android:textColor="#212121"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp" />
     </FrameLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_default"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <ImageView
-        android:layout_height="40dp"
+        android:id="@+id/content_hamburger"
         android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
-        android:id="@+id/content_hamburger"
-        android:src="@drawable/ic_menu"
-        android:padding="10dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/white_circle_back"
-        android:layout_marginTop="8dp" />
+        android:padding="10dp"
+        android:src="@drawable/ic_menu" />
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="56dp"
         android:layout_height="48dp"
-        android:id="@+id/logo"
         android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="4dp"
         android:background="@drawable/mini_logo"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="4dp" />
+        android:scaleType="fitCenter" />
 
     <ImageView
-        android:layout_height="40dp"
-        android:layout_width="40dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp"
         android:id="@+id/next_btn"
-        android:src="@drawable/ic_cart"
-        android:padding="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/white_circle_back"
-        android:layout_gravity="end|top"
-        android:layout_marginTop="8dp" />
+        android:padding="8dp"
+        android:src="@drawable/ic_cart" />
 
     <TextView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/indicator"
-        android:layout_gravity="end|top"
-        android:textColor="#ffffff"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginEnd="6dp"
-        android:background="@drawable/red_circle"
-        android:gravity="center" />
-
-    <TextView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/orders_indicator"
-        android:layout_gravity="top"
-        android:textColor="#ffffff"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/red_circle"
         android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/orders_indicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="top"
+        android:layout_marginLeft="36dp"
         android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp" />
+        android:layout_marginTop="2dp"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ffffff"
+        android:visibility="gone" />
 
     <me.relex.circleindicator.CircleIndicator
         android:id="@+id/indicator_default"
@@ -97,11 +127,11 @@
         android:layout_height="40dp"
         android:layout_marginTop="68dp" />
 
-    <com.academiaexpress.CircularReveal.widget.RevealFrameLayout
+    <com.academiaexpress.ui.views.circularReveal.widget.RevealFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_height="match_parent">
+
         <include layout="@layout/fragment_menu" />
-    </com.academiaexpress.CircularReveal.widget.RevealFrameLayout>
+    </com.academiaexpress.ui.views.circularReveal.widget.RevealFrameLayout>
 
 </FrameLayout>

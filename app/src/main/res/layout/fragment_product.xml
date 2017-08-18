@@ -327,23 +327,24 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <View
-                    android:layout_width="310dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:background="#212121"/>
 
-            <com.academiaexpress.Custom.ExpandableHeightGridView
+            <View
+                android:layout_width="310dp"
+                android:layout_height="2dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginTop="24dp"
+                android:background="#212121" />
+
+            <com.academiaexpress.ui.views.customViews.ExpandableHeightGridView
+                android:id="@+id/gridView2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/gridView2"
                 android:layout_gravity="center_horizontal|top"
-                android:numColumns="3"
-                android:layout_marginTop="36dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="36dp"
+                android:numColumns="3"
                 android:verticalSpacing="2dp" />
         </FrameLayout>
     </LinearLayout>
